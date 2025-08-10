@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: torrent2emby/videocontent.proto
+// source: torrent-to-media-server/videocontent.proto
 
 package api
 
@@ -20,11 +20,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VideoContentService_CreateVideoContent_FullMethodName      = "/torrent2emby.VideoContentService/CreateVideoContent"
-	VideoContentService_GetVideoContent_FullMethodName         = "/torrent2emby.VideoContentService/GetVideoContent"
-	VideoContentService_GetTVShowDeliveryData_FullMethodName   = "/torrent2emby.VideoContentService/GetTVShowDeliveryData"
-	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/torrent2emby.VideoContentService/ChoseTorrentOptions"
-	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/torrent2emby.VideoContentService/ChoseFileMatchesOptions"
+	VideoContentService_CreateVideoContent_FullMethodName      = "/torrenttomediaserver.VideoContentService/CreateVideoContent"
+	VideoContentService_GetVideoContent_FullMethodName         = "/torrenttomediaserver.VideoContentService/GetVideoContent"
+	VideoContentService_GetTVShowDeliveryData_FullMethodName   = "/torrenttomediaserver.VideoContentService/GetTVShowDeliveryData"
+	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/torrenttomediaserver.VideoContentService/ChoseTorrentOptions"
+	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/torrenttomediaserver.VideoContentService/ChoseFileMatchesOptions"
 )
 
 // VideoContentServiceClient is the client API for VideoContentService service.
@@ -245,7 +245,7 @@ func _VideoContentService_ChoseFileMatchesOptions_Handler(srv interface{}, ctx c
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var VideoContentService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "torrent2emby.VideoContentService",
+	ServiceName: "torrenttomediaserver.VideoContentService",
 	HandlerType: (*VideoContentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -270,5 +270,5 @@ var VideoContentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "torrent2emby/videocontent.proto",
+	Metadata: "torrent-to-media-server/videocontent.proto",
 }

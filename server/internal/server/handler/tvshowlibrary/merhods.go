@@ -5,7 +5,7 @@ import (
 
 	"github.com/kkiling/torrent-to-media-server/internal/server/handler"
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 func (h *Handler) SearchTVShow(ctx context.Context, request *desc.SearchTVShowRequest) (*desc.SearchTVShowResponse, error) {

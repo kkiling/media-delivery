@@ -66,6 +66,7 @@ func mapContentMatchesFromPrepareTVShowSeason(
 func mapToPrepareTvShowPrams(
 	basePath, savePath, contentPath string,
 	episodes []tvshowlibrary.Episode,
+	seasonNumber uint8,
 	torrentFiles []qbittorrent.TorrentFile,
 ) (*matchtvshow.PrepareTvShowPrams, error) {
 	fullPath := filepath.Join(basePath, contentPath)
@@ -96,7 +97,7 @@ func mapToPrepareTvShowPrams(
 	return &matchtvshow.PrepareTvShowPrams{
 		Episodes: lo.Map(episodes, func(episode tvshowlibrary.Episode, _ int) matchtvshow.EpisodeInfo {
 			return matchtvshow.EpisodeInfo{
-				SeasonNumber:  episode.EpisodeNumber,
+				SeasonNumber:  seasonNumber,
 				EpisodeNumber: episode.EpisodeNumber,
 				EpisodeName:   episode.Name,
 			}
@@ -157,6 +158,7 @@ func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMa
 		torrentInfo.SavePath,
 		torrentInfo.ContentPath,
 		episodes.Items,
+		params.TVShowID.SeasonNumber,
 		torrentFiles,
 	)
 

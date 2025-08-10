@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 // TVShowLibrary юзеркейс работы с библиотекой сериалов

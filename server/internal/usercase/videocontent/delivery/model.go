@@ -30,7 +30,7 @@ type TorrentInfo struct {
 
 type EpisodeInfo struct {
 	// Номер сезона
-	SeasonNumber int
+	SeasonNumber uint8
 	// Наименования эпизода
 	EpisodeName string
 	// Номер эпизода

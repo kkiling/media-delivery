@@ -5,7 +5,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 func mapImage(res *tvshowlibrary.Image) *desc.Image {

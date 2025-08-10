@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: torrent2emby/tvshow.proto
+// source: torrent-to-media-server/tvshow.proto
 
 package api
 
@@ -20,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TVShowLibraryService_SearchTVShow_FullMethodName          = "/torrent2emby.TVShowLibraryService/SearchTVShow"
-	TVShowLibraryService_GetTVShowsFromLibrary_FullMethodName = "/torrent2emby.TVShowLibraryService/GetTVShowsFromLibrary"
-	TVShowLibraryService_GetTVShowInfo_FullMethodName         = "/torrent2emby.TVShowLibraryService/GetTVShowInfo"
-	TVShowLibraryService_GetSeasonEpisodes_FullMethodName     = "/torrent2emby.TVShowLibraryService/GetSeasonEpisodes"
+	TVShowLibraryService_SearchTVShow_FullMethodName          = "/torrenttomediaserver.TVShowLibraryService/SearchTVShow"
+	TVShowLibraryService_GetTVShowsFromLibrary_FullMethodName = "/torrenttomediaserver.TVShowLibraryService/GetTVShowsFromLibrary"
+	TVShowLibraryService_GetTVShowInfo_FullMethodName         = "/torrenttomediaserver.TVShowLibraryService/GetTVShowInfo"
+	TVShowLibraryService_GetSeasonEpisodes_FullMethodName     = "/torrenttomediaserver.TVShowLibraryService/GetSeasonEpisodes"
 )
 
 // TVShowLibraryServiceClient is the client API for TVShowLibraryService service.
@@ -211,7 +211,7 @@ func _TVShowLibraryService_GetSeasonEpisodes_Handler(srv interface{}, ctx contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TVShowLibraryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "torrent2emby.TVShowLibraryService",
+	ServiceName: "torrenttomediaserver.TVShowLibraryService",
 	HandlerType: (*TVShowLibraryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -232,5 +232,5 @@ var TVShowLibraryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "torrent2emby/tvshow.proto",
+	Metadata: "torrent-to-media-server/tvshow.proto",
 }

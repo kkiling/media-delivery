@@ -7,7 +7,7 @@ import (
 
 	"github.com/kkiling/torrent-to-media-server/internal/server/handler"
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 func (h *Handler) CreateVideoContent(ctx context.Context, request *desc.CreateVideoContentRequest) (*desc.CreateVideoContentResponse, error) {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package torrent2emby;
+package torrenttomediaserver;
 
 option go_package = "github.com/kkiling/torrent-to-media-server/api";
 

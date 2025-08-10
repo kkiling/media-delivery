@@ -10,7 +10,7 @@ import (
 
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent"
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 // VideoContent юзеркейс работы с доставкой видео файлов

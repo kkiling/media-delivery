@@ -8,7 +8,7 @@ import (
 	"github.com/kkiling/statemachine"
 
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent2emby"
+	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
 )
 
 // HandleError обработчик ошибок

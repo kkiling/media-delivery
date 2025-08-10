@@ -1,4 +1,4 @@
-TEST_DB_NAME:=./torrent2emby.db
+TEST_DB_NAME:=./torrent-to-media-server.db
 
 
 .PHONY: bin-deps
@@ -30,7 +30,7 @@ test-db:
 	rm -f ${TEST_DB_NAME}
 	@echo "\n --- 🖲️ statemachine sqlite migrations --- \n"
 	goose -dir=migrations/sqlite/state sqlite3 ${TEST_DB_NAME} up
-	@echo "\n --- 🖲️ torrent2emby sqlite migrations --- \n"
+	@echo "\n --- 🖲️ torrent2media sqlite migrations --- \n"
 	goose -dir=migrations/sqlite sqlite3 ${TEST_DB_NAME} up
 	@echo "\n --- 🖲️ Creating .testenv file --- \n"
 	rm -f ./testenv
@@ -43,7 +43,7 @@ clear-cache:
 .PHONY: generate
 generate:
 	mkdir -p vendor.protogen
-	cp -R api/torrent2emby/ vendor.protogen/
+	cp -R api/torrent-to-media-server/ vendor.protogen/
 	buf dep update
 	buf generate
 
