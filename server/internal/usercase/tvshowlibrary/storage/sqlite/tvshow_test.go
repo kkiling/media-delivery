@@ -370,7 +370,7 @@ func TestStorage_SeasonEpisodes(t *testing.T) {
 		require.NoError(t, err)
 
 		// Try to get episodes for non-existent season
-		_, err = storage.GetSeasonEpisodes(ctx, testTVShow.ID, 999)
+		_, err = storage.GetSeasonEpisodes(ctx, testTVShow.ID, 12)
 		require.ErrorIs(t, err, storagebase.ErrNotFound)
 
 		// Try to get episodes for non-existent show

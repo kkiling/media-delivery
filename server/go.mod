@@ -18,8 +18,8 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/kkiling/goplatform v1.0.0
-	github.com/kkiling/statemachine v1.0.0
+	github.com/kkiling/goplatform v0.1.1
+	github.com/kkiling/statemachine v0.2.0
 	github.com/markthree/go-get-folder-size v0.5.5
 	github.com/samber/lo v1.51.0
 	github.com/stretchr/testify v1.10.0
@@ -73,9 +73,4 @@ require (
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-)
-
-replace (
-	github.com/kkiling/goplatform v1.0.0 => ../../goplatform
-	github.com/kkiling/statemachine v1.0.0 => ../../statemachine
 )
