@@ -2,7 +2,6 @@ package qbittorrent
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
@@ -23,8 +22,8 @@ func (api *Api) PauseTorrent(hash string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return apierr.HandleStatusCodeError(api.logger, resp)
+	if errStatus := api.handleStatusError(resp); errStatus != nil {
+		return errStatus
 	}
 
 	return nil

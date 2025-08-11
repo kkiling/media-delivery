@@ -76,8 +76,8 @@ func (api *Api) tryLogin() (bool, error) {
 
 	if resp.StatusCode == http.StatusOK {
 		return true, nil
-	} else if resp.StatusCode != http.StatusOK {
-		return false, apierr.HandleStatusCodeError(api.logger, resp)
+	} else if errStatus := api.handleStatusError(resp); errStatus != nil {
+		return false, errStatus
 	}
 
 	return false, nil
@@ -105,6 +105,7 @@ func (api *Api) login() error {
 	if isLoad, err := api.loadCookies(); err != nil {
 		return fmt.Errorf("failed to load cookies: %v", err)
 	} else if isLoad {
+		fmt.Println("Loaded cookies")
 		return nil
 	}
 

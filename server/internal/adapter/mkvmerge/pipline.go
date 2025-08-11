@@ -4,8 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -119,10 +122,21 @@ func (s *Pipeline) runMerge(ctx context.Context, id uuid.UUID, params MergeParam
 	defer cancel()
 	var outputChan = make(chan OutputMessage)
 	// Закрываем канал при завершении функции
-	defer close(outputChan)
+
+	var wg sync.WaitGroup
 
 	go func() {
+		defer wg.Done()
+		wg.Add(1)
 		for msg := range outputChan {
+			if strings.Contains(msg.Content, "Error:") {
+				msg.Type = ErrorMessageType
+			}
+			// Значит обработка завершена успешно
+			//if strings.Contains(msg.Content, "Multiplexing took") {
+			//	fmt.Println("**************** УСПЕШНЫЙ УСПЕХ")
+			//}
+
 			if msg.Type == ErrorMessageType {
 				s.logger.Errorf("mvk merge logs: %s", msg.Content)
 			} else {
@@ -148,8 +162,26 @@ func (s *Pipeline) runMerge(ctx context.Context, id uuid.UUID, params MergeParam
 	}()
 
 	if err := s.merger.Merge(mergeCtx, params, outputChan); err != nil {
-		return fmt.Errorf("merger.Merge: %w", err)
+		close(outputChan)
+		// Ждем когда канал доработает и все запишется в базу
+		wg.Wait()
+
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
+			switch exitErr.ExitCode() {
+			case 1:
+				// mkvmerge завершился с предупреждениями или незначительной ошибкой"
+				return nil
+			default:
+				return fmt.Errorf("merger.Merge: %w", err)
+			}
+		}
 	}
+
+	close(outputChan)
+	// Ждем когда канал доработает и все запишется в базу
+	wg.Wait()
+
 	return nil
 }
 
@@ -186,7 +218,6 @@ func (s *Pipeline) StartMergePipeline(ctx context.Context) error {
 		err = s.runMerge(ctx, result.ID, result.Params)
 		if err != nil {
 			s.logger.Errorf("error mvk merge: %s", result.Params.VideoInputFile)
-
 			uerr := s.storage.Update(ctx, result.ID, &UpdateMergeResult{
 				Status:    ErrorStatus,
 				Completed: lo.ToPtr(time.Now()),

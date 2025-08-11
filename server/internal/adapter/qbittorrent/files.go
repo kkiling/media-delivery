@@ -3,7 +3,6 @@ package qbittorrent
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"net/url"
 
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
@@ -32,8 +31,8 @@ func (api *Api) GetTorrentFiles(hash string) ([]TorrentFile, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, apierr.HandleStatusCodeError(api.logger, resp)
+	if errStatus := api.handleStatusError(resp); errStatus != nil {
+		return nil, errStatus
 	}
 
 	var rawFiles []rawTorrentFile

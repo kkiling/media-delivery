@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -24,18 +25,15 @@ func NewMerge(logger log.Logger) *Merge {
 	}
 }
 
-func shielding(s string) string {
-	return fmt.Sprintf("\"%s\"", s)
-}
-
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
-	info, err := s.GetMediaInfo(params.VideoInputFile)
-	if err != nil {
-		return fmt.Errorf("get media info: %w", err)
-	}
-	fmt.Printf("%+v\n", info)
+	//info, err := s.GetMediaInfo(params.VideoInputFile)
+	//if err != nil {
+	//	return fmt.Errorf("get media info: %w", err)
+	//}
+	//fmt.Printf("%+v\n", info)
 
 	// Проверка существования основного видеофайла
+	var err error
 	if _, err = os.Stat(params.VideoInputFile); os.IsNotExist(err) {
 		return fmt.Errorf("input video file does not exist: %s", params.VideoInputFile)
 	}
@@ -54,7 +52,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
-	args := []string{"-o", shielding(params.VideoOutputFile)}
+	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
 
 	// Снимаем default со всех старых аудио в исходном файле
 	//for id, _ := range info.AudioTracks {
@@ -63,17 +61,19 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	//	args = append(args, "--default-track", fmt.Sprintf("%d:no", id))
 	//}
 
-	args = append(args, shielding(params.VideoInputFile))
+	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
 	for _, track := range params.AudioTracks {
-		if track.Language != "" {
-			args = append(args, "--language", "0:"+track.Language)
+		{
+			if track.Language != "" {
+				args = append(args, "--language", "0:"+track.Language)
+			}
 		}
 		args = append(args,
-			"--track-name", shielding("0:"+track.Name),
+			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			shielding(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -83,9 +83,9 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 			args = append(args, "--language", "0:"+track.Language)
 		}
 		args = append(args,
-			"--track-name", shielding("0:"+track.Name),
+			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			shielding(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -137,7 +137,7 @@ func (s *Merge) scanOutput(ctx context.Context, reader io.Reader, outputChan cha
 	buf := make([]byte, 1024)
 	var leftover []byte
 
-	for ctx.Err() == nil {
+	for {
 		n, err := reader.Read(buf)
 		if n > 0 {
 			data := append(leftover, buf[:n]...)
@@ -162,6 +162,8 @@ func (s *Merge) scanOutput(ctx context.Context, reader io.Reader, outputChan cha
 
 		if err != nil {
 			if err != io.EOF {
+				fmt.Printf("************************ ОШКБКА MKV: %v\n", err)
+
 				outputChan <- OutputMessage{
 					Type:    ErrorMessageType,
 					Content: fmt.Sprintf("read error: %v", err),

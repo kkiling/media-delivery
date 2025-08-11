@@ -223,7 +223,7 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 	if !find {
 		return ucerr.NotFound
 	}
-	s.logger.Infof("start complete content: %d (season %d) - status %s",
+	s.logger.Debugf("start complete content: %d (season %d) - status %s",
 		content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber, content.DeliveryStatus)
 
 	if content.DeliveryStatus == DeliveryStatusInProgress {
@@ -233,11 +233,11 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 			return fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
 		}
 		if executeErr != nil {
-			s.logger.Infof("executeError: %v", executeErr)
+			s.logger.Errorf("executeError: %v", executeErr)
 			return executeErr
 		}
 
-		s.logger.Infof("newState step: %s", newState.Step)
+		s.logger.Debugf("newState step: %s", newState.Step)
 
 		needUpdate := false
 		updateVideoContent := UpdateVideoContent{
@@ -252,7 +252,7 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 		}
 
 		if needUpdate {
-			s.logger.Infof("update content: %d (season %d)",
+			s.logger.Debugf("update content: %d (season %d)",
 				content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
 			err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent)
 			if err != nil {

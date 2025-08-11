@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/kkiling/goplatform/log"
+	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
 )
 
 const (
@@ -41,4 +42,16 @@ func NewApi(logger log.Logger, baseURL, username, password, cookiesDir string) (
 		httpClient: &http.Client{Jar: jar},
 		logger:     logger.Named("qbittorrent"),
 	}, nil
+}
+
+func (api *Api) handleStatusError(resp *http.Response) error {
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusForbidden {
+			if errRemove := api.removeCookies(); errRemove != nil {
+				api.logger.Errorf("failed to remove cookies: %v", errRemove)
+			}
+		}
+		return apierr.HandleStatusCodeError(api.logger, resp)
+	}
+	return nil
 }

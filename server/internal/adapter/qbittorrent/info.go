@@ -3,7 +3,6 @@ package qbittorrent
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"net/url"
 	"time"
 
@@ -47,8 +46,8 @@ func (api *Api) GetTorrentInfo(hash string) (*TorrentInfo, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, apierr.HandleStatusCodeError(api.logger, resp)
+	if errStatus := api.handleStatusError(resp); errStatus != nil {
+		return nil, errStatus
 	}
 
 	var rawInfoList []rawTorrentInfo
