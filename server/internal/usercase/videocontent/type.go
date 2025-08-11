@@ -58,7 +58,7 @@ const (
 	DeterminingNeedConvertFiles    = tvshowdeliverystate.DeterminingNeedConvertFiles
 	StartMergeVideoFiles           = tvshowdeliverystate.StartMergeVideoFiles
 	WaitingMergeVideoFiles         = tvshowdeliverystate.WaitingMergeVideoFiles
-	CopyVideoFiles                 = tvshowdeliverystate.CopyVideoFiles
+	CreateHardLinkCopy             = tvshowdeliverystate.CreateHardLinkCopy
 	SetVideoFileGroup              = tvshowdeliverystate.SetVideoFileGroup
 	GetCatalogsSize                = tvshowdeliverystate.GetCatalogsSize
 	SetMediaMetaData               = tvshowdeliverystate.SetMediaMetaData

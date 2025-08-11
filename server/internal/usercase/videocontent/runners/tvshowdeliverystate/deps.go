@@ -21,4 +21,6 @@ type ContentDelivery interface {
 	SetVideoFileGroup(ctx context.Context, files []string) error
 	GetCatalogSize(ctx context.Context, catalogPath string) (uint64, error)
 	SetMediaMetaData(ctx context.Context, params delivery.SetMediaMetaDataParams) error
+	NeedPrepareFileMatches(ContentMatches []delivery.ContentMatches) bool
+	CreateHardLinkCopyToMediaServer(ctx context.Context, params delivery.CreateHardLinkCopyParams) error
 }

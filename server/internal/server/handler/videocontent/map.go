@@ -98,8 +98,8 @@ func mapDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStatus {
 		return desc.TVShowDeliveryStatus_StartMergeVideoFiles
 	case videocontent.WaitingMergeVideoFiles:
 		return desc.TVShowDeliveryStatus_WaitingMergeVideoFiles
-	case videocontent.CopyVideoFiles:
-		return desc.TVShowDeliveryStatus_CopyVideoFiles
+	case videocontent.CreateHardLinkCopy:
+		return desc.TVShowDeliveryStatus_CreateHardLinkCopy
 	case videocontent.SetVideoFileGroup:
 		return desc.TVShowDeliveryStatus_SetVideoFileGroup
 	case videocontent.GetCatalogsSize:

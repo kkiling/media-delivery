@@ -7,16 +7,15 @@
 package api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -107,8 +106,8 @@ const (
 	TVShowDeliveryStatus_StartMergeVideoFiles TVShowDeliveryStatus = 11
 	// Ожидание завершения конвертации файлов
 	TVShowDeliveryStatus_WaitingMergeVideoFiles TVShowDeliveryStatus = 12
-	// Копирование файлов из раздачи в каталог медиасервера
-	TVShowDeliveryStatus_CopyVideoFiles TVShowDeliveryStatus = 13
+	// Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
+	TVShowDeliveryStatus_CreateHardLinkCopy TVShowDeliveryStatus = 13
 	// Установка группы файлам
 	TVShowDeliveryStatus_SetVideoFileGroup TVShowDeliveryStatus = 14
 	// GetCatalogsSize получение размеров каталогов сериала
@@ -135,7 +134,7 @@ var (
 		10: "DeterminingNeedConvertFiles",
 		11: "StartMergeVideoFiles",
 		12: "WaitingMergeVideoFiles",
-		13: "CopyVideoFiles",
+		13: "CreateHardLinkCopy",
 		14: "SetVideoFileGroup",
 		15: "GetCatalogsSize",
 		16: "SetMediaMetaData",
@@ -155,7 +154,7 @@ var (
 		"DeterminingNeedConvertFiles":    10,
 		"StartMergeVideoFiles":           11,
 		"WaitingMergeVideoFiles":         12,
-		"CopyVideoFiles":                 13,
+		"CreateHardLinkCopy":             13,
 		"SetVideoFileGroup":              14,
 		"GetCatalogsSize":                15,
 		"SetMediaMetaData":               16,
@@ -1634,7 +1633,7 @@ const file_torrent_to_media_server_videocontent_proto_rawDesc = "" +
 	"\x15DeliveryStatusUnknown\x10\x00\x12\x18\n" +
 	"\x14DeliveryStatusFailed\x10\x01\x12\x1c\n" +
 	"\x18DeliveryStatusInProgress\x10\x02\x12\x1b\n" +
-	"\x17DeliveryStatusDelivered\x10\x03*\xf7\x03\n" +
+	"\x17DeliveryStatusDelivered\x10\x03*\xfb\x03\n" +
 	"\x14TVShowDeliveryStatus\x12\x1f\n" +
 	"\x1bTVShowDeliveryStatusUnknown\x10\x00\x12\x17\n" +
 	"\x13GenerateSearchQuery\x10\x01\x12\x12\n" +
@@ -1649,8 +1648,8 @@ const file_torrent_to_media_server_videocontent_proto_rawDesc = "" +
 	"\x1bDeterminingNeedConvertFiles\x10\n" +
 	"\x12\x18\n" +
 	"\x14StartMergeVideoFiles\x10\v\x12\x1a\n" +
-	"\x16WaitingMergeVideoFiles\x10\f\x12\x12\n" +
-	"\x0eCopyVideoFiles\x10\r\x12\x15\n" +
+	"\x16WaitingMergeVideoFiles\x10\f\x12\x16\n" +
+	"\x12CreateHardLinkCopy\x10\r\x12\x15\n" +
 	"\x11SetVideoFileGroup\x10\x0e\x12\x13\n" +
 	"\x0fGetCatalogsSize\x10\x0f\x12\x14\n" +
 	"\x10SetMediaMetaData\x10\x10\x12\x1c\n" +

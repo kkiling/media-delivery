@@ -10,18 +10,18 @@ import (
 )
 
 type SetMediaMetaDataParams struct {
-	SeasonPath string
+	TVShowPath string
 	TVShowID   common.TVShowID
 }
 
 // SetMediaMetaData установка методанных
 func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataParams) error {
-	seasonPath, err := filepath.Rel(s.config.BasePath, params.SeasonPath)
+	tvShowPath, err := filepath.Rel(s.config.BasePath, params.TVShowPath)
 	if err != nil {
 		return fmt.Errorf("failed to get relative path: %w", err)
 	}
 
-	info, err := s.embyApi.GetCatalogInfo("/" + seasonPath)
+	info, err := s.embyApi.GetCatalogInfo("/" + tvShowPath)
 	if err != nil {
 		return fmt.Errorf("embyApi.GetCatalogInfo: %w", err)
 	}

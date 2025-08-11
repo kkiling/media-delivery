@@ -162,7 +162,13 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						return stepContext.Empty()
 					}
 					data.ContentMatches = res
-					return stepContext.Next(WaitingChoseFileMatches).WithData(data)
+
+					// Определение необходимости конвертации файлов
+					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches) {
+						return stepContext.Next(WaitingChoseFileMatches).WithData(data)
+					}
+					// Если нечего конвертировать то идем сразу на ожидание скачивания
+					return stepContext.Next(WaitingTorrentDownloadComplete)
 				},
 			},
 			WaitingChoseFileMatches: {
@@ -225,27 +231,24 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Определение необходимости конвертации файлов
 					data := stepContext.State.Data
-					needToMerge := false
-					for _, m := range data.ContentMatches {
-						// Если есть субтитры или аудиодорожки то нужно мержить
-						if len(m.AudioFiles) > 0 || len(m.Subtitles) > 0 {
-							needToMerge = true
-							break
-						}
-					}
 
-					if needToMerge {
+					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches) {
 						data.TVShowCatalogInfo.IsCopyFilesInMediaServer = true
 						return stepContext.Next(StartMergeVideoFiles).WithData(data)
 					}
-					return stepContext.Next(CopyVideoFiles)
+					return stepContext.Next(CreateHardLinkCopy)
 				},
 			},
-			CopyVideoFiles: {
+			CreateHardLinkCopy: {
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
-					// TODO: реализовать
-					return stepContext.Empty()
+					data := stepContext.State.Data
+					if err := r.contentDelivery.CreateHardLinkCopyToMediaServer(ctx, delivery.CreateHardLinkCopyParams{
+						ContentMatches: data.ContentMatches,
+					}); err != nil {
+						return stepContext.Next(StartMergeVideoFiles)
+					}
+					return stepContext.Next(SetVideoFileGroup)
 				},
 			},
 			StartMergeVideoFiles: {
@@ -254,7 +257,6 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data := stepContext.State.Data
 
 					//  Конвертирование файлов - полученные файлы сразу сохраняются в каталог медиасервера
-
 					mergeVideoFiles, err := r.contentDelivery.StartMergeVideo(ctx, delivery.MergeVideoParams{
 						ContentPath:    data.TVShowCatalogInfo.MediaServerPath.FullSeasonPath(),
 						IdempotencyKey: stepContext.State.ID.String(),
@@ -331,7 +333,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data := stepContext.State.Data
 					// Установка группы файлам
 					err := r.contentDelivery.SetMediaMetaData(ctx, delivery.SetMediaMetaDataParams{
-						SeasonPath: data.TVShowCatalogInfo.MediaServerPath.FullSeasonPath(),
+						TVShowPath: data.TVShowCatalogInfo.MediaServerPath.TVShowPath,
 						TVShowID:   *stepContext.State.MetaData.ContentID.TVShow,
 					})
 					if err != nil {

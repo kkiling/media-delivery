@@ -40,8 +40,8 @@ const (
 
 	// -- Ветвь если не нужно изменять исходные файлы
 
-	// CopyVideoFiles Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
-	CopyVideoFiles StepDelivery = "copy_video_files"
+	// CreateHardLinkCopy Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
+	CreateHardLinkCopy StepDelivery = "create_hadrlink_copy"
 	// GetCatalogsSize получение размеров каталогов сериала
 	GetCatalogsSize = "get_catalogs_size"
 	// SetVideoFileGroup установка группы файлам
