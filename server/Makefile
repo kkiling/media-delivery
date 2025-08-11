@@ -1,5 +1,6 @@
 TEST_DB_NAME:=./torrent-to-media-server.db
-
+TEST_DB_PATH := $(CURDIR)/$(notdir ${TEST_DB_NAME})
+GOPATH_BIN := $(GOPATH)/bin
 
 .PHONY: bin-deps
 bin-deps:
@@ -23,18 +24,17 @@ format:
 	@echo "\n --- 🚀 Start format imports --- \n"
 	smartimports -local "github.com/kkiling/torrent-to-media-server/" -path . #-exclude pkg/mocks
 
-
 .PHONY: test-db
-test-db:
+test-db: $(eval $(call db_env))
 	@echo "\n --- 🖲️ Migrate test sqlite database --- \n"
-	rm -f ${TEST_DB_NAME}
+	rm -f ${TEST_DB_PATH}
 	@echo "\n --- 🖲️ statemachine sqlite migrations --- \n"
-	goose -dir=migrations/sqlite/state sqlite3 ${TEST_DB_NAME} up
+	goose  -dir=./migrations/sqlite/state sqlite3 ${TEST_DB_PATH} up
 	@echo "\n --- 🖲️ torrent2media sqlite migrations --- \n"
-	goose -dir=migrations/sqlite sqlite3 ${TEST_DB_NAME} up
+	goose -dir=./migrations/sqlite sqlite3 ${TEST_DB_PATH} up
 	@echo "\n --- 🖲️ Creating .testenv file --- \n"
 	rm -f ./testenv
-	echo "SQLITE_DSN=$(CURDIR)/$(notdir ${TEST_DB_NAME})" > ./.testenv
+	echo "SQLITE_DSN=${TEST_DB_PATH}" > ./.testenv
 
 
 clear-cache:
