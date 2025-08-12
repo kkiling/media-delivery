@@ -1,15 +1,30 @@
 package delivery
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+)
 
-type CreateHardLinkCopyParams struct {
+type CreateSymLinkCopyParams struct {
+	SeasonPath     string
 	ContentMatches []ContentMatches
 }
 
-// CreateHardLinkCopyToMediaServer шаг копирования файлов на медиа сервер
-func (s *Service) CreateHardLinkCopyToMediaServer(ctx context.Context, params CreateHardLinkCopyParams) error {
-	// TODO: формирование каталогов сериала на медиасервер
-	// TODO: создание симлинков видеофайлов с торрент раздачи в каталогах медиасервера
-	// TODO: Переход на следующий шаг - установки методаных
-	panic("implement me")
+// CreateSymLinkCopyToMediaServer шаг копирования файлов на медиа сервер
+func (s *Service) CreateSymLinkCopyToMediaServer(_ context.Context, params CreateSymLinkCopyParams) error {
+	for _, match := range params.ContentMatches {
+		from := match.Video.File.FullPath
+		to := filepath.Join(params.SeasonPath, match.Episode.EpisodeFileName)
+		// Создание hardlink ссылки (to) на файл from
+		// Create hard link
+		err := os.Symlink(from, to)
+		if err != nil {
+			// Handle error (file might already exist, permissions issue, etc.)
+			return fmt.Errorf("failed to create hard link from %s to %s: %w", from, to, err)
+		}
+	}
+
+	return nil
 }

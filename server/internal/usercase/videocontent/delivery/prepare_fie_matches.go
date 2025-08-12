@@ -40,15 +40,24 @@ func mapTrack(tracks []matchtvshow.PrepareTrack) []Track {
 }
 
 func mapContentMatchesFromPrepareTVShowSeason(
+	seasonNumber uint8,
+	episodes []tvshowlibrary.Episode,
 	prepareResult *matchtvshow.PrepareTVShowSeason,
 ) ([]ContentMatches, error) {
+	epMap := make(map[int]tvshowlibrary.Episode)
+	for _, episode := range episodes {
+		epMap[episode.EpisodeNumber] = episode
+	}
+
 	result := make([]ContentMatches, 0, len(prepareResult.Episodes))
 	for _, prepareEpisode := range prepareResult.Episodes {
+		episode := epMap[prepareEpisode.Episode.EpisodeNumber]
 		content := ContentMatches{
 			Episode: EpisodeInfo{
-				SeasonNumber:  prepareEpisode.Episode.SeasonNumber,
-				EpisodeName:   prepareEpisode.Episode.EpisodeName,
-				EpisodeNumber: prepareEpisode.Episode.EpisodeNumber,
+				SeasonNumber:    seasonNumber,
+				EpisodeName:     episode.Name,
+				EpisodeNumber:   prepareEpisode.Episode.EpisodeNumber,
+				EpisodeFileName: fmt.Sprintf("S%02dE%02d %s", seasonNumber, episode.EpisodeNumber, episode.Name) + prepareEpisode.VideoFile.File.Extension,
 			},
 			Video: VideoFile{
 				File: mapFile(prepareEpisode.VideoFile.File),
@@ -66,7 +75,6 @@ func mapContentMatchesFromPrepareTVShowSeason(
 func mapToPrepareTvShowPrams(
 	basePath, savePath, contentPath string,
 	episodes []tvshowlibrary.Episode,
-	seasonNumber uint8,
 	torrentFiles []qbittorrent.TorrentFile,
 ) (*matchtvshow.PrepareTvShowPrams, error) {
 	fullPath := filepath.Join(basePath, contentPath)
@@ -97,9 +105,7 @@ func mapToPrepareTvShowPrams(
 	return &matchtvshow.PrepareTvShowPrams{
 		Episodes: lo.Map(episodes, func(episode tvshowlibrary.Episode, _ int) matchtvshow.EpisodeInfo {
 			return matchtvshow.EpisodeInfo{
-				SeasonNumber:  seasonNumber,
 				EpisodeNumber: episode.EpisodeNumber,
-				EpisodeName:   episode.Name,
 			}
 		}),
 		TorrentFiles: prepareTorrentFiles,
@@ -143,6 +149,9 @@ func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMa
 		return nil, fmt.Errorf("torrentFiles not found: %w", ucerr.NotFound)
 	}
 
+	// Полный путь до сохраненной раздачи
+	// torrentPath := filepath.Join(s.config.BasePath, torrentInfo.ContentPath)
+
 	// Достаем инфу о эпизодах
 	episodes, err := s.tvShowLibrary.GetSeasonEpisodes(ctx, tvshowlibrary.GetSeasonEpisodesParams{
 		TVShowID:     params.TVShowID.ID,
@@ -158,7 +167,6 @@ func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMa
 		torrentInfo.SavePath,
 		torrentInfo.ContentPath,
 		episodes.Items,
-		params.TVShowID.SeasonNumber,
 		torrentFiles,
 	)
 
@@ -172,7 +180,10 @@ func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMa
 	}
 
 	// Получаем инфу о метчах
-	result, err := mapContentMatchesFromPrepareTVShowSeason(prepareResult)
+	result, err := mapContentMatchesFromPrepareTVShowSeason(
+		params.TVShowID.SeasonNumber,
+		episodes.Items,
+		prepareResult)
 	if err != nil {
 		return nil, fmt.Errorf("mapContentMatchesFromPrepareTVShowSeason: %w", err)
 	}

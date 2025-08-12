@@ -1,12 +1,8 @@
 package matchtvshow
 
 type EpisodeInfo struct {
-	// Номер сезона
-	SeasonNumber uint8
 	// Номер эпизода в сезоне
 	EpisodeNumber int
-	// Название эпизода, пока не нужно, но может будет нужно для метча в будущем
-	EpisodeName string
 }
 
 type TorrentFile struct {

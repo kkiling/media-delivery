@@ -151,24 +151,25 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Получение информации о файлах раздачи
 					data := stepContext.State.Data
-					res, err := r.contentDelivery.PrepareFileMatches(ctx, delivery.PreparingFileMatchesParams{
+					contentMatches, err := r.contentDelivery.PrepareFileMatches(ctx, delivery.PreparingFileMatchesParams{
 						Hash:     data.TorrentInfo.Hash,
 						TVShowID: *stepContext.State.MetaData.ContentID.TVShow,
 					})
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))
 					}
-					if len(res) == 0 {
+					if len(contentMatches) == 0 {
 						return stepContext.Empty()
 					}
-					data.ContentMatches = res
+
+					data.ContentMatches = contentMatches
 
 					// Определение необходимости конвертации файлов
 					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches) {
 						return stepContext.Next(WaitingChoseFileMatches).WithData(data)
 					}
 					// Если нечего конвертировать то идем сразу на ожидание скачивания
-					return stepContext.Next(WaitingTorrentDownloadComplete)
+					return stepContext.Next(WaitingTorrentDownloadComplete).WithData(data)
 				},
 			},
 			WaitingChoseFileMatches: {
@@ -221,7 +222,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					}
 
 					data.TVShowCatalogInfo = &delivery.TVShowCatalog{
-						TorrentPath:     data.TorrentDownloadStatus.ContentPath,
+						TorrentPath:     data.TorrentDownloadStatus.TorrentContentPath,
 						MediaServerPath: *res,
 					}
 					return stepContext.Next(DeterminingNeedConvertFiles).WithData(data)
@@ -236,17 +237,18 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						data.TVShowCatalogInfo.IsCopyFilesInMediaServer = true
 						return stepContext.Next(StartMergeVideoFiles).WithData(data)
 					}
-					return stepContext.Next(CreateHardLinkCopy)
+					return stepContext.Next(CreateSymLinkCopy)
 				},
 			},
-			CreateHardLinkCopy: {
+			CreateSymLinkCopy: {
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
 					data := stepContext.State.Data
-					if err := r.contentDelivery.CreateHardLinkCopyToMediaServer(ctx, delivery.CreateHardLinkCopyParams{
+					if err := r.contentDelivery.CreateSymLinkCopyToMediaServer(ctx, delivery.CreateSymLinkCopyParams{
+						SeasonPath:     data.TVShowCatalogInfo.MediaServerPath.FullSeasonPath(),
 						ContentMatches: data.ContentMatches,
 					}); err != nil {
-						return stepContext.Next(StartMergeVideoFiles)
+						return stepContext.Error(fmt.Errorf("CreateSymLinkCopyToMediaServer: %w", err))
 					}
 					return stepContext.Next(SetVideoFileGroup)
 				},
@@ -258,7 +260,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 
 					//  Конвертирование файлов - полученные файлы сразу сохраняются в каталог медиасервера
 					mergeVideoFiles, err := r.contentDelivery.StartMergeVideo(ctx, delivery.MergeVideoParams{
-						ContentPath:    data.TVShowCatalogInfo.MediaServerPath.FullSeasonPath(),
+						SeasonPath:     data.TVShowCatalogInfo.MediaServerPath.FullSeasonPath(),
 						IdempotencyKey: stepContext.State.ID.String(),
 						ContentMatches: data.ContentMatches,
 					})
@@ -312,7 +314,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					data := stepContext.State.Data
 
-					// Установка группы файлам
+					// Получение размера каталогов
 					torrentTVShowSeasonSize, err := r.contentDelivery.GetCatalogSize(ctx, data.TVShowCatalogInfo.TorrentPath)
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("contentDelivery.GetCatalogSize: %w", err))

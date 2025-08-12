@@ -22,5 +22,5 @@ type ContentDelivery interface {
 	GetCatalogSize(ctx context.Context, catalogPath string) (uint64, error)
 	SetMediaMetaData(ctx context.Context, params delivery.SetMediaMetaDataParams) error
 	NeedPrepareFileMatches(ContentMatches []delivery.ContentMatches) bool
-	CreateHardLinkCopyToMediaServer(ctx context.Context, params delivery.CreateHardLinkCopyParams) error
+	CreateSymLinkCopyToMediaServer(ctx context.Context, params delivery.CreateSymLinkCopyParams) error
 }

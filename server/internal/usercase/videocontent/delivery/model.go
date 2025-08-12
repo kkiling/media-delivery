@@ -35,6 +35,8 @@ type EpisodeInfo struct {
 	EpisodeName string
 	// Номер эпизода
 	EpisodeNumber int
+	// Наименование файла эпизода который будет лежать на медиасервере
+	EpisodeFileName string
 }
 
 type FileInfo struct {
@@ -121,10 +123,10 @@ func mapTorrentState(qbState qbittorrent.TorrentState) TorrentState {
 }
 
 type TorrentDownloadStatus struct {
-	ContentPath string
-	State       TorrentState
-	Progress    float64
-	IsComplete  bool
+	TorrentContentPath string
+	State              TorrentState
+	Progress           float64
+	IsComplete         bool
 }
 
 type TVShowCatalogPath struct {

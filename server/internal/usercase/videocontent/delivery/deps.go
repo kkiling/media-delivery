@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/emby"
-	tvshow2 "github.com/kkiling/torrent-to-media-server/internal/adapter/matchtvshow"
+	"github.com/kkiling/torrent-to-media-server/internal/adapter/matchtvshow"
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/mkvmerge"
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/rutracker"
@@ -31,7 +31,7 @@ type TorrentClient interface {
 }
 
 type PrepareTVShow interface {
-	PrepareTvShowSeason(params *tvshow2.PrepareTvShowPrams) (*tvshow2.PrepareTVShowSeason, error)
+	PrepareTvShowSeason(params *matchtvshow.PrepareTvShowPrams) (*matchtvshow.PrepareTVShowSeason, error)
 }
 
 type MkvMergePipeline interface {

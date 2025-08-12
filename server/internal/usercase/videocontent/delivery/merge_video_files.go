@@ -12,7 +12,7 @@ import (
 )
 
 type MergeVideoParams struct {
-	ContentPath    string
+	SeasonPath     string
 	IdempotencyKey string
 	ContentMatches []ContentMatches
 }
@@ -29,13 +29,10 @@ type MergeVideoStatus struct {
 	Errors     []string
 }
 
-func mapMkvMergeParams(content ContentMatches, contentPath string) mkvmerge.MergeParams {
-	// Формируем выходное наименование эпизода
-	episodeName := fmt.Sprintf("S%02dE%02d %s", content.Episode.SeasonNumber, content.Episode.EpisodeNumber, content.Episode.EpisodeName)
-
+func mapMkvMergeParams(seasonPath string, content ContentMatches) mkvmerge.MergeParams {
 	mergeParams := mkvmerge.MergeParams{
 		VideoInputFile:  content.Video.File.FullPath,
-		VideoOutputFile: filepath.Join(contentPath, episodeName) + content.Video.File.Extension,
+		VideoOutputFile: filepath.Join(seasonPath, content.Episode.EpisodeFileName),
 		AudioTracks: lo.Map(content.AudioFiles, func(item Track, index int) mkvmerge.Track {
 			return mkvmerge.Track{
 				Path:     item.File.FullPath,
@@ -59,9 +56,11 @@ func mapMkvMergeParams(content ContentMatches, contentPath string) mkvmerge.Merg
 // StartMergeVideo запуск обработки видеофайлов
 func (s *Service) StartMergeVideo(ctx context.Context, params MergeVideoParams) ([]MergeVideoFile, error) {
 	result := make([]MergeVideoFile, 0, len(params.ContentMatches))
+
 	for _, content := range params.ContentMatches {
-		mergeParams := mapMkvMergeParams(content, params.ContentPath)
+		mergeParams := mapMkvMergeParams(params.SeasonPath, content)
 		idempotencyKey := fmt.Sprintf("%s-episode_%d", params.IdempotencyKey, content.Episode.EpisodeNumber)
+
 		mergeResult, err := s.mkvMerge.AddToMerge(ctx, idempotencyKey, mergeParams)
 		if err != nil {
 			return nil, fmt.Errorf("mkvMerge.Merge: %w", err)

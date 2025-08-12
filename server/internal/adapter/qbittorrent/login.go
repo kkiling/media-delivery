@@ -105,7 +105,6 @@ func (api *Api) login() error {
 	if isLoad, err := api.loadCookies(); err != nil {
 		return fmt.Errorf("failed to load cookies: %v", err)
 	} else if isLoad {
-		fmt.Println("Loaded cookies")
 		return nil
 	}
 
