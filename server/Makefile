@@ -25,9 +25,11 @@ format:
 	smartimports -local "github.com/kkiling/torrent-to-media-server/" -path . #-exclude pkg/mocks
 
 .PHONY: test-db
-test-db: $(eval $(call db_env))
+test-db:
 	@echo "\n --- 🖲️ Migrate test sqlite database --- \n"
 	rm -f ${TEST_DB_PATH}
+	rm -f "${TEST_DB_PATH}-shm"
+	rm -f "${TEST_DB_PATH}-wal"
 	@echo "\n --- 🖲️ statemachine sqlite migrations --- \n"
 	goose  -dir=./migrations/sqlite/state sqlite3 ${TEST_DB_PATH} up
 	@echo "\n --- 🖲️ torrent2media sqlite migrations --- \n"
@@ -35,7 +37,6 @@ test-db: $(eval $(call db_env))
 	@echo "\n --- 🖲️ Creating .testenv file --- \n"
 	rm -f ./testenv
 	echo "SQLITE_DSN=${TEST_DB_PATH}" > ./.testenv
-
 
 clear-cache:
 	buf registry cc
@@ -50,3 +51,6 @@ generate:
 .PHONY: run
 run:
 	go run ./cmd/main.go
+
+build-docker:
+	docker build -f build/Dockerfile -t torrent2mediaserver:latest .

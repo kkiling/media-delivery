@@ -71,6 +71,13 @@ type ServerConfig struct {
 	MaxSendMessageLength    int    `yaml:"max_send_message_length"`
 	MaxReceiveMessageLength int    `yaml:"max_receive_message_length"`
 	ShutdownTimeout         int    `yaml:"shutdown_timeout"`
+	/*
+		DebugLevel = -1
+		InfoLevel = 0
+		WarnLevel = 1
+		ErrorLevel = 2
+	*/
+	LogLevel int `yaml:"log_level"`
 }
 
 // DeliveryConfig конфиг для доставки контента

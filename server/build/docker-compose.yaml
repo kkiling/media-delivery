@@ -1,0 +1,15 @@
+version: "2.1"
+services:
+  torrent2mediaserver:
+    image: torrent2mediaserver:latest
+    container_name: torrent2mediaserver
+    environment:
+      - PUID=3009 #user emby from nas.kiling.su
+      - PGID=3007 #user nas from nas.kiling.su
+      - TZ=Europe/Moscow
+    volumes:
+      - $(pwd)/configs:/app/configs
+      - $(pwd)/data:/app/data
+    ports:
+      - 8083:8080
+    restart: unless-stopped
