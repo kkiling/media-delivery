@@ -36,6 +36,11 @@ func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataP
 		return fmt.Errorf("catalogInfo: type is not series")
 	}
 
+	err = s.embyApi.ResetMetadata(info.ID)
+	if err != nil {
+		return fmt.Errorf("embyApi.ResetMetadata: %w", err)
+	}
+
 	err = s.embyApi.RemoteSearchApply(info.ID, params.TVShowID.ID)
 	if err != nil {
 		return fmt.Errorf("embyApi.RemoteSearchApply: %w", err)
