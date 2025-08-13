@@ -162,8 +162,6 @@ func (s *Merge) scanOutput(ctx context.Context, reader io.Reader, outputChan cha
 
 		if err != nil {
 			if err != io.EOF {
-				fmt.Printf("************************ ОШКБКА MKV: %v\n", err)
-
 				outputChan <- OutputMessage{
 					Type:    ErrorMessageType,
 					Content: fmt.Sprintf("read error: %v", err),

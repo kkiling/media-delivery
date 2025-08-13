@@ -106,8 +106,8 @@ enum TVShowDeliveryStatus {
   StartMergeVideoFiles = 11;
   // Ожидание завершения конвертации файлов
   WaitingMergeVideoFiles = 12;
-  // Копирование файлов из раздачи в каталог медиасервера
-  CopyVideoFiles = 13;
+  // Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
+  CreateHardLinkCopy = 13;
   // Установка группы файлам
   SetVideoFileGroup = 14;
   // GetCatalogsSize получение размеров каталогов сериала
@@ -116,6 +116,10 @@ enum TVShowDeliveryStatus {
   SetMediaMetaData = 16;
   // Отправка уведомления в telegramm о успешной доставки
   SendDeliveryNotification = 17;
+  // Ожидание когда появится информация о файлах в раздаче
+  WaitingTorrentFiles = 18;
+  // получение информации о эпизодах и каталоге сезона
+  GetEpisodesData = 19;
 }
 
 message TorrentSearch {
@@ -178,13 +182,19 @@ message MergeVideoStatus {
 }
 
 message TVShowDeliveryData {
-  optional string search_query = 1;
+  optional SearchQuery search_query = 1;
+
   repeated TorrentSearch torrent_search = 2;
+
   repeated ContentMatches content_matches = 3;
   // статус скачивания раздачи
   optional TorrentDownloadStatus torrent_download_status = 4;
   // статус сшивания файлов
   optional MergeVideoStatus merge_video_status = 5;
+}
+
+message SearchQuery {
+  string Query = 1;
 }
 
 message TVShowDeliveryState {

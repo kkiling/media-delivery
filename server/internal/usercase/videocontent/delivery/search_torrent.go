@@ -10,15 +10,15 @@ type SearchTorrentParams struct {
 }
 
 // SearchTorrent Делаем запрос к торрент сайту, получаем список раздач
-func (s *Service) SearchTorrent(_ context.Context, params SearchTorrentParams) (*TorrentSearchResult, error) {
+func (s *Service) SearchTorrent(_ context.Context, params SearchTorrentParams) ([]TorrentSearch, error) {
 	searchResult, err := s.torrentSite.SearchTorrents(params.SearchQuery)
 	if err != nil {
 		return nil, fmt.Errorf("torrentSite.SearchTorrents: %w", err)
 	}
 
-	result := TorrentSearchResult{}
+	var result []TorrentSearch
 	for _, item := range searchResult.Results {
-		result.Result = append(result.Result, TorrentSearch{
+		result = append(result, TorrentSearch{
 			Title:     item.Title,
 			Href:      item.Href,
 			Size:      item.Size,
@@ -29,5 +29,5 @@ func (s *Service) SearchTorrent(_ context.Context, params SearchTorrentParams) (
 		})
 	}
 
-	return &result, nil
+	return result, nil
 }

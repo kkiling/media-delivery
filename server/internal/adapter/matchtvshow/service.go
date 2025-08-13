@@ -68,12 +68,11 @@ func processFiles(
 
 	var result []TorrentFile
 	for _, file := range files {
-
+		ext := strings.ToLower(filepath.Ext(file.RelativePath))
 		// Проверяем расширение файла
-		if !extMap[file.Extension] {
+		if !extMap[ext] {
 			continue
 		}
-
 		// Добавляем в результат
 		result = append(result, file)
 	}

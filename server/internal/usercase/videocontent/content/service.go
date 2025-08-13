@@ -237,7 +237,13 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 			return executeErr
 		}
 
-		s.logger.Debugf("newState step: %s", newState.Step)
+		if newState.Status == statemachine.CompletedStatus {
+			s.logger.Debugf("state is completed")
+		} else if newState.Status == statemachine.FailedStatus {
+			s.logger.Debugf("state is failed")
+		} else {
+			s.logger.Debugf("state step: %s", newState.Step)
+		}
 
 		needUpdate := false
 		updateVideoContent := UpdateVideoContent{
@@ -252,8 +258,7 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 		}
 
 		if needUpdate {
-			s.logger.Debugf("update content: %d (season %d)",
-				content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
+			s.logger.Debugf("update video content: %d (season %d)", content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
 			err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent)
 			if err != nil {
 				return fmt.Errorf("storage.UpdateVideoContent: %w", err)

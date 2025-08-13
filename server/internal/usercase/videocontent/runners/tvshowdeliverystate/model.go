@@ -3,6 +3,7 @@ package tvshowdeliverystate
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
 	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
 )
@@ -21,6 +22,10 @@ const (
 	GetMagnetLink StepDelivery = "get_magnet_link_status"
 	// AddTorrentToTorrentClient Добавление раздачи для скачивания торрент клиентом
 	AddTorrentToTorrentClient StepDelivery = "add_torrent_client_status"
+	// WaitingTorrentFiles Ожидание когда появится информация о файлах в раздаче
+	WaitingTorrentFiles StepDelivery = "waiting_torrent_files_status"
+	// GetEpisodesData получение информации о эпизодах и каталоге сезона
+	GetEpisodesData StepDelivery = "get_episodes_data"
 	// PrepareFileMatches получение информации о файлах раздачи
 	PrepareFileMatches StepDelivery = "prepare_file_matches"
 	// WaitingChoseFileMatches ожидание подтверждения пользователем соответствий выбора файлов
@@ -40,8 +45,8 @@ const (
 
 	// -- Ветвь если не нужно изменять исходные файлы
 
-	// CopyVideoFiles Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
-	CopyVideoFiles StepDelivery = "copy_video_files"
+	// CreateHardLinkCopy Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
+	CreateHardLinkCopy StepDelivery = "create_symlink_copy"
 	// GetCatalogsSize получение размеров каталогов сериала
 	GetCatalogsSize = "get_catalogs_size"
 	// SetVideoFileGroup установка группы файлам
@@ -59,20 +64,24 @@ const (
 	но для упрощения пока будем пока разрешать только 1
 */
 type TVShowDeliveryData struct {
-	// SearchQuery сформированный запрос на основе нзвания сериала
-	SearchQuery *string
+	// SearchQuery сформированный запрос на основе названия сериала
+	SearchQuery *delivery.SearchQuery
 	// TorrentSearch Результат поиска торрентов
-	TorrentSearch *delivery.TorrentSearchResult
-	// TorrentInfo магнет ссылка на торрент раздачу
-	TorrentInfo *delivery.TorrentInfo
+	TorrentSearch []delivery.TorrentSearch
+	// Torrent данные найденной раздачи
+	Torrent *delivery.Torrent
+	// TorrentFilesData файлы раздачи
+	TorrentFilesData *delivery.TorrentFilesData
+	// EpisodesData информация о эпизодах и путях сохранения
+	EpisodesData *delivery.EpisodesData
 	// ContentMatches Информация о метче файлов (метч видофайлов с аудиодоржками и субтитрами)
 	ContentMatches []delivery.ContentMatches
 	// TorrentDownloadStatus статус скачивания раздачи
 	TorrentDownloadStatus *delivery.TorrentDownloadStatus
 	// TVShowCatalogInfo информация о каталогах сериала
 	TVShowCatalogInfo *delivery.TVShowCatalog
-	// MergeVideoFiles информация
-	MergeVideoFiles []delivery.MergeVideoFile
+	// MergeIDs информация
+	MergeIDs []uuid.UUID
 	// MergeVideoStatus статус сшивания файлов (если нужен)
 	MergeVideoStatus *delivery.MergeVideoStatus
 }
