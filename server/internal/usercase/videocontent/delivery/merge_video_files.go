@@ -3,7 +3,6 @@ package delivery
 import (
 	"context"
 	"fmt"
-	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"
@@ -12,15 +11,8 @@ import (
 )
 
 type MergeVideoParams struct {
-	SeasonPath     string
 	IdempotencyKey string
 	ContentMatches []ContentMatches
-}
-
-type MergeVideoFile struct {
-	MergeID         uuid.UUID
-	VideoInputFile  string
-	VideoOutputFile string
 }
 
 type MergeVideoStatus struct {
@@ -29,10 +21,10 @@ type MergeVideoStatus struct {
 	Errors     []string
 }
 
-func mapMkvMergeParams(seasonPath string, content ContentMatches) mkvmerge.MergeParams {
+func mapMkvMergeParams(content ContentMatches) mkvmerge.MergeParams {
 	mergeParams := mkvmerge.MergeParams{
 		VideoInputFile:  content.Video.File.FullPath,
-		VideoOutputFile: filepath.Join(seasonPath, content.Episode.EpisodeFileName),
+		VideoOutputFile: content.Episode.FileName,
 		AudioTracks: lo.Map(content.AudioFiles, func(item Track, index int) mkvmerge.Track {
 			return mkvmerge.Track{
 				Path:     item.File.FullPath,
@@ -54,22 +46,18 @@ func mapMkvMergeParams(seasonPath string, content ContentMatches) mkvmerge.Merge
 }
 
 // StartMergeVideo запуск обработки видеофайлов
-func (s *Service) StartMergeVideo(ctx context.Context, params MergeVideoParams) ([]MergeVideoFile, error) {
-	result := make([]MergeVideoFile, 0, len(params.ContentMatches))
+func (s *Service) StartMergeVideo(ctx context.Context, params MergeVideoParams) ([]uuid.UUID, error) {
+	result := make([]uuid.UUID, 0, len(params.ContentMatches))
 
 	for _, content := range params.ContentMatches {
-		mergeParams := mapMkvMergeParams(params.SeasonPath, content)
+		mergeParams := mapMkvMergeParams(content)
 		idempotencyKey := fmt.Sprintf("%s-episode_%d", params.IdempotencyKey, content.Episode.EpisodeNumber)
 
 		mergeResult, err := s.mkvMerge.AddToMerge(ctx, idempotencyKey, mergeParams)
 		if err != nil {
 			return nil, fmt.Errorf("mkvMerge.Merge: %w", err)
 		}
-		result = append(result, MergeVideoFile{
-			MergeID:         mergeResult.ID,
-			VideoInputFile:  mergeResult.Params.VideoInputFile,
-			VideoOutputFile: mergeResult.Params.VideoOutputFile,
-		})
+		result = append(result, mergeResult.ID)
 	}
 	return result, nil
 }

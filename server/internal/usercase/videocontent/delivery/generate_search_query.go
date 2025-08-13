@@ -40,11 +40,14 @@ func (s *Service) getTVShowQuery(ctx context.Context, tvShowID common.TVShowID) 
 }
 
 // GenerateSearchQuery формируем поисковый запрос к торент трекеру на основе данных сезона сериала / фильма
-func (s *Service) GenerateSearchQuery(ctx context.Context, params GenerateSearchQueryParams) (string, error) {
+func (s *Service) GenerateSearchQuery(ctx context.Context, params GenerateSearchQueryParams) (*SearchQuery, error) {
 	searchQuery, err := s.getTVShowQuery(ctx, params.TVShowID)
 	if err != nil {
-		return "", fmt.Errorf("tvShowLibrary.GetTVShowInfo: %w", err)
+		return nil, fmt.Errorf("tvShowLibrary.GetTVShowInfo: %w", err)
 	}
 
-	return searchQuery, nil
+	return &SearchQuery{
+		Query:         searchQuery,
+		OptionalQuery: []string{searchQuery},
+	}, nil
 }

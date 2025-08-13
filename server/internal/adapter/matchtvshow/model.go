@@ -8,12 +8,6 @@ type EpisodeInfo struct {
 type TorrentFile struct {
 	// Путь до файла торрента (путь относительно ContentPath)
 	RelativePath string
-	//
-	FullPath string
-	// Размер файла в байтах
-	Size int64
-	// Расширение файла
-	Extension string
 }
 
 type PrepareTrack struct {

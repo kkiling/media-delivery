@@ -98,8 +98,8 @@ func mapDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStatus {
 		return desc.TVShowDeliveryStatus_StartMergeVideoFiles
 	case videocontent.WaitingMergeVideoFiles:
 		return desc.TVShowDeliveryStatus_WaitingMergeVideoFiles
-	case videocontent.CreateSymLinkCopy:
-		return desc.TVShowDeliveryStatus_CreateSymLinkCopy
+	case videocontent.CreateHardLinkCopy:
+		return desc.TVShowDeliveryStatus_CreateHardLinkCopy
 	case videocontent.SetVideoFileGroup:
 		return desc.TVShowDeliveryStatus_SetVideoFileGroup
 	case videocontent.GetCatalogsSize:
@@ -108,6 +108,11 @@ func mapDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStatus {
 		return desc.TVShowDeliveryStatus_SetMediaMetaData
 	case videocontent.SendDeliveryNotification:
 		return desc.TVShowDeliveryStatus_SendDeliveryNotification
+	case videocontent.WaitingTorrentFiles:
+		return desc.TVShowDeliveryStatus_WaitingTorrentFiles
+	case videocontent.GetEpisodesData:
+		return desc.TVShowDeliveryStatus_GetEpisodesData
+
 	default:
 		return desc.TVShowDeliveryStatus_TVShowDeliveryStatusUnknown
 	}
@@ -148,14 +153,17 @@ func mapTracks(tracks []videocontent.Track) []*desc.Track {
 		}
 	})
 }
+
 func mapTVShowDeliveryData(step videocontent.StepDelivery, data *videocontent.TVShowDeliveryData) *desc.TVShowDeliveryData {
 
 	result := &desc.TVShowDeliveryData{
-		SearchQuery: data.SearchQuery,
+		SearchQuery: &desc.SearchQuery{
+			Query: data.SearchQuery.Query,
+		},
 	}
 
 	if step == videocontent.WaitingUserChoseTorrent {
-		result.TorrentSearch = lo.Map(data.TorrentSearch.Result, func(item videocontent.TorrentSearch, _ int) *desc.TorrentSearch {
+		result.TorrentSearch = lo.Map(data.TorrentSearch, func(item videocontent.TorrentSearch, _ int) *desc.TorrentSearch {
 			return &desc.TorrentSearch{
 				Title:     item.Title,
 				Href:      item.Href,

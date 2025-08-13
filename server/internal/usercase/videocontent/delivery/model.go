@@ -6,6 +6,15 @@ import (
 	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
 )
 
+// SearchQuery поисковый запрос для поиска раздачи
+type SearchQuery struct {
+	// Поисковый запрос с которым ищем раздачи на торрент сайте
+	Query string
+	// Предложенные вариации поискового запроса
+	OptionalQuery []string
+}
+
+// TorrentSearch результат поиска торрент раздачи
 type TorrentSearch struct {
 	Title     string
 	Href      string
@@ -16,27 +25,54 @@ type TorrentSearch struct {
 	AddedDate string // TODO: переделать на time.Time
 }
 
-type TorrentSearchResult struct {
-	Result []TorrentSearch
-}
-
-type TorrentInfo struct {
-	Href   string
+type MagnetLink struct {
+	// Магнет ссылка
 	Magnet string
-	Hash   string
+	// Хеш раздачи
+	Hash string
 }
 
-// --- --- --- --- ---
+// Torrent Данные раздачи
+type Torrent struct {
+	// Ссылка на раздачу
+	Href string
+	//
+	MagnetLink *MagnetLink
+}
+
+type TorrentFilesData struct {
+	// ContentFullPath Полный путь до каталога скачивания
+	ContentFullPath string
+	// Files Файлы раздачи
+	Files []FileInfo
+}
+
+// TVShowCatalogPath пути каталогов сериала и сезона на медиа сервере
+type TVShowCatalogPath struct {
+	// Путь до каталога сериала
+	TVShowPath string
+	// Путь до каталога сезона (относительно каталога сериала)
+	SeasonPath string
+}
+
+func (m TVShowCatalogPath) FullSeasonPath() string {
+	return filepath.Join(m.TVShowPath, m.SeasonPath)
+}
+
+type EpisodesData struct {
+	TVShowCatalogPath TVShowCatalogPath
+	Episodes          []EpisodeInfo
+}
 
 type EpisodeInfo struct {
 	// Номер сезона
 	SeasonNumber uint8
-	// Наименования эпизода
-	EpisodeName string
 	// Номер эпизода
 	EpisodeNumber int
-	// Наименование файла эпизода который будет лежать на медиасервере
-	EpisodeFileName string
+	// Наименования эпизода
+	EpisodeName string
+	// Наименование файла эпизода который будет лежать на медиасервере (без расширения файла)
+	FileName string
 }
 
 type FileInfo struct {
@@ -67,8 +103,6 @@ type ContentMatches struct {
 	AudioFiles []Track
 	Subtitles  []Track
 }
-
-// ---
 
 type TorrentState string
 
@@ -123,23 +157,12 @@ func mapTorrentState(qbState qbittorrent.TorrentState) TorrentState {
 }
 
 type TorrentDownloadStatus struct {
-	TorrentContentPath string
-	State              TorrentState
-	Progress           float64
-	IsComplete         bool
+	State      TorrentState
+	Progress   float64
+	IsComplete bool
 }
 
-type TVShowCatalogPath struct {
-	// Путь до каталога сериала
-	TVShowPath string
-	// Путь до каталога сезона (относительно каталога сериала)
-	SeasonPath string
-}
-
-func (m TVShowCatalogPath) FullSeasonPath() string {
-	return filepath.Join(m.TVShowPath, m.SeasonPath)
-}
-
+// TVShowCatalog сводная информация о каталогах и размерах
 type TVShowCatalog struct {
 	// Путь до раздачи сезона сериала
 	TorrentPath string
