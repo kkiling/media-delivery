@@ -22,6 +22,7 @@ ENV CONFIG_PATH=configs/config.yml
 
 # Экспортируем порт
 EXPOSE 8080
+EXPOSE 8181
 
 # Команда запуска
 CMD /server_app -c "${CONFIG_PATH}"
