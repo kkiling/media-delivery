@@ -12,7 +12,6 @@ import (
 	"sync"
 
 	"github.com/kkiling/goplatform/log"
-	"github.com/samber/lo"
 )
 
 type Merge struct {
@@ -82,7 +81,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
-	for _, track := range params.AudioTracks {
+	/*for _, track := range params.AudioTracks {
 		{
 			if track.Language != "" {
 				args = append(args, "--language", "0:"+track.Language)
@@ -105,19 +104,13 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
 			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
-	}
+	}*/
 
 	// Для отладки
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
-	args = []string{
-		"-o", "/nfs/media/tvshows/Сага о Винланде (2019)/S02 Сезон 2/S02E01 Раб.mkv",
-		"--no-audio",
-		"--no-subtitles",
-		"/nfs/media/downloads/Vinland.Saga.Season2.WEBRip.1080p/[Erai-raws] Vinland Saga Season 2 - 01 [1080p].mkv",
-	}
-	//cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	cmd := exec.CommandContext(ctx, "s6-setuidgid", "abc", "mkvmerge")
+	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	// cmd := exec.CommandContext(ctx, "mkvmerge")
 	cmd.Args = append(cmd.Args, args...)
 
 	// Настраиваем пайпы

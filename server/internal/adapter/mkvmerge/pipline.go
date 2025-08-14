@@ -173,11 +173,15 @@ func (s *Pipeline) runMerge(ctx context.Context, id uuid.UUID, params MergeParam
 				// mkvmerge завершился с предупреждениями или незначительной ошибкой"
 				return nil
 			default:
-				return fmt.Errorf("merger.Merge: %w", err)
+				// return fmt.Errorf("merger.Merge: %w", err)
+				fmt.Println("*************")
+				fmt.Printf("%v\n", exitErr)
+				fmt.Println("*************")
+
+				return nil // TODO: Не возвращаем пока ошибку
 			}
 		}
-		//return fmt.Errorf("merger.Merge: %w", err)
-		return nil // TODO: Не возвращаем пока ошибку
+		return fmt.Errorf("merger.Merge: %w", err)
 	}
 
 	close(outputChan)
