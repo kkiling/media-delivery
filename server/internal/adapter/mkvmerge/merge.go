@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/kkiling/goplatform/log"
+	"github.com/samber/lo"
 )
 
 type Merge struct {
@@ -22,24 +23,6 @@ func NewMerge(logger log.Logger) *Merge {
 	return &Merge{
 		logger: logger.Named("mkvmerge"),
 	}
-}
-
-// вспомогательная функция для разбивки на строки
-func splitLines(s string) []string {
-	var lines []string
-	current := ""
-	for _, r := range s {
-		if r == '\n' {
-			lines = append(lines, current)
-			current = ""
-		} else {
-			current += string(r)
-		}
-	}
-	if current != "" {
-		lines = append(lines, current)
-	}
-	return lines
 }
 
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
@@ -81,7 +64,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
-	/*for _, track := range params.AudioTracks {
+	for _, track := range params.AudioTracks {
 		{
 			if track.Language != "" {
 				args = append(args, "--language", "0:"+track.Language)
@@ -104,15 +87,14 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
 			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
-	}*/
+	}
 
 	// Для отладки
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
-	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	// cmd := exec.CommandContext(ctx, "mkvmerge")
-	cmd.Args = append(cmd.Args, args...)
 
+	// Создаем команду
+	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {
