@@ -104,8 +104,8 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Credential: &syscall.Credential{
-			Uid: uint32(3009), // UID abc
-			Gid: uint32(3007), // GID nas
+			Uid: uint32(os.Getuid()), // UID abc
+			Gid: uint32(os.Getgid()), // GID nas
 		},
 	}
 	fmt.Println("******************************")
@@ -124,6 +124,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Запускаем команду
 	if errStart := cmd.Start(); errStart != nil {
+		fmt.Printf("error starting command: %v", errStart)
 		return fmt.Errorf("error starting command: %v", errStart)
 	}
 
