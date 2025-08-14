@@ -25,13 +25,12 @@ func NewMerge(logger log.Logger) *Merge {
 	}
 }
 
-func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
-	//info, err := s.GetMediaInfo(params.VideoInputFile)
-	//if err != nil {
-	//	return fmt.Errorf("get media info: %w", err)
-	//}
-	//fmt.Printf("%+v\n", info)
+func m(s string) string {
+	cleanPath := filepath.Clean(s)
+	return fmt.Sprintf(`%s`, cleanPath)
+}
 
+func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
 	// Проверка существования основного видеофайла
 	var err error
 	if _, err = os.Stat(params.VideoInputFile); os.IsNotExist(err) {
@@ -52,16 +51,9 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
-	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
+	args := []string{"-o", m(params.VideoOutputFile)}
 
-	// Снимаем default со всех старых аудио в исходном файле
-	//for id, _ := range info.AudioTracks {
-	//	// audio.Number — это номер трека в контейнере (1-based), mkvmerge ждёт 0-based
-	//	//trackID := audio.Number - 1
-	//	args = append(args, "--default-track", fmt.Sprintf("%d:no", id))
-	//}
-
-	args = append(args, filepath.Clean(params.VideoInputFile))
+	args = append(args, m(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
 	for _, track := range params.AudioTracks {
@@ -73,7 +65,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			m(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -85,7 +77,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			m(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -95,24 +87,6 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Создаем команду
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-
-	fmt.Println("************************")
-	fmt.Println("************************")
-	fmt.Println("************************")
-
-	fmt.Println("UID:", os.Getuid())
-	fmt.Println("GID:", os.Getgid())
-	fmt.Println("Working dir:", cmd.Dir)
-
-	f, err := os.Create("/nfs/media/tvshows/Сага о Винланде (2019)/S02 Сезон 2/test.mkv")
-	if err != nil {
-		s.logger.Errorf("error mkvmerge: %s", debugMsg)
-	}
-	f.Close()
-	fmt.Println("************************")
-	fmt.Println("************************")
-	fmt.Println("************************")
-
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {

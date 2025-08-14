@@ -50,8 +50,8 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 		  Season 01/
 		    S01E01 - Episode Name.mp4
 	*/
-	tvShowName := fmt.Sprintf("%s (%d)", tvShowInfo.Result.Name, tvShowInfo.Result.FirstAirDate.Year())
-	seasonName := fmt.Sprintf("S%02d %s", season.SeasonNumber, season.Name)
+	tvShowName := fmt.Sprintf("%s (%d)" /*tvShowInfo.Result.Name*/, "Vinland", tvShowInfo.Result.FirstAirDate.Year())
+	seasonName := fmt.Sprintf("S%02d %s", season.SeasonNumber, "Season 2") //season.Name)
 	tvShowsPath := filepath.Join(s.config.BasePath, s.config.TVShowMediaSaveTvShowsPath, tvShowName)
 
 	tvShowCatalogPath := TVShowCatalogPath{
@@ -61,7 +61,7 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 	return &EpisodesData{
 		TVShowCatalogPath: tvShowCatalogPath,
 		Episodes: lo.Map(episodes.Items, func(item tvshowlibrary.Episode, _ int) EpisodeInfo {
-			name := fmt.Sprintf("S%02dE%02d %s", season.SeasonNumber, item.EpisodeNumber, item.Name)
+			name := fmt.Sprintf("S%02dE%02d %s", season.SeasonNumber, item.EpisodeNumber, "Name") //item.Name)
 			return EpisodeInfo{
 				SeasonNumber:  season.SeasonNumber,
 				EpisodeNumber: item.EpisodeNumber,
