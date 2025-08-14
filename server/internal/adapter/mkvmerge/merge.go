@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"syscall"
 
 	"github.com/kkiling/goplatform/log"
 	"github.com/samber/lo"
@@ -93,8 +94,23 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
 
-	// Создаем команду
+	// Создаем кома
+	fmt.Println("******************************")
+	fmt.Println("******************************")
+	fmt.Println("******************************")
+
+	fmt.Println("UID:", os.Getuid(), "GID:", os.Getgid())
+
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Credential: &syscall.Credential{
+			Uid: uint32(3009), // UID abc
+			Gid: uint32(3007), // GID nas
+		},
+	}
+	fmt.Println("******************************")
+	fmt.Println("******************************")
+	fmt.Println("******************************")
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
