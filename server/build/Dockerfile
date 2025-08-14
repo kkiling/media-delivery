@@ -1,9 +1,5 @@
-# Этап сборки (добавлен AS builder)
+# Этап сборки (builder)
 FROM golang:1.24 AS builder
-
-# Установка runtime зависимостей (исправлено для Alpine)
-RUN apt update
-RUN apt install -y mkvtoolnix
 
 WORKDIR /app
 
@@ -17,12 +13,25 @@ COPY . .
 # Собираем приложение
 RUN go build -o /server_app ./cmd/main.go
 
-# Переменные окружения
-ENV CONFIG_PATH=configs/config.yml
+# Финальный этап (runtime)
+FROM lscr.io/linuxserver/code-server:latest
 
-# Экспортируем порт
-EXPOSE 8080
-EXPOSE 8181
+# Установка runtime зависимостей
+RUN apt-get update
+RUN apt-get install -y mkvtoolnix
+RUN rm -rf /var/lib/apt/lists/
 
-# Команда запуска
-CMD /server_app -c "${CONFIG_PATH}"
+# Копируем бинарник из этапа сборки
+COPY --from=builder /server_app /app/server_app
+
+# Настройка переменных окружения
+ENV CONFIG_PATH=/config/config.yml
+
+# Рабочая директория
+WORKDIR /app
+
+# Экспортируем порты
+EXPOSE 8080 8181
+
+# Команда запуска (используем shell форму для подстановки переменных)
+CMD ["sh", "-c", "/app/server_app -c \"${CONFIG_PATH}\""]
