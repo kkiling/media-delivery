@@ -1,37 +1,28 @@
-# Этап сборки (builder)
+# Build stage
 FROM golang:1.24 AS builder
 
 WORKDIR /app
-
-# Копируем зависимости
-COPY go.mod go.sum ./
-RUN go mod download
-
-# Копируем исходный код
 COPY . .
+RUN go build -o server_app ./cmd/main.go
 
-# Собираем приложение
-RUN go build -o /server_app ./cmd/main.go
+# Runtime stage
+FROM lscr.io/linuxserver/baseimage-ubuntu:jammy
 
-# Финальный этап (runtime)
-FROM lscr.io/linuxserver/code-server:latest
+# Install runtime deps
+RUN apt-get update && \
+    apt-get install -y mkvtoolnix && \
+    rm -rf /var/lib/apt/lists/*
 
-# Установка runtime зависимостей
-RUN apt-get update
-RUN apt-get install -y mkvtoolnix
-RUN rm -rf /var/lib/apt/lists/
+# Copy binary
+COPY --from=builder /app/server_app /app/server_app
 
-# Копируем бинарник из этапа сборки
-COPY --from=builder /server_app /app/server_app
-
-# Настройка переменных окружения
-ENV CONFIG_PATH=/config/config.yml
-
-# Рабочая директория
+# Set working directory
 WORKDIR /app
 
-# Экспортируем порты
-EXPOSE 8080 8181
+# Expose ports
+EXPOSE 8080
 
-# Команда запуска (используем shell форму для подстановки переменных)
-CMD ["sh", "-c", "/app/server_app -c \"${CONFIG_PATH}\""]
+# Run as non-root user
+USER abc
+
+CMD ["/app/server_app", "-c", "/config/config.yaml"]
