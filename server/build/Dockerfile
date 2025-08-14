@@ -19,6 +19,7 @@ FROM lscr.io/linuxserver/baseimage-ubuntu:jammy
 # Установка runtime зависимостей
 RUN apt-get update
 RUN apt-get install -y mkvtoolnix
+RUN apt -y install locales && locale-gen en_US.UTF-8
 RUN rm -rf /var/lib/apt/lists/
 
 # Копируем бинарник из этапа сборки
@@ -27,17 +28,12 @@ COPY --from=builder /app/swagger /swagger/
 
 # Настройка переменных окружения
 ENV CONFIG_PATH=/config/config.yml
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # Экспортируем порты
 EXPOSE 8080 8181
 
-# Переключаемся на пользователя abc (учитывает PUID/PGID)
-#USER abc
-
-# Запуск от имени пользователя abc (автоматически учитывает PUID/PGID)
-#CMD ["/server_app", "-c", "/config/config.yaml"]
-
-# Запуск через s6-overlay (LSIO сам запустит от abc с PUID/PGID)
-#CMD ["/app/server_app", "-c", "/config/config.yaml"]
 # Запуск через s6-setuidgid abc — тогда LSIO уже настроит UID/GID
 CMD ["s6-setuidgid", "abc", "/app/server_app", "-c", "/config/config.yaml"]
