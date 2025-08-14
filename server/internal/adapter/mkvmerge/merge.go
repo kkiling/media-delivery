@@ -95,6 +95,24 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Создаем команду
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+
+	fmt.Println("************************")
+	fmt.Println("************************")
+	fmt.Println("************************")
+
+	fmt.Println("UID:", os.Getuid())
+	fmt.Println("GID:", os.Getgid())
+	fmt.Println("Working dir:", cmd.Dir)
+
+	f, err := os.Create("/nfs/media/tvshows/Сага о Винланде (2019)/S02 Сезон 2/test.mkv")
+	if err != nil {
+		s.logger.Errorf("error mkvmerge: %s", debugMsg)
+	}
+	f.Close()
+	fmt.Println("************************")
+	fmt.Println("************************")
+	fmt.Println("************************")
+
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
 	if err != nil {

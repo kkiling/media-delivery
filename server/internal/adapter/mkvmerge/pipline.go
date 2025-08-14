@@ -218,15 +218,16 @@ func (s *Pipeline) StartMergePipeline(ctx context.Context) error {
 		err = s.runMerge(ctx, result.ID, result.Params)
 		if err != nil {
 			s.logger.Errorf("error mvk merge: %s", result.Params.VideoInputFile)
-			uerr := s.storage.Update(ctx, result.ID, &UpdateMergeResult{
+			/*uerr := s.storage.Update(ctx, result.ID, &UpdateMergeResult{
 				Status:    ErrorStatus,
 				Completed: lo.ToPtr(time.Now()),
 				Error:     lo.ToPtr(err.Error()),
 			})
 			if uerr != nil {
 				return fmt.Errorf("storage.Update: %w", uerr)
-			}
-			return fmt.Errorf("runMerge: %w", err)
+			}*/
+			time.Sleep(10 * time.Second)
+			return nil //fmt.Errorf("runMerge: %w", err)
 		}
 
 		s.logger.Debugf("complete mvk merge: %s", result.Params.VideoInputFile)
