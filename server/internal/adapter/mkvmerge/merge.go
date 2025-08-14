@@ -95,10 +95,6 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Создаем команду
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	cmd.Env = append(os.Environ(), "DEBUG_UID=1")
-	cmd.Args = []string{
-		"sh", "-c", "echo UID=$(id -u) GID=$(id -g) && exec mkvmerge \"$@\"",
-	}
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()

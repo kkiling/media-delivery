@@ -33,10 +33,10 @@ func (s *Service) createDirectories(seasonPath string) error {
 		if _, err = os.Stat(currentPath); os.IsNotExist(err) {
 			// Создаем каталог
 
-			if mkdirErr := syscall.Mkdir(currentPath, 0777); mkdirErr != nil {
+			if mkdirErr := syscall.Mkdir(currentPath, 0775); mkdirErr != nil {
 				return fmt.Errorf("syscall.Mkdir: %w", mkdirErr)
 			}
-			if err := os.Chmod(currentPath, 0777); err != nil {
+			if err := os.Chmod(currentPath, 0775); err != nil {
 				return err
 			}
 			// Меняем группу пользователей
