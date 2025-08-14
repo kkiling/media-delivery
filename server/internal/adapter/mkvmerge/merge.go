@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -111,10 +110,13 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	// Для отладки
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
-
+	args = []string{
+		"-o", "/nfs/media/tvshows/Сага о Винланде (2019)/S02 Сезон 2/S02E01 Раб.mkv",
+		"--no-audio",
+		"--no-subtitles",
+		"/nfs/media/downloads/Vinland.Saga.Season2.WEBRip.1080p/[Erai-raws] Vinland Saga Season 2 - 01 [1080p].mkv",
+	}
 	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	//fullArgs := append([]string{"abc", "mkvmerge"}, args...)
-	//cmd := exec.CommandContext(ctx, "s6-setuidgid", fullArgs...)
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -143,46 +145,6 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		defer wg.Done()
 		s.scanOutput(ctx, stderrPipe, outputChan, ErrorMessageType)
 	}()
-
-	fmt.Println("*******************")
-	fmt.Println("*******************")
-	fmt.Println("*******************")
-
-	pid := cmd.Process.Pid
-	fmt.Println("PID запущенного процесса:", pid)
-
-	// Выполняем ps, чтобы узнать пользователя
-	psCmd := exec.Command("ps", "-o", "user=", "-p", strconv.Itoa(pid))
-	out, err := psCmd.Output()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Процесс выполняется от пользователя: %s", out)
-
-	// Получаем UID и GID через /proc/<pid>/status (Linux)
-	statusPath := fmt.Sprintf("/proc/%d/status", pid)
-	data, err := os.ReadFile(statusPath)
-	if err != nil {
-		panic(err)
-	}
-
-	var uid, gid string
-	for _, line := range splitLines(string(data)) {
-		if len(line) > 4 && line[:4] == "Uid:" {
-			uid = line
-		}
-		if len(line) > 4 && line[:4] == "Gid:" {
-			gid = line
-		}
-	}
-
-	fmt.Println(uid)
-	fmt.Println(gid)
-
-	fmt.Println("*******************")
-	fmt.Println("*******************")
-	fmt.Println("*******************")
 
 	// Ждем завершения
 	if errWait := cmd.Wait(); errWait != nil {

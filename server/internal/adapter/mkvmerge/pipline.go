@@ -176,7 +176,8 @@ func (s *Pipeline) runMerge(ctx context.Context, id uuid.UUID, params MergeParam
 				return fmt.Errorf("merger.Merge: %w", err)
 			}
 		}
-		return fmt.Errorf("merger.Merge: %w", err)
+		//return fmt.Errorf("merger.Merge: %w", err)
+		return nil // TODO: Не возвращаем пока ошибку
 	}
 
 	close(outputChan)
@@ -232,14 +233,16 @@ func (s *Pipeline) StartMergePipeline(ctx context.Context) error {
 
 		s.logger.Debugf("complete mvk merge: %s", result.Params.VideoInputFile)
 
-		err = s.storage.Update(ctx, result.ID, &UpdateMergeResult{
+		/*err = s.storage.Update(ctx, result.ID, &UpdateMergeResult{
 			Status:    CompleteStatus,
 			Completed: lo.ToPtr(time.Now()),
 		})
 
 		if err != nil {
 			return fmt.Errorf("storage.Update: %w", err)
-		}
+		}*/
+		// И не обновляем пока
+		time.Sleep(time.Second * 20)
 
 	}
 
