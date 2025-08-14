@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"syscall"
 
 	"github.com/kkiling/goplatform/log"
 	"github.com/samber/lo"
@@ -94,23 +93,9 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
 
-	// Создаем кома
-	fmt.Println("******************************")
-	fmt.Println("******************************")
-	fmt.Println("******************************")
-
-	fmt.Println("UID:", os.Getuid(), "GID:", os.Getgid())
-
-	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Credential: &syscall.Credential{
-			Uid: uint32(os.Getuid()), // UID abc
-			Gid: uint32(os.Getgid()), // GID nas
-		},
-	}
-	fmt.Println("******************************")
-	fmt.Println("******************************")
-	fmt.Println("******************************")
+	// cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	fullArgs := append([]string{"abc", "mkvmerge"}, args...)
+	cmd := exec.CommandContext(ctx, "s6-setuidgid", fullArgs...)
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -124,7 +109,6 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Запускаем команду
 	if errStart := cmd.Start(); errStart != nil {
-		fmt.Printf("error starting command: %v", errStart)
 		return fmt.Errorf("error starting command: %v", errStart)
 	}
 
