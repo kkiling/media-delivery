@@ -19,7 +19,9 @@ FROM lscr.io/linuxserver/baseimage-ubuntu:jammy
 # Установка runtime зависимостей
 RUN apt-get update
 RUN apt-get install -y mkvtoolnix
-RUN apt -y install locales && locale-gen en_US.UTF-8
+RUN apt-get install -y locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8
 RUN rm -rf /var/lib/apt/lists/
 
 # Копируем бинарник из этапа сборки
@@ -28,9 +30,9 @@ COPY --from=builder /app/swagger /swagger/
 
 # Настройка переменных окружения
 ENV CONFIG_PATH=/config/config.yml
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 # Экспортируем порты
 EXPOSE 8080 8181
