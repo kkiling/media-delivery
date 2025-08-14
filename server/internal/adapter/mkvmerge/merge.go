@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -25,13 +24,12 @@ func NewMerge(logger log.Logger) *Merge {
 	}
 }
 
-func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
-	//info, err := s.GetMediaInfo(params.VideoInputFile)
-	//if err != nil {
-	//	return fmt.Errorf("get media info: %w", err)
-	//}
-	//fmt.Printf("%+v\n", info)
+func clean(s string) string {
+	// filepath.Clean(
+	return s
+}
 
+func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
 	// Проверка существования основного видеофайла
 	var err error
 	if _, err = os.Stat(params.VideoInputFile); os.IsNotExist(err) {
@@ -52,16 +50,8 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
-	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
-
-	// Снимаем default со всех старых аудио в исходном файле
-	//for id, _ := range info.AudioTracks {
-	//	// audio.Number — это номер трека в контейнере (1-based), mkvmerge ждёт 0-based
-	//	//trackID := audio.Number - 1
-	//	args = append(args, "--default-track", fmt.Sprintf("%d:no", id))
-	//}
-
-	args = append(args, filepath.Clean(params.VideoInputFile))
+	args := []string{"-o", clean(params.VideoOutputFile)}
+	args = append(args, clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
 	for _, track := range params.AudioTracks {
@@ -73,7 +63,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -85,7 +75,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
