@@ -116,7 +116,9 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		"--no-subtitles",
 		"/nfs/media/downloads/Vinland.Saga.Season2.WEBRip.1080p/[Erai-raws] Vinland Saga Season 2 - 01 [1080p].mkv",
 	}
-	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	//cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	cmd := exec.CommandContext(ctx, "s6-setuidgid", "abc", "mkvmerge")
+	cmd.Args = append(cmd.Args, args...)
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
