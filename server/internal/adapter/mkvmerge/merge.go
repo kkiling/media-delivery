@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -23,6 +24,24 @@ func NewMerge(logger log.Logger) *Merge {
 	return &Merge{
 		logger: logger.Named("mkvmerge"),
 	}
+}
+
+// вспомогательная функция для разбивки на строки
+func splitLines(s string) []string {
+	var lines []string
+	current := ""
+	for _, r := range s {
+		if r == '\n' {
+			lines = append(lines, current)
+			current = ""
+		} else {
+			current += string(r)
+		}
+	}
+	if current != "" {
+		lines = append(lines, current)
+	}
+	return lines
 }
 
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
@@ -93,9 +112,9 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	debugMsg := "mkvmerge " + strings.Join(args, " ")
 	outputChan <- OutputMessage{Type: InfoMessageType, Content: debugMsg}
 
-	// cmd := exec.CommandContext(ctx, "mkvmerge", args...)
-	fullArgs := append([]string{"abc", "mkvmerge"}, args...)
-	cmd := exec.CommandContext(ctx, "s6-setuidgid", fullArgs...)
+	cmd := exec.CommandContext(ctx, "mkvmerge", args...)
+	//fullArgs := append([]string{"abc", "mkvmerge"}, args...)
+	//cmd := exec.CommandContext(ctx, "s6-setuidgid", fullArgs...)
 
 	// Настраиваем пайпы
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -124,6 +143,26 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		defer wg.Done()
 		s.scanOutput(ctx, stderrPipe, outputChan, ErrorMessageType)
 	}()
+
+	fmt.Println("*******************")
+	fmt.Println("*******************")
+	fmt.Println("*******************")
+
+	pid := cmd.Process.Pid
+	fmt.Println("PID запущенного процесса:", pid)
+
+	// Выполняем ps, чтобы узнать пользователя
+	psCmd := exec.Command("ps", "-o", "user=", "-p", strconv.Itoa(pid))
+	out, err := psCmd.Output()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Процесс выполняется от пользователя: %s", out)
+
+	fmt.Println("*******************")
+	fmt.Println("*******************")
+	fmt.Println("*******************")
 
 	// Ждем завершения
 	if errWait := cmd.Wait(); errWait != nil {
