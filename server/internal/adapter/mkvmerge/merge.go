@@ -160,6 +160,26 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	fmt.Printf("Процесс выполняется от пользователя: %s", out)
 
+	// Получаем UID и GID через /proc/<pid>/status (Linux)
+	statusPath := fmt.Sprintf("/proc/%d/status", pid)
+	data, err := os.ReadFile(statusPath)
+	if err != nil {
+		panic(err)
+	}
+
+	var uid, gid string
+	for _, line := range splitLines(string(data)) {
+		if len(line) > 4 && line[:4] == "Uid:" {
+			uid = line
+		}
+		if len(line) > 4 && line[:4] == "Gid:" {
+			gid = line
+		}
+	}
+
+	fmt.Println(uid)
+	fmt.Println(gid)
+
 	fmt.Println("*******************")
 	fmt.Println("*******************")
 	fmt.Println("*******************")
