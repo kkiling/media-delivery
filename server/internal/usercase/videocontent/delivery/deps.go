@@ -40,6 +40,7 @@ type MkvMergePipeline interface {
 }
 
 type EmbyApi interface {
+	Refresh() error
 	ResetMetadata(embyID uint64) error
 	RemoteSearchApply(embyID, theMovieDBID uint64) error
 	GetCatalogInfo(path string) (*emby.CatalogInfo, error)

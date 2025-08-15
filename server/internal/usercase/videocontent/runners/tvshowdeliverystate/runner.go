@@ -371,7 +371,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						TVShowID:   *stepContext.State.MetaData.ContentID.TVShow,
 					})
 					if err != nil {
-						return stepContext.Error(fmt.Errorf("SetVideoFileGroup: %w", err))
+						return stepContext.Error(fmt.Errorf("SetMediaMetaData: %w", err))
 					}
 
 					return stepContext.Complete()
