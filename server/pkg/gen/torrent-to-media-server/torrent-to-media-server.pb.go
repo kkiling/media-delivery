@@ -25,8 +25,8 @@ var File_torrent_to_media_server_torrent_to_media_server_proto protoreflect.File
 
 const file_torrent_to_media_server_torrent_to_media_server_proto_rawDesc = "" +
 	"\n" +
-	"5torrent-to-media-server/torrent-to-media-server.proto\x12\x14torrenttomediaserver\x1a.protoc-gen-openapiv2/options/annotations.protoB\x8e\x01\x92A[\x12\"\n" +
-	"\x1bTorrent to media server API2\x030.1\x1a\x0elocalhost:8080*\x01\x012\x10application/json:\x10application/jsonZ.github.com/kkiling/torrent-to-media-server/apib\x06proto3"
+	"5torrent-to-media-server/torrent-to-media-server.proto\x12\x14torrenttomediaserver\x1a.protoc-gen-openapiv2/options/annotations.protoB~\x92AK\x12\"\n" +
+	"\x1bTorrent to media server API2\x030.1*\x01\x012\x10application/json:\x10application/jsonZ.github.com/kkiling/torrent-to-media-server/apib\x06proto3"
 
 var file_torrent_to_media_server_torrent_to_media_server_proto_goTypes = []any{}
 var file_torrent_to_media_server_torrent_to_media_server_proto_depIdxs = []int32{

@@ -26,12 +26,6 @@ func NewMerge(logger log.Logger) *Merge {
 }
 
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
-	//info, err := s.GetMediaInfo(params.VideoInputFile)
-	//if err != nil {
-	//	return fmt.Errorf("get media info: %w", err)
-	//}
-	//fmt.Printf("%+v\n", info)
-
 	// Проверка существования основного видеофайла
 	var err error
 	if _, err = os.Stat(params.VideoInputFile); os.IsNotExist(err) {
@@ -53,14 +47,6 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 	}
 
 	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
-
-	// Снимаем default со всех старых аудио в исходном файле
-	//for id, _ := range info.AudioTracks {
-	//	// audio.Number — это номер трека в контейнере (1-based), mkvmerge ждёт 0-based
-	//	//trackID := audio.Number - 1
-	//	args = append(args, "--default-track", fmt.Sprintf("%d:no", id))
-	//}
-
 	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
@@ -125,6 +111,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Ждем завершения
 	if errWait := cmd.Wait(); errWait != nil {
+		wg.Wait()
 		return fmt.Errorf("mkvmerge failed: %w", errWait)
 	}
 	wg.Wait()

@@ -176,6 +176,8 @@ func (s *Pipeline) runMerge(ctx context.Context, id uuid.UUID, params MergeParam
 				return fmt.Errorf("merger.Merge: %w", err)
 			}
 		}
+
+		return fmt.Errorf("merger.Merge: %w", err)
 	}
 
 	close(outputChan)

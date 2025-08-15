@@ -31,7 +31,7 @@ type Container struct {
 }
 
 func NewContainer(cfg *config.AppConfig) (*Container, error) {
-	logger := log.NewLogger(log.DebugLevel)
+	logger := log.NewLogger(log.Level(cfg.Server.LogLevel))
 
 	// Storage
 	tvShowLibraryStorage, err := tvShowLibrarySqlite.NewStorage(sqlitebase.Config{

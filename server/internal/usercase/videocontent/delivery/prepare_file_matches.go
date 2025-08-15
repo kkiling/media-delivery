@@ -54,7 +54,7 @@ func mapContentMatchesFromPrepareTVShowSeason(
 				File: videoFile,
 			},
 			AudioFiles: toTrack(prepareEpisode.AudioFiles),
-			Subtitles:  toTrack(prepareEpisode.AudioFiles),
+			Subtitles:  toTrack(prepareEpisode.Subtitles),
 		}
 
 		result = append(result, content)

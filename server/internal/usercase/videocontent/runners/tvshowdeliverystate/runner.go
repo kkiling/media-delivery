@@ -343,7 +343,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data.TVShowCatalogInfo = &delivery.TVShowCatalog{
 						TorrentPath:              data.TorrentFilesData.ContentFullPath,
 						MediaServerPath:          data.EpisodesData.TVShowCatalogPath,
-						IsCopyFilesInMediaServer: !r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches),
+						IsCopyFilesInMediaServer: r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches),
 					}
 
 					// Получение размера каталогов
@@ -371,7 +371,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						TVShowID:   *stepContext.State.MetaData.ContentID.TVShow,
 					})
 					if err != nil {
-						return stepContext.Error(fmt.Errorf("SetVideoFileGroup: %w", err))
+						return stepContext.Error(fmt.Errorf("SetMediaMetaData: %w", err))
 					}
 
 					return stepContext.Complete()

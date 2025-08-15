@@ -21,6 +21,10 @@ func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataP
 		return fmt.Errorf("failed to get relative path: %w", err)
 	}
 
+	if err := s.embyApi.Refresh(); err != nil {
+		return fmt.Errorf("failed to refresh emby api: %w", err)
+	}
+
 	info, err := s.embyApi.GetCatalogInfo("/" + tvShowPath)
 	if err != nil {
 		return fmt.Errorf("embyApi.GetCatalogInfo: %w", err)
