@@ -22,7 +22,6 @@ func (api *API) Refresh() error {
 
 	// Устанавливаем заголовки как в curl
 	req.Header.Set("accept", "*/*")
-	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := api.httpClient.Do(req)
 	if err != nil {

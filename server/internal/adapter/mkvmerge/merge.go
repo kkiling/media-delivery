@@ -115,6 +115,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Ждем завершения
 	if errWait := cmd.Wait(); errWait != nil {
+		wg.Wait()
 		return fmt.Errorf("mkvmerge failed: %w", errWait)
 	}
 	wg.Wait()
