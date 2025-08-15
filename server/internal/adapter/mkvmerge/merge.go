@@ -25,10 +25,6 @@ func NewMerge(logger log.Logger) *Merge {
 	}
 }
 
-func clean(s string) string {
-	return filepath.Clean(s)
-}
-
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
 	// Проверка существования основного видеофайла
 	var err error
@@ -50,8 +46,8 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
-	args := []string{"-o", clean(params.VideoOutputFile)}
-	args = append(args, clean(params.VideoInputFile))
+	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
+	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
 	for _, track := range params.AudioTracks {
@@ -63,7 +59,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
@@ -75,7 +71,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
 		)
 	}
 
