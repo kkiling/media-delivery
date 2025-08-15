@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -25,8 +26,7 @@ func NewMerge(logger log.Logger) *Merge {
 }
 
 func clean(s string) string {
-	// filepath.Clean(
-	return s
+	return filepath.Clean(s)
 }
 
 func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<- OutputMessage) error {
