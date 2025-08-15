@@ -1,4 +1,4 @@
-TEST_DB_NAME:=./torrent-to-media-server.db
+TEST_DB_NAME:=./torrent2mediaserver.db
 TEST_DB_PATH := $(CURDIR)/$(notdir ${TEST_DB_NAME})
 GOPATH_BIN := $(GOPATH)/bin
 
