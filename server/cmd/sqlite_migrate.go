@@ -11,8 +11,8 @@ import (
 )
 
 const dialect = "sqlite3"
-const stateMigrations = "./migrations/sqlite/state"
-const mediaDeliveryMigrations = "./migrations/sqlite"
+const stateMigrations = "migrations/sqlite/state"
+const mediaDeliveryMigrations = "migrations/sqlite"
 
 func sqliteMigrate(logger log.Logger, sqliteDsn string) error {
 	// Настройка Goose
