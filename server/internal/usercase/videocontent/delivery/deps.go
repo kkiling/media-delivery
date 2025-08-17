@@ -5,12 +5,12 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/emby"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/matchtvshow"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/mkvmerge"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/rutracker"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/adapter/emby"
+	"github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
+	"github.com/kkiling/media-delivery/internal/adapter/mkvmerge"
+	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
+	"github.com/kkiling/media-delivery/internal/adapter/rutracker"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 )
 
 type TVShowLibrary interface {

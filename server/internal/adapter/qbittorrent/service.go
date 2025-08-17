@@ -7,7 +7,8 @@ import (
 	"net/url"
 
 	"github.com/kkiling/goplatform/log"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 const (

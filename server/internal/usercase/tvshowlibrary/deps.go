@@ -3,7 +3,7 @@ package tvshowlibrary
 import (
 	"context"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/themoviedb"
+	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
 )
 
 type TheMovieDb interface {

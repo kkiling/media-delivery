@@ -3,7 +3,7 @@ package tvshowdeliverystate
 import (
 	"github.com/kkiling/statemachine"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
 type CreateState = statemachine.CreateState[TVShowDeliveryData, runners.Metadata, StepDelivery]

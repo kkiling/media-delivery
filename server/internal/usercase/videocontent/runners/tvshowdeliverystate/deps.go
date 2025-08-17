@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 )
 
 type ContentDelivery interface {
@@ -20,7 +20,6 @@ type ContentDelivery interface {
 	CreateContentCatalogs(ctx context.Context, params delivery.CreateContentCatalogsParams) error
 	StartMergeVideo(ctx context.Context, params delivery.MergeVideoParams) ([]uuid.UUID, error)
 	GetMergeVideoStatus(ctx context.Context, mergeIDs []uuid.UUID) (*delivery.MergeVideoStatus, error)
-	SetVideoFileGroup(ctx context.Context, files []string) error
 	GetCatalogSize(ctx context.Context, catalogPath string) (uint64, error)
 	SetMediaMetaData(ctx context.Context, params delivery.SetMediaMetaDataParams) error
 	NeedPrepareFileMatches(ContentMatches []delivery.ContentMatches) bool

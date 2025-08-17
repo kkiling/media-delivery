@@ -4,8 +4,8 @@ import (
 	"github.com/samber/lo"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 func mapImage(res *tvshowlibrary.Image) *desc.Image {

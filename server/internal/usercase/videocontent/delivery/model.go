@@ -3,7 +3,7 @@ package delivery
 import (
 	"path/filepath"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
+	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
 )
 
 // SearchQuery поисковый запрос для поиска раздачи

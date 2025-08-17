@@ -6,8 +6,8 @@ import (
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/server"
 
-	"github.com/kkiling/torrent-to-media-server/internal/server/handler/tvshowlibrary"
-	"github.com/kkiling/torrent-to-media-server/internal/server/handler/videocontent"
+	"github.com/kkiling/media-delivery/internal/server/handler/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/server/handler/videocontent"
 )
 
 // Torrent2EmbyServer сервер

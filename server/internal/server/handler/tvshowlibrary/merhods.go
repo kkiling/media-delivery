@@ -3,9 +3,9 @@ package tvshowlibrary
 import (
 	"context"
 
-	"github.com/kkiling/torrent-to-media-server/internal/server/handler"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/server/handler"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 func (h *Handler) SearchTVShow(ctx context.Context, request *desc.SearchTVShowRequest) (*desc.SearchTVShowResponse, error) {

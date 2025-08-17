@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 )
 
 type WaitingTorrentFilesParams struct {

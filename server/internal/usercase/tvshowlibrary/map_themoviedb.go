@@ -3,7 +3,7 @@ package tvshowlibrary
 import (
 	"github.com/samber/lo"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/themoviedb"
+	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
 )
 
 func mapImage(image *themoviedb.Image) *Image {

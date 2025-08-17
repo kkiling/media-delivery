@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 )
 
 type CreateContentCatalogsParams struct {
@@ -32,18 +32,8 @@ func (s *Service) createDirectories(seasonPath string) error {
 		// Проверяем существование каталога
 		if _, err = os.Stat(currentPath); os.IsNotExist(err) {
 			// Создаем каталог
-
 			if mkdirErr := syscall.Mkdir(currentPath, 0775); mkdirErr != nil {
 				return fmt.Errorf("syscall.Mkdir: %w", mkdirErr)
-			}
-			if err := os.Chmod(currentPath, 0775); err != nil {
-				return err
-			}
-			// Меняем группу пользователей
-			if s.config.UserGroup != "" {
-				if err = setGroup(currentPath, s.config.UserGroup); err != nil {
-					return fmt.Errorf("syscall.Chown: %w", err)
-				}
 			}
 		} else if err != nil {
 			return fmt.Errorf("error checking directory %s: %v", currentPath, err)

@@ -5,9 +5,9 @@ import (
 
 	"github.com/samber/lo"
 
-	"github.com/kkiling/torrent-to-media-server/internal/server/handler"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/server/handler"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 func (h *Handler) CreateVideoContent(ctx context.Context, request *desc.CreateVideoContentRequest) (*desc.CreateVideoContentResponse, error) {

@@ -6,8 +6,8 @@ import (
 
 	"github.com/samber/lo"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/matchtvshow"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 )
 
 type PreparingFileMatchesParams struct {

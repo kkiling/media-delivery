@@ -11,8 +11,8 @@ import (
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase/sqlitebase"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
 )
 
 type Storage struct {
