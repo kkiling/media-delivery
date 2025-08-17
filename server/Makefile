@@ -50,7 +50,7 @@ generate:
 
 .PHONY: run
 run:
-	go run ./cmd/main.go
+	go run ./cmd
 
 build-docker:
 	docker build -f build/Dockerfile -t media-delivery-server:latest .

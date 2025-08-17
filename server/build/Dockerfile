@@ -32,6 +32,7 @@ COPY --from=builder /app/swagger /swagger/
 ENV CONFIG_PATH=/config/config.yml
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
+ENV UMASK=002
 
 # Экспортируем порты
 EXPOSE 8080 8181
