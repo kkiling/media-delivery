@@ -14,16 +14,24 @@ export const ROUTES = {
       ROOT: '/library/movies',
       DETAILS: '/library/movies/:id',
       // Helper function to generate movie details URL
-      getDetails: (id: string | number) => `/library/movies/${id}`,
+      getDetails: (id: string | number | undefined) => {
+        if (!id) return '/not-found';
+        return `/library/movies/${id}`;
+      },
     },
     TV_SHOWS: {
       ROOT: '/library/tvshows',
       DETAILS: '/library/tvshows/:id',
       SEASON: '/library/tvshows/:id/:season',
       // Helper functions to generate TV show URLs
-      getDetails: (id: string | number) => `/library/tvshows/${id}`,
-      getSeason: (id: string | number, season: string | number) =>
-        `/library/tvshows/${id}/${season}`,
+      getDetails: (id: string | number | undefined) => {
+        if (!id) return '/not-found';
+        return `/library/tvshows/${id}`;
+      },
+      getSeason: (id: string | number | undefined, season: string | number | undefined) => {
+        if (!id || !season) return '/not-found';
+        return `/library/tvshows/${id}/${season}`;
+      },
     },
   },
   NOT_FOUND: '*',
