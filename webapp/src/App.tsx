@@ -8,7 +8,8 @@ import {
   TvShows,
   TvShowSeason,
   TvShowDetails,
-  Search,
+  SearchTVShows,
+  SearchMovies,
 } from './pages';
 import { ROUTES } from './constants/routes';
 
@@ -17,7 +18,8 @@ function App() {
     <Routes>
       <Route path={ROUTES.HOME} element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path={ROUTES.SEARCH.ROOT} element={<Search />} />
+        <Route path={ROUTES.SEARCH.TV_SHOWS} element={<SearchTVShows />} />
+        <Route path={ROUTES.SEARCH.MOVIES} element={<SearchMovies />} />
         <Route path={ROUTES.LIBRARY.ROOT} element={<Library />}>
           <Route path={ROUTES.LIBRARY.MOVIES.ROOT} element={<Movies />} />
           <Route path={ROUTES.LIBRARY.MOVIES.DETAILS} element={<MovieDetails />} />

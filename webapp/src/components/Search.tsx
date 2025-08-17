@@ -1,17 +1,22 @@
-import { useState } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import { Search } from 'react-bootstrap-icons';
+import { Form, Row, Col, ButtonGroup, ToggleButton, Button, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useState, FormEvent } from 'react';
+import { Search as SearchIcon } from 'react-bootstrap-icons';
 import { ROUTES } from '@/constants/routes';
 
-export default function TrendingMovies() {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function Search() {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState('tvshows');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(ROUTES.SEARCH.createUrl(searchQuery));
+      const url =
+        searchType === 'tvshows'
+          ? ROUTES.SEARCH.createTvShowsUrl(searchQuery)
+          : ROUTES.SEARCH.createMoviesUrl(searchQuery);
+      navigate(url);
     }
   };
 
@@ -23,24 +28,66 @@ export default function TrendingMovies() {
       </p>
       <Form onSubmit={handleSearch}>
         <Form.Group controlId="searchForm">
-          <Row className="g-2">
-            <Col md={10}>
-              <Form.Control
-                type="search"
-                placeholder="Search movies and TV shows..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </Col>
-            <Col md={2}>
-              <Button
-                variant="primary"
-                type="submit"
-                className="w-100 d-flex align-items-center justify-content-center"
-              >
-                <Search className="me-2" />
-                <span>Search</span>
-              </Button>
+          <Row>
+            <Col xs={12}>
+              <InputGroup size="lg" className="h-100">
+                <InputGroup.Text
+                  className="bg-white p-0"
+                  style={{
+                    minWidth: '160px', // Increased width for better text fit
+                    height: '100%',
+                    border: 0,
+                  }}
+                >
+                  <ButtonGroup className="w-100 h-100">
+                    <ToggleButton
+                      id="toggle-tvshows"
+                      type="radio"
+                      variant="outline-secondary"
+                      name="searchType"
+                      value="tvshows"
+                      checked={searchType === 'tvshows'}
+                      onChange={(e) => setSearchType(e.currentTarget.value)}
+                      className="w-50 d-flex align-items-center justify-content-center"
+                      style={{
+                        borderRadius: '0.375rem 0 0 0.375rem',
+                        border: '1px solid #dee2e6',
+                        borderRight: 0,
+                      }}
+                    >
+                      TV Shows
+                    </ToggleButton>
+                    <ToggleButton
+                      id="toggle-movies"
+                      type="radio"
+                      variant="outline-secondary"
+                      name="searchType"
+                      value="movies"
+                      checked={searchType === 'movies'}
+                      onChange={(e) => setSearchType(e.currentTarget.value)}
+                      className="w-50 d-flex align-items-center justify-content-center"
+                      style={{
+                        borderRadius: 0,
+                        border: '1px solid #dee2e6',
+                        borderLeft: 0,
+                      }}
+                    >
+                      Movies
+                    </ToggleButton>
+                  </ButtonGroup>
+                </InputGroup.Text>
+                <Form.Control
+                  type="search"
+                  placeholder={searchType === 'tvshows' ? 'Search TV shows...' : 'Search movies...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="rounded-0"
+                  style={{ borderLeft: 0 }}
+                />
+                <Button type="submit" variant="primary" className="rounded-0 rounded-end px-3">
+                  <SearchIcon size={20} />
+                </Button>
+              </InputGroup>
             </Col>
           </Row>
         </Form.Group>

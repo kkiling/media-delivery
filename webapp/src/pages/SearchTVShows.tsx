@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Api, TVShowShort } from '@/api/api';
 import { TVShowCard } from '@/components/TVShowCard';
 
-export default function Search() {
+export default function SearchTVShows() {
   const [searchParams] = useSearchParams();
   const [shows, setShows] = useState<TVShowShort[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const query = searchParams.get('query') || '';
 
   useEffect(() => {
@@ -60,11 +60,7 @@ export default function Search() {
         </div>
       )}
 
-      {error && (
-        <Alert variant="danger">
-          {error}
-        </Alert>
-      )}
+      {error && <Alert variant="danger">{error}</Alert>}
 
       <Row xs={1} md={2} lg={3} className="g-4">
         {shows.map((show) => (
@@ -75,9 +71,7 @@ export default function Search() {
       </Row>
 
       {!loading && !error && shows.length === 0 && query && (
-        <Alert variant="info">
-          No TV shows found for your search.
-        </Alert>
+        <Alert variant="info">No TV shows found for your search.</Alert>
       )}
     </Container>
   );

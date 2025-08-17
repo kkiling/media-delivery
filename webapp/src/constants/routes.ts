@@ -2,10 +2,15 @@ export const ROUTES = {
   HOME: '/',
   SEARCH: {
     ROOT: '/search',
-    // Helper function to generate search URL with query
-    createUrl: (query: string) => {
+    TV_SHOWS: '/search/tvshows',
+    MOVIES: '/search/movies',
+    createTvShowsUrl: (query: string) => {
       const params = new URLSearchParams({ query });
-      return `/search?${params.toString()}`;
+      return `/search/tvshows?${params.toString()}`;
+    },
+    createMoviesUrl: (query: string) => {
+      const params = new URLSearchParams({ query });
+      return `/search/movies?${params.toString()}`;
     },
   },
   LIBRARY: {

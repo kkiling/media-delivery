@@ -5,4 +5,5 @@ export { default as MovieDetails } from './MovieDetails';
 export { default as TvShows } from './TvShows';
 export { default as TvShowSeason } from './TvShowSeason';
 export { default as TvShowDetails } from './TvShowDetails';
-export { default as Search } from './Search';
+export { default as SearchTVShows } from './SearchTVShows';
+export { default as SearchMovies } from './SearchMovies';
