@@ -314,26 +314,11 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data.MergeVideoStatus = status
 					if status.IsComplete {
 						if len(status.Errors) == 0 {
-							return stepContext.Next(SetVideoFileGroup).WithData(data)
+							return stepContext.Next(GetCatalogsSize).WithData(data)
 						}
 						return stepContext.Error(fmt.Errorf("merge videos contains errors")).WithData(data)
 					}
 					return stepContext.Empty().WithData(data)
-				},
-			},
-			SetVideoFileGroup: {
-				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
-					data := stepContext.State.Data
-					files := lo.Map(data.ContentMatches, func(item delivery.ContentMatches, _ int) string {
-						return item.Episode.FileName
-					})
-					// Установка группы файлам
-					err := r.contentDelivery.SetVideoFileGroup(ctx, files)
-					if err != nil {
-						return stepContext.Error(fmt.Errorf("SetVideoFileGroup: %w", err))
-					}
-
-					return stepContext.Next(GetCatalogsSize)
 				},
 			},
 			GetCatalogsSize: {

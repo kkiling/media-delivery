@@ -108,8 +108,6 @@ enum TVShowDeliveryStatus {
   WaitingMergeVideoFiles = 12;
   // Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
   CreateHardLinkCopy = 13;
-  // Установка группы файлам
-  SetVideoFileGroup = 14;
   // GetCatalogsSize получение размеров каталогов сериала
   GetCatalogsSize = 15;
   // Установка методаных серий сезона сериала/фильма в медиасервере

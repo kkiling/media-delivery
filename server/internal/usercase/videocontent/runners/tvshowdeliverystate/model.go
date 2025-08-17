@@ -49,8 +49,6 @@ const (
 	CreateHardLinkCopy StepDelivery = "create_symlink_copy"
 	// GetCatalogsSize получение размеров каталогов сериала
 	GetCatalogsSize = "get_catalogs_size"
-	// SetVideoFileGroup установка группы файлам
-	SetVideoFileGroup StepDelivery = "set_video_file_group"
 
 	// SetMediaMetaData установка методаных серий сезона сериала / фильма в медиасервере
 	SetMediaMetaData StepDelivery = "set_media_meta_data"

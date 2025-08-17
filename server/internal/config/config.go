@@ -85,7 +85,6 @@ type DeliveryConfig struct {
 	BasePath                   string `yaml:"base_path"`
 	TVShowTorrentSavePath      string `yaml:"tv_show_torrent_save_path"`
 	TVShowMediaSaveTvShowsPath string `yaml:"tv_show_media_save_tv_shows_path"`
-	UserGroup                  string `yaml:"user_group"`
 }
 
 func loadCfg[T any](cfgName string, cfgProvider config.Provider) (*T, error) {

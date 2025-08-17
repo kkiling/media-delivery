@@ -31,4 +31,3 @@ delivery:
   base_path: "/nfs"
   tv_show_torrent_save_path: "/downloads"
   tv_show_media_save_tv_shows_path: "/tvshows"
-  user_group: "nas"

@@ -8,8 +8,6 @@ type Config struct {
 	TVShowTorrentSavePath string
 	// TVShowMediaSaveTvShowsPath путь сохранения сериалов относительно медиа сервера
 	TVShowMediaSaveTvShowsPath string
-	// Группа от именни которой будут проводиться манипуляции с файлами и каталогами (если не указать, то будет исопользована дефолтная группа пользователя)
-	UserGroup string
 }
 
 type Service struct {

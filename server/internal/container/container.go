@@ -110,7 +110,6 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 			BasePath:                   cfg.DeliveryConfig.BasePath,
 			TVShowTorrentSavePath:      cfg.DeliveryConfig.TVShowTorrentSavePath,
 			TVShowMediaSaveTvShowsPath: cfg.DeliveryConfig.TVShowMediaSaveTvShowsPath,
-			UserGroup:                  cfg.DeliveryConfig.UserGroup,
 		},
 		tvShowLibrary,
 		rutrackerApi,
