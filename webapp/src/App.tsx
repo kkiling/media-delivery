@@ -10,21 +10,22 @@ import {
   TvShowDetails,
   Search,
 } from './pages';
+import { ROUTES } from './constants/routes';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path={ROUTES.HOME} element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="search" element={<Search />} />
-        <Route path="library" element={<Library />}>
-          <Route path="movies" element={<Movies />} />
-          <Route path="movies/:id" element={<MovieDetails />} />
-          <Route path="tvshows" element={<TvShows />} />
-          <Route path="tvshows/:id" element={<TvShowDetails />} />
-          <Route path="tvshows/:id/:season" element={<TvShowSeason />} />
+        <Route path={ROUTES.SEARCH.ROOT} element={<Search />} />
+        <Route path={ROUTES.LIBRARY.ROOT} element={<Library />}>
+          <Route path={ROUTES.LIBRARY.MOVIES.ROOT} element={<Movies />} />
+          <Route path={ROUTES.LIBRARY.MOVIES.DETAILS} element={<MovieDetails />} />
+          <Route path={ROUTES.LIBRARY.TV_SHOWS.ROOT} element={<TvShows />} />
+          <Route path={ROUTES.LIBRARY.TV_SHOWS.DETAILS} element={<TvShowDetails />} />
+          <Route path={ROUTES.LIBRARY.TV_SHOWS.SEASON} element={<TvShowSeason />} />
         </Route>
-        <Route path="*" element={<NotFound />} />
+        <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
       </Route>
     </Routes>
   );

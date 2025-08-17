@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/constants/routes';
 
 export default function TrendingMovies() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -10,7 +11,7 @@ export default function TrendingMovies() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      navigate(ROUTES.SEARCH.createUrl(searchQuery));
     }
   };
 

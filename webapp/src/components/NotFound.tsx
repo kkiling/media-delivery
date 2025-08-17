@@ -1,5 +1,6 @@
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/constants/routes';
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -14,7 +15,12 @@ export default function NotFound() {
             Oops! The page you&apos;re looking for seems to have vanished into thin air like a movie
             plot twist.
           </p>
-          <Button variant="primary" size="lg" onClick={() => navigate('/')} className="px-4">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => navigate(ROUTES.HOME)}
+            className="px-4"
+          >
             Back to Homepage
           </Button>
         </Col>
