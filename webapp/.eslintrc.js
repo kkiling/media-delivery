@@ -24,6 +24,13 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/no-unescaped-entities': 'off',
+    'prettier/prettier': ['error', {
+      'endOfLine': 'auto',
+      'singleQuote': true,
+      'semi': true,
+      'printWidth': 100
+    }]
   },
   settings: {
     react: {
