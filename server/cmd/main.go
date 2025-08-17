@@ -11,9 +11,9 @@ import (
 	"github.com/kkiling/goplatform/config"
 	platformserver "github.com/kkiling/goplatform/server"
 
-	appconfig "github.com/kkiling/torrent-to-media-server/internal/config"
-	"github.com/kkiling/torrent-to-media-server/internal/container"
-	"github.com/kkiling/torrent-to-media-server/internal/server"
+	appconfig "github.com/kkiling/media-delivery/internal/config"
+	"github.com/kkiling/media-delivery/internal/container"
+	"github.com/kkiling/media-delivery/internal/server"
 )
 
 func main() {
@@ -40,21 +40,25 @@ func main() {
 		log.Fatal(err)
 	}
 
+	logger := cn.GetLogger()
+
+	if err := sqliteMigrate(logger, cfg.Sqlite.SqliteDsn); err != nil {
+		logger.Fatal(err)
+	}
+
 	go func() {
 		err = cn.MkvMergePipeline().StartMergePipeline(ctx)
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 		}
 	}()
 
 	go func() {
 		err = cn.GetContentDelivery().Complete(ctx)
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 		}
 	}()
-
-	logger := cn.GetLogger()
 
 	srv := server.NewTorrent2EmbyServer(
 		logger,
@@ -72,7 +76,7 @@ func main() {
 	go func() {
 		err = srv.Start(ctx)
 		if err != nil {
-			log.Fatalf("fail start app: %v", err)
+			logger.Fatalf("fail start app: %v", err)
 		}
 	}()
 

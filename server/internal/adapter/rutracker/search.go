@@ -9,7 +9,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 func (api *Api) SearchTorrents(query string) (*TorrentResponse, error) {

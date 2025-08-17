@@ -7,9 +7,9 @@ import (
 
 	"github.com/kkiling/goplatform/storagebase"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/themoviedb"
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 )
 
 const (

@@ -6,9 +6,9 @@ import (
 
 	"github.com/samber/lo"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 )
 
 type GenerateSearchQueryParams struct {

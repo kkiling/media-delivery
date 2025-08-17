@@ -8,10 +8,10 @@ import (
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
 type Runner struct {
@@ -314,26 +314,11 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data.MergeVideoStatus = status
 					if status.IsComplete {
 						if len(status.Errors) == 0 {
-							return stepContext.Next(SetVideoFileGroup).WithData(data)
+							return stepContext.Next(GetCatalogsSize).WithData(data)
 						}
 						return stepContext.Error(fmt.Errorf("merge videos contains errors")).WithData(data)
 					}
 					return stepContext.Empty().WithData(data)
-				},
-			},
-			SetVideoFileGroup: {
-				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
-					data := stepContext.State.Data
-					files := lo.Map(data.ContentMatches, func(item delivery.ContentMatches, _ int) string {
-						return item.Episode.FileName
-					})
-					// Установка группы файлам
-					err := r.contentDelivery.SetVideoFileGroup(ctx, files)
-					if err != nil {
-						return stepContext.Error(fmt.Errorf("SetVideoFileGroup: %w", err))
-					}
-
-					return stepContext.Next(GetCatalogsSize)
 				},
 			},
 			GetCatalogsSize: {

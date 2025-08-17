@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
 type DeliveryStatus string

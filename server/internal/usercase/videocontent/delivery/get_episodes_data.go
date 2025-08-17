@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
 	"github.com/samber/lo"
+
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 )
 
 type GetEpisodesDataParams struct {

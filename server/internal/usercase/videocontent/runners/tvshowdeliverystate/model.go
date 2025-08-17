@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
+
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 )
 
 // StepDelivery статус доставки видео файлов до медиа сервера
@@ -49,8 +50,6 @@ const (
 	CreateHardLinkCopy StepDelivery = "create_symlink_copy"
 	// GetCatalogsSize получение размеров каталогов сериала
 	GetCatalogsSize = "get_catalogs_size"
-	// SetVideoFileGroup установка группы файлам
-	SetVideoFileGroup StepDelivery = "set_video_file_group"
 
 	// SetMediaMetaData установка методаных серий сезона сериала / фильма в медиасервере
 	SetMediaMetaData StepDelivery = "set_media_meta_data"

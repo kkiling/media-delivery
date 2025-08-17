@@ -7,20 +7,20 @@ import (
 	"github.com/kkiling/goplatform/storagebase/sqlitebase"
 	"github.com/kkiling/statemachine"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/emby"
-	prepareTVShow "github.com/kkiling/torrent-to-media-server/internal/adapter/matchtvshow"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/mkvmerge"
-	mkvsqlite "github.com/kkiling/torrent-to-media-server/internal/adapter/mkvmerge/storage/sqlite"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/qbittorrent"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/rutracker"
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/themoviedb"
-	"github.com/kkiling/torrent-to-media-server/internal/config"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	tvShowLibrarySqlite "github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary/storage/sqlite"
-	contentDelivery "github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content"
-	contentSqlite "github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content/storage/sqlite"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners/tvshowdeliverystate"
+	"github.com/kkiling/media-delivery/internal/adapter/emby"
+	prepareTVShow "github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
+	"github.com/kkiling/media-delivery/internal/adapter/mkvmerge"
+	mkvsqlite "github.com/kkiling/media-delivery/internal/adapter/mkvmerge/storage/sqlite"
+	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
+	"github.com/kkiling/media-delivery/internal/adapter/rutracker"
+	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
+	"github.com/kkiling/media-delivery/internal/config"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	tvShowLibrarySqlite "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/sqlite"
+	contentDelivery "github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
+	contentSqlite "github.com/kkiling/media-delivery/internal/usercase/videocontent/content/storage/sqlite"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
 type Container struct {
@@ -110,7 +110,6 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 			BasePath:                   cfg.DeliveryConfig.BasePath,
 			TVShowTorrentSavePath:      cfg.DeliveryConfig.TVShowTorrentSavePath,
 			TVShowMediaSaveTvShowsPath: cfg.DeliveryConfig.TVShowMediaSaveTvShowsPath,
-			UserGroup:                  cfg.DeliveryConfig.UserGroup,
 		},
 		tvShowLibrary,
 		rutrackerApi,

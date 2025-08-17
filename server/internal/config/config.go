@@ -30,7 +30,7 @@ type AppConfig struct {
 	Rutracker      RutrackerConfig   `yaml:"rutracker"`
 	QBittorrent    QBittorrentConfig `yaml:"qbittorrent"`
 	Emby           EmbyConfig        `yaml:"emby"`
-	Sqlite         SqliteConfgi      `yaml:"sqlite"`
+	Sqlite         SqliteConfig      `yaml:"sqlite"`
 	DeliveryConfig DeliveryConfig    `yaml:"delivery"`
 }
 
@@ -60,7 +60,7 @@ type EmbyConfig struct {
 	ApiUrl string `yaml:"api_url"`
 }
 
-type SqliteConfgi struct {
+type SqliteConfig struct {
 	SqliteDsn string `yaml:"sqlite_dsn"`
 }
 
@@ -85,7 +85,6 @@ type DeliveryConfig struct {
 	BasePath                   string `yaml:"base_path"`
 	TVShowTorrentSavePath      string `yaml:"tv_show_torrent_save_path"`
 	TVShowMediaSaveTvShowsPath string `yaml:"tv_show_media_save_tv_shows_path"`
-	UserGroup                  string `yaml:"user_group"`
 }
 
 func loadCfg[T any](cfgName string, cfgProvider config.Provider) (*T, error) {
@@ -118,7 +117,7 @@ func NewEnvConfig(cfgProvider config.Provider) (*AppConfig, error) {
 		return nil, err
 	}
 
-	sqliteConfgi, err := loadCfg[SqliteConfgi](SqliteName, cfgProvider)
+	sqliteConfg, err := loadCfg[SqliteConfig](SqliteName, cfgProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +138,7 @@ func NewEnvConfig(cfgProvider config.Provider) (*AppConfig, error) {
 		Rutracker:      *rutrackerConfig,
 		QBittorrent:    *qBittorrentConfig,
 		Emby:           *embyConfig,
-		Sqlite:         *sqliteConfgi,
+		Sqlite:         *sqliteConfg,
 		DeliveryConfig: *deliveryConfig,
 	}, nil
 }

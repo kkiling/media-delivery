@@ -7,12 +7,21 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"syscall"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 func (api *Api) saveCookies() error {
 	api.logger.Debugf("Save cookies")
+
+	// Проверяем существование каталога
+	if _, err := os.Stat(api.cookiesDir); os.IsNotExist(err) {
+		// Создаем каталог
+		if mkdirErr := syscall.Mkdir(api.cookiesDir, 0775); mkdirErr != nil {
+			return fmt.Errorf("syscall.Mkdir: %w", mkdirErr)
+		}
+	}
 
 	cookiesPath := filepath.Join(api.cookiesDir, cookeFile)
 	file, err := os.Create(cookiesPath)

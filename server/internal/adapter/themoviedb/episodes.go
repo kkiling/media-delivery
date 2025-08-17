@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 func (api *API) GetSeasonEpisodes(ctx context.Context, tvID uint64, seasonNumber uint8, language Language) ([]Episode, error) {

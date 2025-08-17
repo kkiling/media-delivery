@@ -13,11 +13,11 @@ import (
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners/tvshowdeliverystate"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
 type Service struct {

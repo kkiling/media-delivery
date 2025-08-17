@@ -7,8 +7,8 @@ import (
 	"github.com/kkiling/goplatform/server"
 	"github.com/kkiling/statemachine"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/usercase/err"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 // HandleError обработчик ошибок

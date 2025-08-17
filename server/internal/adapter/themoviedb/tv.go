@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVShow, error) {

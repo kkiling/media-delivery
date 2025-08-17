@@ -12,7 +12,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 )
 
 func TestStorage_SaveAndGetTVShow(t *testing.T) {

@@ -2,12 +2,13 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: torrent-to-media-server/videocontent.proto
+// source: media-delivery/videocontent.proto
 
 package api
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,11 +20,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VideoContentService_CreateVideoContent_FullMethodName      = "/torrenttomediaserver.VideoContentService/CreateVideoContent"
-	VideoContentService_GetVideoContent_FullMethodName         = "/torrenttomediaserver.VideoContentService/GetVideoContent"
-	VideoContentService_GetTVShowDeliveryData_FullMethodName   = "/torrenttomediaserver.VideoContentService/GetTVShowDeliveryData"
-	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/torrenttomediaserver.VideoContentService/ChoseTorrentOptions"
-	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/torrenttomediaserver.VideoContentService/ChoseFileMatchesOptions"
+	VideoContentService_CreateVideoContent_FullMethodName      = "/mediadelivery.VideoContentService/CreateVideoContent"
+	VideoContentService_GetVideoContent_FullMethodName         = "/mediadelivery.VideoContentService/GetVideoContent"
+	VideoContentService_GetTVShowDeliveryData_FullMethodName   = "/mediadelivery.VideoContentService/GetTVShowDeliveryData"
+	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/mediadelivery.VideoContentService/ChoseTorrentOptions"
+	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/mediadelivery.VideoContentService/ChoseFileMatchesOptions"
 )
 
 // VideoContentServiceClient is the client API for VideoContentService service.
@@ -244,7 +245,7 @@ func _VideoContentService_ChoseFileMatchesOptions_Handler(srv interface{}, ctx c
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var VideoContentService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "torrenttomediaserver.VideoContentService",
+	ServiceName: "mediadelivery.VideoContentService",
 	HandlerType: (*VideoContentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -269,5 +270,5 @@ var VideoContentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "torrent-to-media-server/videocontent.proto",
+	Metadata: "media-delivery/videocontent.proto",
 }

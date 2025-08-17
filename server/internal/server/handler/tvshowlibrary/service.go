@@ -8,8 +8,8 @@ import (
 	"github.com/kkiling/goplatform/server"
 	"google.golang.org/grpc"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/tvshowlibrary"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 // TVShowLibrary юзеркейс работы с библиотекой сериалов

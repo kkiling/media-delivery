@@ -3,7 +3,7 @@ package common
 import (
 	"fmt"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 )
 
 type TVShowID struct {

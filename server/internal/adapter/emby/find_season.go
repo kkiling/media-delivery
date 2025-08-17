@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 // GetCatalogInfo возвращает список файлов в торренте по его хешу
