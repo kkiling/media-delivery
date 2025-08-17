@@ -1,12 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import { Layout, NotFound } from './components';
+import {
+  Home,
+  Library,
+  MovieDetails,
+  Movies,
+  TvShows,
+  TvShowSeason,
+  TvShowDetails,
+  Search,
+} from './pages';
 
 function App() {
   return (
-    <div className="container mt-5">
-      <button className="btn btn-primary">Кнопка Bootstrap1</button>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="search" element={<Search />} />
+        <Route path="library" element={<Library />}>
+          <Route path="movies" element={<Movies />} />
+          <Route path="movies/:id" element={<MovieDetails />} />
+          <Route path="tvshows" element={<TvShows />} />
+          <Route path="tvshows/:id" element={<TvShowDetails />} />
+          <Route path="tvshows/:id/:season" element={<TvShowSeason />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }
 
