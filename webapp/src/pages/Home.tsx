@@ -1,5 +1,5 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { TrendingMovies, TrendingTvShows, Search } from '@/components';
+import { TrendingMovies, TrendingTvShows, MainSearch } from '@/components';
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       {/* Hero Section with Search */}
       <Row className="mb-4" style={{ minHeight: '200px' }}>
         <Col>
-          <Search />
+          <MainSearch />
         </Col>
       </Row>
 
