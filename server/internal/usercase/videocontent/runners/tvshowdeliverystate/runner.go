@@ -8,10 +8,10 @@ import (
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
-	ucerr "github.com/kkiling/torrent-to-media-server/internal/usercase/err"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners"
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
 type Runner struct {

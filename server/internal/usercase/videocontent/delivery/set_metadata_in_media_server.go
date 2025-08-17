@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/emby"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/adapter/emby"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 )
 
 type SetMediaMetaDataParams struct {

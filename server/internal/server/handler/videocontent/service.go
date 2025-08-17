@@ -8,9 +8,9 @@ import (
 	"github.com/kkiling/goplatform/server"
 	"google.golang.org/grpc"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 // VideoContent юзеркейс работы с доставкой видео файлов

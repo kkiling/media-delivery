@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 type rawTorrentInfo struct {

@@ -1,10 +1,10 @@
 package videocontent
 
 import (
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/content"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/delivery"
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/runners/tvshowdeliverystate"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
 type TVShowID = common.TVShowID

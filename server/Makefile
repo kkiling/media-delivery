@@ -1,4 +1,4 @@
-TEST_DB_NAME:=./torrent2mediaserver.db
+TEST_DB_NAME:=./media-delivery.db
 TEST_DB_PATH := $(CURDIR)/$(notdir ${TEST_DB_NAME})
 GOPATH_BIN := $(GOPATH)/bin
 
@@ -22,7 +22,7 @@ test:
 .PHONY: format
 format:
 	@echo "\n --- 🚀 Start format imports --- \n"
-	smartimports -local "github.com/kkiling/torrent-to-media-server/" -path . #-exclude pkg/mocks
+	smartimports -local "github.com/kkiling/media-delivery/" -path . #-exclude pkg/mocks
 
 .PHONY: test-db
 test-db:
@@ -32,7 +32,7 @@ test-db:
 	rm -f "${TEST_DB_PATH}-wal"
 	@echo "\n --- 🖲️ statemachine sqlite migrations --- \n"
 	goose  -dir=./migrations/sqlite/state sqlite3 ${TEST_DB_PATH} up
-	@echo "\n --- 🖲️ torrent2media sqlite migrations --- \n"
+	@echo "\n --- 🖲️ media-delivery sqlite migrations --- \n"
 	goose -dir=./migrations/sqlite sqlite3 ${TEST_DB_PATH} up
 	@echo "\n --- 🖲️ Creating .testenv file --- \n"
 	rm -f ./testenv
@@ -44,7 +44,7 @@ clear-cache:
 .PHONY: generate
 generate:
 	mkdir -p vendor.protogen
-	cp -R api/torrent-to-media-server/ vendor.protogen/
+	cp -R api/media-delivery/ vendor.protogen/
 	buf dep update
 	buf generate
 
@@ -53,4 +53,4 @@ run:
 	go run ./cmd/main.go
 
 build-docker:
-	docker build -f build/Dockerfile -t torrent2mediaserver:latest .
+	docker build -f build/Dockerfile -t media-delivery-server:latest .

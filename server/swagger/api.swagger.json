@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Torrent to media server API",
+    "title": "Media delivery API",
     "version": "0.1"
   },
   "tags": [

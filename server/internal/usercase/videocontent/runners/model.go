@@ -1,6 +1,6 @@
 package runners
 
-import "github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent/common"
+import "github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 
 type Type string
 

@@ -37,4 +37,4 @@ ENV LC_ALL=en_US.UTF-8
 EXPOSE 8080 8181
 
 # Запуск через s6-setuidgid abc — тогда LSIO уже настроит UID/GID
-CMD ["env", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "s6-setuidgid", "abc", "/app/server_app", "-c", "/config/config.yaml"]
+CMD ["env", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "UMASK=002", "s6-setuidgid", "abc", "/app/server_app", "-c", "/config/config.yaml"]

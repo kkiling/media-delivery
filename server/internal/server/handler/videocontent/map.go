@@ -4,8 +4,8 @@ import (
 	"github.com/samber/lo"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/kkiling/torrent-to-media-server/internal/usercase/videocontent"
-	desc "github.com/kkiling/torrent-to-media-server/pkg/gen/torrent-to-media-server"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 func mapContentIDReq(id *desc.ContentID) videocontent.ContentID {

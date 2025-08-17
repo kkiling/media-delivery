@@ -2,17 +2,18 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: torrent-to-media-server/common.proto
+// source: media-delivery/common.proto
 
 package api
 
 import (
-	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -32,7 +33,7 @@ type ErrorInfo struct {
 
 func (x *ErrorInfo) Reset() {
 	*x = ErrorInfo{}
-	mi := &file_torrent_to_media_server_common_proto_msgTypes[0]
+	mi := &file_media_delivery_common_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +45,7 @@ func (x *ErrorInfo) String() string {
 func (*ErrorInfo) ProtoMessage() {}
 
 func (x *ErrorInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_torrent_to_media_server_common_proto_msgTypes[0]
+	mi := &file_media_delivery_common_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +58,7 @@ func (x *ErrorInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorInfo.ProtoReflect.Descriptor instead.
 func (*ErrorInfo) Descriptor() ([]byte, []int) {
-	return file_torrent_to_media_server_common_proto_rawDescGZIP(), []int{0}
+	return file_media_delivery_common_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ErrorInfo) GetDescription() string {
@@ -84,7 +85,7 @@ type FieldViolation struct {
 
 func (x *FieldViolation) Reset() {
 	*x = FieldViolation{}
-	mi := &file_torrent_to_media_server_common_proto_msgTypes[1]
+	mi := &file_media_delivery_common_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -96,7 +97,7 @@ func (x *FieldViolation) String() string {
 func (*FieldViolation) ProtoMessage() {}
 
 func (x *FieldViolation) ProtoReflect() protoreflect.Message {
-	mi := &file_torrent_to_media_server_common_proto_msgTypes[1]
+	mi := &file_media_delivery_common_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +110,7 @@ func (x *FieldViolation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FieldViolation.ProtoReflect.Descriptor instead.
 func (*FieldViolation) Descriptor() ([]byte, []int) {
-	return file_torrent_to_media_server_common_proto_rawDescGZIP(), []int{1}
+	return file_media_delivery_common_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *FieldViolation) GetField() string {
@@ -126,37 +127,37 @@ func (x *FieldViolation) GetError() string {
 	return ""
 }
 
-var File_torrent_to_media_server_common_proto protoreflect.FileDescriptor
+var File_media_delivery_common_proto protoreflect.FileDescriptor
 
-const file_torrent_to_media_server_common_proto_rawDesc = "" +
+const file_media_delivery_common_proto_rawDesc = "" +
 	"\n" +
-	"$torrent-to-media-server/common.proto\x12\x14torrenttomediaserver\x1a.protoc-gen-openapiv2/options/annotations.proto\"~\n" +
+	"\x1bmedia-delivery/common.proto\x12\rmediadelivery\x1a.protoc-gen-openapiv2/options/annotations.proto\"w\n" +
 	"\tErrorInfo\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12O\n" +
-	"\x10field_violations\x18\x04 \x03(\v2$.torrenttomediaserver.FieldViolationR\x0ffieldViolations\"<\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12H\n" +
+	"\x10field_violations\x18\x04 \x03(\v2\x1d.mediadelivery.FieldViolationR\x0ffieldViolations\"<\n" +
 	"\x0eFieldViolation\x12\x14\n" +
 	"\x05field\x18\x01 \x01(\tR\x05field\x12\x14\n" +
-	"\x05error\x18\x02 \x01(\tR\x05errorB0Z.github.com/kkiling/torrent-to-media-server/apib\x06proto3"
+	"\x05error\x18\x02 \x01(\tR\x05errorB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
-	file_torrent_to_media_server_common_proto_rawDescOnce sync.Once
-	file_torrent_to_media_server_common_proto_rawDescData []byte
+	file_media_delivery_common_proto_rawDescOnce sync.Once
+	file_media_delivery_common_proto_rawDescData []byte
 )
 
-func file_torrent_to_media_server_common_proto_rawDescGZIP() []byte {
-	file_torrent_to_media_server_common_proto_rawDescOnce.Do(func() {
-		file_torrent_to_media_server_common_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_torrent_to_media_server_common_proto_rawDesc), len(file_torrent_to_media_server_common_proto_rawDesc)))
+func file_media_delivery_common_proto_rawDescGZIP() []byte {
+	file_media_delivery_common_proto_rawDescOnce.Do(func() {
+		file_media_delivery_common_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_media_delivery_common_proto_rawDesc), len(file_media_delivery_common_proto_rawDesc)))
 	})
-	return file_torrent_to_media_server_common_proto_rawDescData
+	return file_media_delivery_common_proto_rawDescData
 }
 
-var file_torrent_to_media_server_common_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_torrent_to_media_server_common_proto_goTypes = []any{
-	(*ErrorInfo)(nil),      // 0: torrenttomediaserver.ErrorInfo
-	(*FieldViolation)(nil), // 1: torrenttomediaserver.FieldViolation
+var file_media_delivery_common_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_media_delivery_common_proto_goTypes = []any{
+	(*ErrorInfo)(nil),      // 0: mediadelivery.ErrorInfo
+	(*FieldViolation)(nil), // 1: mediadelivery.FieldViolation
 }
-var file_torrent_to_media_server_common_proto_depIdxs = []int32{
-	1, // 0: torrenttomediaserver.ErrorInfo.field_violations:type_name -> torrenttomediaserver.FieldViolation
+var file_media_delivery_common_proto_depIdxs = []int32{
+	1, // 0: mediadelivery.ErrorInfo.field_violations:type_name -> mediadelivery.FieldViolation
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -164,26 +165,26 @@ var file_torrent_to_media_server_common_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_torrent_to_media_server_common_proto_init() }
-func file_torrent_to_media_server_common_proto_init() {
-	if File_torrent_to_media_server_common_proto != nil {
+func init() { file_media_delivery_common_proto_init() }
+func file_media_delivery_common_proto_init() {
+	if File_media_delivery_common_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_torrent_to_media_server_common_proto_rawDesc), len(file_torrent_to_media_server_common_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_media_delivery_common_proto_rawDesc), len(file_media_delivery_common_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_torrent_to_media_server_common_proto_goTypes,
-		DependencyIndexes: file_torrent_to_media_server_common_proto_depIdxs,
-		MessageInfos:      file_torrent_to_media_server_common_proto_msgTypes,
+		GoTypes:           file_media_delivery_common_proto_goTypes,
+		DependencyIndexes: file_media_delivery_common_proto_depIdxs,
+		MessageInfos:      file_media_delivery_common_proto_msgTypes,
 	}.Build()
-	File_torrent_to_media_server_common_proto = out.File
-	file_torrent_to_media_server_common_proto_goTypes = nil
-	file_torrent_to_media_server_common_proto_depIdxs = nil
+	File_media_delivery_common_proto = out.File
+	file_media_delivery_common_proto_goTypes = nil
+	file_media_delivery_common_proto_depIdxs = nil
 }

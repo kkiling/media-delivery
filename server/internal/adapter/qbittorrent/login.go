@@ -7,13 +7,22 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"syscall"
 
-	"github.com/kkiling/torrent-to-media-server/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
 // saveCookies сохраняет куки в файл
 func (api *Api) saveCookies() error {
 	api.logger.Debugf("Save cookies")
+
+	// Проверяем существование каталога
+	if _, err := os.Stat(api.cookiesDir); os.IsNotExist(err) {
+		// Создаем каталог
+		if mkdirErr := syscall.Mkdir(api.cookiesDir, 0775); mkdirErr != nil {
+			return fmt.Errorf("syscall.Mkdir: %w", mkdirErr)
+		}
+	}
 
 	cookiesPath := filepath.Join(api.cookiesDir, cookeFile)
 	file, err := os.Create(cookiesPath)
@@ -61,6 +70,22 @@ func (api *Api) loadCookies() (bool, error) {
 	return false, nil
 }
 
+func (api *Api) isLoggedIn() (bool, error) {
+	checkUrl := api.baseAPIUrl.String() + "/api/v2/app/version"
+	resp, err := api.httpClient.Get(checkUrl)
+	if err != nil {
+		return false, fmt.Errorf("check login request failed: %v", apierr.HandleRequestError(api.logger, err))
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		return true, nil
+	} else if resp.StatusCode == http.StatusForbidden {
+		return false, nil
+	}
+	return false, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+}
+
 func (api *Api) tryLogin() (bool, error) {
 	api.logger.Debugf("Try login")
 	form := url.Values{}
@@ -105,7 +130,14 @@ func (api *Api) login() error {
 	if isLoad, err := api.loadCookies(); err != nil {
 		return fmt.Errorf("failed to load cookies: %v", err)
 	} else if isLoad {
-		return nil
+
+		isLoggedIn, err := api.isLoggedIn()
+		if err != nil {
+			return fmt.Errorf("failed to check login status: %v", err)
+		}
+		if isLoggedIn {
+			return nil
+		}
 	}
 
 	if success, err := api.tryLogin(); err != nil {

@@ -2,12 +2,13 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: torrent-to-media-server/tvshow.proto
+// source: media-delivery/tvshow.proto
 
 package api
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TVShowLibraryService_SearchTVShow_FullMethodName          = "/torrenttomediaserver.TVShowLibraryService/SearchTVShow"
-	TVShowLibraryService_GetTVShowsFromLibrary_FullMethodName = "/torrenttomediaserver.TVShowLibraryService/GetTVShowsFromLibrary"
-	TVShowLibraryService_GetTVShowInfo_FullMethodName         = "/torrenttomediaserver.TVShowLibraryService/GetTVShowInfo"
-	TVShowLibraryService_GetSeasonEpisodes_FullMethodName     = "/torrenttomediaserver.TVShowLibraryService/GetSeasonEpisodes"
+	TVShowLibraryService_SearchTVShow_FullMethodName          = "/mediadelivery.TVShowLibraryService/SearchTVShow"
+	TVShowLibraryService_GetTVShowsFromLibrary_FullMethodName = "/mediadelivery.TVShowLibraryService/GetTVShowsFromLibrary"
+	TVShowLibraryService_GetTVShowInfo_FullMethodName         = "/mediadelivery.TVShowLibraryService/GetTVShowInfo"
+	TVShowLibraryService_GetSeasonEpisodes_FullMethodName     = "/mediadelivery.TVShowLibraryService/GetSeasonEpisodes"
 )
 
 // TVShowLibraryServiceClient is the client API for TVShowLibraryService service.
@@ -210,7 +211,7 @@ func _TVShowLibraryService_GetSeasonEpisodes_Handler(srv interface{}, ctx contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TVShowLibraryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "torrenttomediaserver.TVShowLibraryService",
+	ServiceName: "mediadelivery.TVShowLibraryService",
 	HandlerType: (*TVShowLibraryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -231,5 +232,5 @@ var TVShowLibraryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "torrent-to-media-server/tvshow.proto",
+	Metadata: "media-delivery/tvshow.proto",
 }
