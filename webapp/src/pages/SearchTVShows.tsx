@@ -42,7 +42,7 @@ const SearchTVShows = observer(() => {
           ) : (
             <>
               {searchTVShowsStore.shows.length > 0 ? (
-                <Row xs={1} md={2} lg={3} className="g-4">
+                <Row xs={1} md={2} lg={4} className="g-4">
                   {searchTVShowsStore.shows.map((show) => (
                     <Col key={show.id}>
                       <TVShowCard show={show} />
