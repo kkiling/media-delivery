@@ -11,6 +11,10 @@ export const RatingSection = ({
   voteCount,
   showVoteCount = true,
 }: RatingSectionProps) => {
+  if (voteAverage === 0) {
+    return null;
+  }
+
   return (
     <div className="mb-3">
       <div
