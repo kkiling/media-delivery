@@ -5,7 +5,7 @@ import { Search as SearchIcon, Film, Tv } from 'react-bootstrap-icons';
 import { ROUTES } from '@/constants/routes';
 
 const SEARCH_VALIDATION = {
-  MIN_LENGTH: 3,
+  MIN_LENGTH: 1,
   MAX_LENGTH: 256,
 } as const;
 
