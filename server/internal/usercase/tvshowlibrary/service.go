@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kkiling/goplatform/storagebase"
-
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
@@ -27,7 +25,7 @@ func NewService(
 	theMovieDb TheMovieDb,
 ) *Service {
 	return &Service{
-		storage:    storage,
+		// storage:    storage,
 		theMovieDb: theMovieDb,
 	}
 }
@@ -51,7 +49,7 @@ func (s *Service) SearchTVShow(ctx context.Context, params TVShowSearchParams) (
 
 // GetTVShowInfo получение подробной информации о сериале
 func (s *Service) GetTVShowInfo(ctx context.Context, params GetTVShowParams) (*GetTVShowResult, error) {
-	// Сначала тянем информацию о сериале из библиотеки
+	/*// Сначала тянем информацию о сериале из библиотеки
 	if tvShow, err := s.storage.GetTVShow(ctx, params.TVShowID); err != nil {
 		switch {
 		case errors.Is(err, storagebase.ErrNotFound):
@@ -63,7 +61,7 @@ func (s *Service) GetTVShowInfo(ctx context.Context, params GetTVShowParams) (*G
 		return &GetTVShowResult{
 			Result: tvShow,
 		}, err
-	}
+	}*/
 
 	response, err := s.theMovieDb.GetTV(ctx, params.TVShowID, language)
 	if err != nil {
@@ -76,9 +74,9 @@ func (s *Service) GetTVShowInfo(ctx context.Context, params GetTVShowParams) (*G
 	tvShow := mapTVShow(response)
 
 	// Получение информации о сериале, автоматически добавляет его в библиотеку
-	if err = s.storage.SaveOrUpdateTVShow(ctx, tvShow); err != nil {
+	/*if err = s.storage.SaveOrUpdateTVShow(ctx, tvShow); err != nil {
 		return nil, fmt.Errorf("s.storage.SaveTVShow: %w", err)
-	}
+	}*/
 
 	return &GetTVShowResult{
 		Result: tvShow,
@@ -93,7 +91,7 @@ func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisode
 	}
 
 	// сначала тянем информацию о эпизодах из библиотеки
-	if episodes, err := s.storage.GetSeasonEpisodes(ctx, params.TVShowID, params.SeasonNumber); err != nil {
+	/*if episodes, err := s.storage.GetSeasonEpisodes(ctx, params.TVShowID, params.SeasonNumber); err != nil {
 		switch {
 		case errors.Is(err, storagebase.ErrNotFound):
 			// Не найдено, идем дальше
@@ -104,7 +102,7 @@ func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisode
 		return &GetSeasonEpisodesResult{
 			Items: episodes,
 		}, err
-	}
+	}*/
 
 	response, err := s.theMovieDb.GetSeasonEpisodes(ctx, params.TVShowID, params.SeasonNumber, language)
 	if err != nil {
@@ -114,12 +112,12 @@ func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisode
 		return nil, fmt.Errorf("theMovieDb.GetSeasonEpisodes: %w", err)
 	}
 
-	episodes := mapEpisodes(response)
+	//episodes := mapEpisodes(response)
 
 	// Получение информации о эпизодах сериала, автоматически добавляет их в библиотеку
-	if err = s.storage.SaveOrUpdateSeasonEpisode(ctx, params.TVShowID, params.SeasonNumber, episodes); err != nil {
+	/*if err = s.storage.SaveOrUpdateSeasonEpisode(ctx, params.TVShowID, params.SeasonNumber, episodes); err != nil {
 		return nil, fmt.Errorf("s.storage.SaveSeasonEpisode: %w", err)
-	}
+	}*/
 
 	return &GetSeasonEpisodesResult{
 		Items: mapEpisodes(response),

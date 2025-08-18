@@ -728,10 +728,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "next_episode_to_air": {
-          "type": "string",
-          "format": "date-time"
-        },
         "number_of_episodes": {
           "type": "integer",
           "format": "int64"

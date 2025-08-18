@@ -52,17 +52,15 @@ func mapSeason(season themoviedb.Season) *Season {
 
 func mapTVShow(response *themoviedb.TVShow) *TVShow {
 	return &TVShow{
-		TVShowShort:      *mapTVShowShort(response.TVShowShort),
-		Backdrop:         mapImage(response.Backdrop),
-		Genres:           response.Genres,
-		LastAirDate:      response.LastAirDate,
-		NextEpisodeToAir: response.NextEpisodeToAir,
-		NumberOfEpisodes: response.NumberOfEpisodes,
-		NumberOfSeasons:  response.NumberOfSeasons,
-		OriginCountry:    response.OriginCountry,
-		Status:           response.Status,
-		Tagline:          response.Tagline,
-		Type:             response.Type,
+		TVShowShort:     *mapTVShowShort(response.TVShowShort),
+		Backdrop:        mapImage(response.Backdrop),
+		Genres:          response.Genres,
+		LastAirDate:     response.LastAirDate,
+		NumberOfSeasons: response.NumberOfSeasons,
+		OriginCountry:   response.OriginCountry,
+		Status:          response.Status,
+		Tagline:         response.Tagline,
+		Type:            response.Type,
 		Seasons: lo.Map(response.Seasons, func(item themoviedb.Season, index int) Season {
 			return *mapSeason(item)
 		}),

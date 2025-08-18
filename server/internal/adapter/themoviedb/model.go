@@ -71,7 +71,6 @@ type TVShow struct {
 	Backdrop         *Image
 	Genres           []string
 	LastAirDate      time.Time
-	NextEpisodeToAir time.Time
 	NumberOfEpisodes uint32
 	NumberOfSeasons  uint32
 	OriginCountry    []string

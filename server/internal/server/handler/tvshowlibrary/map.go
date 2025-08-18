@@ -66,7 +66,6 @@ func mapTvShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 		Backdrop:         mapImage(res.Backdrop),
 		Genres:           res.Genres,
 		LastAirDate:      timestamppb.New(res.LastAirDate),
-		NextEpisodeToAir: timestamppb.New(res.NextEpisodeToAir),
 		NumberOfEpisodes: res.NumberOfEpisodes,
 		NumberOfSeasons:  res.NumberOfSeasons,
 		OriginCountry:    res.OriginCountry,

@@ -79,7 +79,6 @@ message TVShow {
   optional Image backdrop = 10;
   repeated string genres = 11;
   google.protobuf.Timestamp last_air_date = 12;
-  google.protobuf.Timestamp next_episode_to_air = 13;
   uint32 number_of_episodes = 14;
   uint32 number_of_seasons = 15;
   repeated string origin_country = 16;

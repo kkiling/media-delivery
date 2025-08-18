@@ -207,7 +207,6 @@ type TVShow struct {
 	Backdrop         *Image                 `protobuf:"bytes,10,opt,name=backdrop,proto3,oneof" json:"backdrop,omitempty"`
 	Genres           []string               `protobuf:"bytes,11,rep,name=genres,proto3" json:"genres,omitempty"`
 	LastAirDate      *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=last_air_date,json=lastAirDate,proto3" json:"last_air_date,omitempty"`
-	NextEpisodeToAir *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=next_episode_to_air,json=nextEpisodeToAir,proto3" json:"next_episode_to_air,omitempty"`
 	NumberOfEpisodes uint32                 `protobuf:"varint,14,opt,name=number_of_episodes,json=numberOfEpisodes,proto3" json:"number_of_episodes,omitempty"`
 	NumberOfSeasons  uint32                 `protobuf:"varint,15,opt,name=number_of_seasons,json=numberOfSeasons,proto3" json:"number_of_seasons,omitempty"`
 	OriginCountry    []string               `protobuf:"bytes,16,rep,name=origin_country,json=originCountry,proto3" json:"origin_country,omitempty"`
@@ -329,13 +328,6 @@ func (x *TVShow) GetGenres() []string {
 func (x *TVShow) GetLastAirDate() *timestamppb.Timestamp {
 	if x != nil {
 		return x.LastAirDate
-	}
-	return nil
-}
-
-func (x *TVShow) GetNextEpisodeToAir() *timestamppb.Timestamp {
-	if x != nil {
-		return x.NextEpisodeToAir
 	}
 	return nil
 }
@@ -979,7 +971,7 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"popularity\x18\t \x01(\x02R\n" +
 	"popularityB\t\n" +
-	"\a_poster\"\xb7\x06\n" +
+	"\a_poster\"\xec\x05\n" +
 	"\x06TVShow\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
@@ -996,8 +988,7 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\bbackdrop\x18\n" +
 	" \x01(\v2\x14.mediadelivery.ImageH\x01R\bbackdrop\x88\x01\x01\x12\x16\n" +
 	"\x06genres\x18\v \x03(\tR\x06genres\x12>\n" +
-	"\rlast_air_date\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vlastAirDate\x12I\n" +
-	"\x13next_episode_to_air\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\x10nextEpisodeToAir\x12,\n" +
+	"\rlast_air_date\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vlastAirDate\x12,\n" +
 	"\x12number_of_episodes\x18\x0e \x01(\rR\x10numberOfEpisodes\x12*\n" +
 	"\x11number_of_seasons\x18\x0f \x01(\rR\x0fnumberOfSeasons\x12%\n" +
 	"\x0eorigin_country\x18\x10 \x03(\tR\roriginCountry\x12\x16\n" +
@@ -1091,29 +1082,28 @@ var file_media_delivery_tvshow_proto_depIdxs = []int32{
 	13, // 3: mediadelivery.TVShow.first_air_date:type_name -> google.protobuf.Timestamp
 	0,  // 4: mediadelivery.TVShow.backdrop:type_name -> mediadelivery.Image
 	13, // 5: mediadelivery.TVShow.last_air_date:type_name -> google.protobuf.Timestamp
-	13, // 6: mediadelivery.TVShow.next_episode_to_air:type_name -> google.protobuf.Timestamp
-	3,  // 7: mediadelivery.TVShow.seasons:type_name -> mediadelivery.Season
-	13, // 8: mediadelivery.Season.air_date:type_name -> google.protobuf.Timestamp
-	0,  // 9: mediadelivery.Season.poster:type_name -> mediadelivery.Image
-	13, // 10: mediadelivery.Episode.air_date:type_name -> google.protobuf.Timestamp
-	0,  // 11: mediadelivery.Episode.still:type_name -> mediadelivery.Image
-	1,  // 12: mediadelivery.SearchTVShowResponse.items:type_name -> mediadelivery.TVShowShort
-	2,  // 13: mediadelivery.GetTVShowInfoResponse.result:type_name -> mediadelivery.TVShow
-	4,  // 14: mediadelivery.GetSeasonEpisodesResponse.items:type_name -> mediadelivery.Episode
-	1,  // 15: mediadelivery.GetTVShowsFromLibraryResponse.items:type_name -> mediadelivery.TVShowShort
-	5,  // 16: mediadelivery.TVShowLibraryService.SearchTVShow:input_type -> mediadelivery.SearchTVShowRequest
-	11, // 17: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:input_type -> mediadelivery.GetTVShowsFromLibraryRequest
-	7,  // 18: mediadelivery.TVShowLibraryService.GetTVShowInfo:input_type -> mediadelivery.GetTVShowInfoRequest
-	9,  // 19: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:input_type -> mediadelivery.GetSeasonEpisodesRequest
-	6,  // 20: mediadelivery.TVShowLibraryService.SearchTVShow:output_type -> mediadelivery.SearchTVShowResponse
-	12, // 21: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:output_type -> mediadelivery.GetTVShowsFromLibraryResponse
-	8,  // 22: mediadelivery.TVShowLibraryService.GetTVShowInfo:output_type -> mediadelivery.GetTVShowInfoResponse
-	10, // 23: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:output_type -> mediadelivery.GetSeasonEpisodesResponse
-	20, // [20:24] is the sub-list for method output_type
-	16, // [16:20] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	3,  // 6: mediadelivery.TVShow.seasons:type_name -> mediadelivery.Season
+	13, // 7: mediadelivery.Season.air_date:type_name -> google.protobuf.Timestamp
+	0,  // 8: mediadelivery.Season.poster:type_name -> mediadelivery.Image
+	13, // 9: mediadelivery.Episode.air_date:type_name -> google.protobuf.Timestamp
+	0,  // 10: mediadelivery.Episode.still:type_name -> mediadelivery.Image
+	1,  // 11: mediadelivery.SearchTVShowResponse.items:type_name -> mediadelivery.TVShowShort
+	2,  // 12: mediadelivery.GetTVShowInfoResponse.result:type_name -> mediadelivery.TVShow
+	4,  // 13: mediadelivery.GetSeasonEpisodesResponse.items:type_name -> mediadelivery.Episode
+	1,  // 14: mediadelivery.GetTVShowsFromLibraryResponse.items:type_name -> mediadelivery.TVShowShort
+	5,  // 15: mediadelivery.TVShowLibraryService.SearchTVShow:input_type -> mediadelivery.SearchTVShowRequest
+	11, // 16: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:input_type -> mediadelivery.GetTVShowsFromLibraryRequest
+	7,  // 17: mediadelivery.TVShowLibraryService.GetTVShowInfo:input_type -> mediadelivery.GetTVShowInfoRequest
+	9,  // 18: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:input_type -> mediadelivery.GetSeasonEpisodesRequest
+	6,  // 19: mediadelivery.TVShowLibraryService.SearchTVShow:output_type -> mediadelivery.SearchTVShowResponse
+	12, // 20: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:output_type -> mediadelivery.GetTVShowsFromLibraryResponse
+	8,  // 21: mediadelivery.TVShowLibraryService.GetTVShowInfo:output_type -> mediadelivery.GetTVShowInfoResponse
+	10, // 22: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:output_type -> mediadelivery.GetSeasonEpisodesResponse
+	19, // [19:23] is the sub-list for method output_type
+	15, // [15:19] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_media_delivery_tvshow_proto_init() }
