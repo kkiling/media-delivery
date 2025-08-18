@@ -7,6 +7,10 @@ export default function Home() {
       {/* Hero Section with Search */}
       <Row className="mb-4" style={{ minHeight: '200px' }}>
         <Col>
+          <h1 className="text-center mb-3">Welcome to Media Delivery</h1>
+          <p className="text-center text-muted mb-4">
+            Your gateway to thousands of movies and TV shows
+          </p>
           <MainSearch />
         </Col>
       </Row>

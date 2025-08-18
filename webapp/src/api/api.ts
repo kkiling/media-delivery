@@ -12,12 +12,12 @@
 
 /** @default "TORRENT_STATE_UNKNOWN" */
 export enum TorrentState {
-  TORRENT_STATE_UNKNOWN = "TORRENT_STATE_UNKNOWN",
-  TORRENT_STATE_ERROR = "TORRENT_STATE_ERROR",
-  TORRENT_STATE_UPLOADING = "TORRENT_STATE_UPLOADING",
-  TORRENT_STATE_DOWNLOADING = "TORRENT_STATE_DOWNLOADING",
-  TORRENT_STATE_STOPPED = "TORRENT_STATE_STOPPED",
-  TORRENT_STATE_QUEUED = "TORRENT_STATE_QUEUED",
+  TORRENT_STATE_UNKNOWN = 'TORRENT_STATE_UNKNOWN',
+  TORRENT_STATE_ERROR = 'TORRENT_STATE_ERROR',
+  TORRENT_STATE_UPLOADING = 'TORRENT_STATE_UPLOADING',
+  TORRENT_STATE_DOWNLOADING = 'TORRENT_STATE_DOWNLOADING',
+  TORRENT_STATE_STOPPED = 'TORRENT_STATE_STOPPED',
+  TORRENT_STATE_QUEUED = 'TORRENT_STATE_QUEUED',
 }
 
 /**
@@ -43,37 +43,37 @@ export enum TorrentState {
  * @default "TVShowDeliveryStatusUnknown"
  */
 export enum TVShowDeliveryStatus {
-  TVShowDeliveryStatusUnknown = "TVShowDeliveryStatusUnknown",
-  GenerateSearchQuery = "GenerateSearchQuery",
-  SearchTorrents = "SearchTorrents",
-  WaitingUserChoseTorrent = "WaitingUserChoseTorrent",
-  GetMagnetLink = "GetMagnetLink",
-  AddTorrentToTorrentClient = "AddTorrentToTorrentClient",
-  PrepareFileMatches = "PrepareFileMatches",
-  WaitingChoseFileMatches = "WaitingChoseFileMatches",
-  WaitingTorrentDownloadComplete = "WaitingTorrentDownloadComplete",
-  CreateVideoContentCatalogs = "CreateVideoContentCatalogs",
-  DeterminingNeedConvertFiles = "DeterminingNeedConvertFiles",
-  StartMergeVideoFiles = "StartMergeVideoFiles",
-  WaitingMergeVideoFiles = "WaitingMergeVideoFiles",
-  CreateHardLinkCopy = "CreateHardLinkCopy",
-  GetCatalogsSize = "GetCatalogsSize",
-  SetMediaMetaData = "SetMediaMetaData",
-  SendDeliveryNotification = "SendDeliveryNotification",
-  WaitingTorrentFiles = "WaitingTorrentFiles",
-  GetEpisodesData = "GetEpisodesData",
+  TVShowDeliveryStatusUnknown = 'TVShowDeliveryStatusUnknown',
+  GenerateSearchQuery = 'GenerateSearchQuery',
+  SearchTorrents = 'SearchTorrents',
+  WaitingUserChoseTorrent = 'WaitingUserChoseTorrent',
+  GetMagnetLink = 'GetMagnetLink',
+  AddTorrentToTorrentClient = 'AddTorrentToTorrentClient',
+  PrepareFileMatches = 'PrepareFileMatches',
+  WaitingChoseFileMatches = 'WaitingChoseFileMatches',
+  WaitingTorrentDownloadComplete = 'WaitingTorrentDownloadComplete',
+  CreateVideoContentCatalogs = 'CreateVideoContentCatalogs',
+  DeterminingNeedConvertFiles = 'DeterminingNeedConvertFiles',
+  StartMergeVideoFiles = 'StartMergeVideoFiles',
+  WaitingMergeVideoFiles = 'WaitingMergeVideoFiles',
+  CreateHardLinkCopy = 'CreateHardLinkCopy',
+  GetCatalogsSize = 'GetCatalogsSize',
+  SetMediaMetaData = 'SetMediaMetaData',
+  SendDeliveryNotification = 'SendDeliveryNotification',
+  WaitingTorrentFiles = 'WaitingTorrentFiles',
+  GetEpisodesData = 'GetEpisodesData',
 }
 
 /** @default "DeliveryStatusUnknown" */
 export enum DeliveryStatus {
-  DeliveryStatusUnknown = "DeliveryStatusUnknown",
-  DeliveryStatusFailed = "DeliveryStatusFailed",
-  DeliveryStatusInProgress = "DeliveryStatusInProgress",
-  DeliveryStatusDelivered = "DeliveryStatusDelivered",
+  DeliveryStatusUnknown = 'DeliveryStatusUnknown',
+  DeliveryStatusFailed = 'DeliveryStatusFailed',
+  DeliveryStatusInProgress = 'DeliveryStatusInProgress',
+  DeliveryStatusDelivered = 'DeliveryStatusDelivered',
 }
 
 export interface Any {
-  "@type"?: string;
+  '@type'?: string;
   [key: string]: any;
 }
 
@@ -325,9 +325,9 @@ export interface VideoFile {
 }
 
 export type QueryParamsType = Record<string | number, any>;
-export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
+export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;
 
-export interface FullRequestParams extends Omit<RequestInit, "body"> {
+export interface FullRequestParams extends Omit<RequestInit, 'body'> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -346,22 +346,18 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   cancelToken?: CancelToken;
 }
 
-export type RequestParams = Omit<
-  FullRequestParams,
-  "body" | "method" | "query" | "path"
->;
+export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
+  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>;
   securityWorker?: (
-    securityData: SecurityDataType | null,
+    securityData: SecurityDataType | null
   ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown>
-  extends Response {
+export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
   data: D;
   error: E;
 }
@@ -369,26 +365,25 @@ export interface HttpResponse<D extends unknown, E extends unknown = unknown>
 type CancelToken = Symbol | string | number;
 
 export enum ContentType {
-  Json = "application/json",
-  JsonApi = "application/vnd.api+json",
-  FormData = "multipart/form-data",
-  UrlEncoded = "application/x-www-form-urlencoded",
-  Text = "text/plain",
+  Json = 'application/json',
+  JsonApi = 'application/vnd.api+json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "";
+  public baseUrl: string = '';
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
   private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
-    fetch(...fetchParams);
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 
   private baseApiParams: RequestParams = {
-    credentials: "same-origin",
+    credentials: 'same-origin',
     headers: {},
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
   };
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
@@ -401,7 +396,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
+    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`;
   }
 
   protected addQueryParam(query: QueryParamsType, key: string) {
@@ -410,41 +405,37 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected addArrayQueryParam(query: QueryParamsType, key: string) {
     const value = query[key];
-    return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&');
   }
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter(
-      (key) => "undefined" !== typeof query[key],
-    );
+    const keys = Object.keys(query).filter((key) => 'undefined' !== typeof query[key]);
     return keys
       .map((key) =>
         Array.isArray(query[key])
           ? this.addArrayQueryParam(query, key)
-          : this.addQueryParam(query, key),
+          : this.addQueryParam(query, key)
       )
-      .join("&");
+      .join('&');
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
     const queryString = this.toQueryString(rawQuery);
-    return queryString ? `?${queryString}` : "";
+    return queryString ? `?${queryString}` : '';
   }
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
+      input !== null && (typeof input === 'object' || typeof input === 'string')
         ? JSON.stringify(input)
         : input,
     [ContentType.JsonApi]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
+      input !== null && (typeof input === 'object' || typeof input === 'string')
         ? JSON.stringify(input)
         : input,
     [ContentType.Text]: (input: any) =>
-      input !== null && typeof input !== "string"
-        ? JSON.stringify(input)
-        : input,
+      input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
     [ContentType.FormData]: (input: any) => {
       if (input instanceof FormData) {
         return input;
@@ -456,9 +447,9 @@ export class HttpClient<SecurityDataType = unknown> {
           key,
           property instanceof Blob
             ? property
-            : typeof property === "object" && property !== null
-              ? JSON.stringify(property)
-              : `${property}`,
+            : typeof property === 'object' && property !== null
+            ? JSON.stringify(property)
+            : `${property}`
         );
         return formData;
       }, new FormData());
@@ -466,10 +457,7 @@ export class HttpClient<SecurityDataType = unknown> {
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  protected mergeRequestParams(
-    params1: RequestParams,
-    params2?: RequestParams,
-  ): RequestParams {
+  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -482,9 +470,7 @@ export class HttpClient<SecurityDataType = unknown> {
     };
   }
 
-  protected createAbortSignal = (
-    cancelToken: CancelToken,
-  ): AbortSignal | undefined => {
+  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
       if (abortController) {
@@ -519,7 +505,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<HttpResponse<T, E>> => {
     const secureParams =
-      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+      ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -529,24 +515,16 @@ export class HttpClient<SecurityDataType = unknown> {
     const responseFormat = format || requestParams.format;
 
     return this.customFetch(
-      `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+      `${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`,
       {
         ...requestParams,
         headers: {
           ...(requestParams.headers || {}),
-          ...(type && type !== ContentType.FormData
-            ? { "Content-Type": type }
-            : {}),
+          ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
         },
-        signal:
-          (cancelToken
-            ? this.createAbortSignal(cancelToken)
-            : requestParams.signal) || null,
-        body:
-          typeof body === "undefined" || body === null
-            ? null
-            : payloadFormatter(body),
-      },
+        signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
+        body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
+      }
     ).then(async (response) => {
       const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
@@ -582,9 +560,7 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title Media delivery API
  * @version 0.1
  */
-export class Api<
-  SecurityDataType extends unknown,
-> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   v1 = {
     /**
      * No description
@@ -597,19 +573,19 @@ export class Api<
     videoContentServiceGetVideoContent: (
       query?: {
         /** @format uint64 */
-        "content_id.movie_id"?: string;
+        'content_id.movie_id'?: string;
         /** @format uint64 */
-        "content_id.tv_show.id"?: string;
+        'content_id.tv_show.id'?: string;
         /** @format int64 */
-        "content_id.tv_show.season_number"?: number;
+        'content_id.tv_show.season_number'?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<GetVideoContentResponse, Status>({
         path: `/v1/content`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -623,14 +599,14 @@ export class Api<
      */
     videoContentServiceCreateVideoContent: (
       body: CreateVideoContentRequest,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<CreateVideoContentResponse, Status>({
         path: `/v1/content`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -644,14 +620,14 @@ export class Api<
      */
     videoContentServiceChoseFileMatchesOptions: (
       body: ChoseFileMatchesOptionsRequest,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<ChoseFileMatchesOptionsResponse, Status>({
         path: `/v1/tvshow/delivery/chose-file-matches`,
-        method: "PATCH",
+        method: 'PATCH',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -665,14 +641,14 @@ export class Api<
      */
     videoContentServiceChoseTorrentOptions: (
       body: ChoseTorrentOptionsRequest,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<ChoseTorrentOptionsResponse, Status>({
         path: `/v1/tvshow/delivery/chose-torrent`,
-        method: "PATCH",
+        method: 'PATCH',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -687,19 +663,19 @@ export class Api<
     videoContentServiceGetTvShowDeliveryData: (
       query?: {
         /** @format uint64 */
-        "content_id.movie_id"?: string;
+        'content_id.movie_id'?: string;
         /** @format uint64 */
-        "content_id.tv_show.id"?: string;
+        'content_id.tv_show.id'?: string;
         /** @format int64 */
-        "content_id.tv_show.season_number"?: number;
+        'content_id.tv_show.season_number'?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<GetTVShowDeliveryDataResponse, Status>({
         path: `/v1/tvshow/delivery/data`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -711,14 +687,11 @@ export class Api<
      * @summary Получение подробной информации о сериале
      * @request GET:/v1/tvshow/info/{tv_show_id}
      */
-    tvShowLibraryServiceGetTvShowInfo: (
-      tvShowId: string,
-      params: RequestParams = {},
-    ) =>
+    tvShowLibraryServiceGetTvShowInfo: (tvShowId: string, params: RequestParams = {}) =>
       this.request<GetTVShowInfoResponse, Status>({
         path: `/v1/tvshow/info/${tvShowId}`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -733,12 +706,12 @@ export class Api<
     tvShowLibraryServiceGetSeasonEpisodes: (
       tvShowId: string,
       seasonNumber: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<GetSeasonEpisodesResponse, Status>({
         path: `/v1/tvshow/info/${tvShowId}/${seasonNumber}`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -753,8 +726,8 @@ export class Api<
     tvShowLibraryServiceGetTvShowsFromLibrary: (params: RequestParams = {}) =>
       this.request<GetTVShowsFromLibraryResponse, Status>({
         path: `/v1/tvshow/library`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -770,13 +743,13 @@ export class Api<
       query?: {
         query?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<SearchTVShowResponse, Status>({
         path: `/v1/tvshow/search`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
