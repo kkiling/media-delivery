@@ -4,15 +4,18 @@ import { ROUTES } from '@/constants/routes';
 export default function TvShowSeason() {
   const { id, season } = useParams<{ id: string; season: string }>();
 
-  if (!id || !season) {
+  const numberId = id ? parseInt(id, 10) : null;
+  const numberSeason = season ? parseInt(season, 10) : null;
+
+  if (!numberId || isNaN(numberId) || !numberSeason || isNaN(numberSeason)) {
     return <Navigate to={ROUTES.NOT_FOUND} />;
   }
 
   return (
     <div>
-      <h3>TV Show ID: {id}</h3>
-      <h4>Season: {season}</h4>
-      <Link to={ROUTES.LIBRARY.TV_SHOWS.getDetails(id)}>Back to TV Show</Link>
+      <h3>TV Show ID: {numberId}</h3>
+      <h4>Season: {numberSeason}</h4>
+      <Link to={ROUTES.LIBRARY.TV_SHOWS.getDetails(numberId)}>Back to TV Show</Link>
     </div>
   );
 }
