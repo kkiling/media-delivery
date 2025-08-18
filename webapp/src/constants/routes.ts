@@ -19,7 +19,7 @@ export const ROUTES = {
       ROOT: '/library/movies',
       DETAILS: '/library/movies/:id',
       // Helper function to generate movie details URL
-      getDetails: (id: string | number | undefined) => {
+      getDetails: (id: number | undefined) => {
         if (!id) return '/not-found';
         return `/library/movies/${id}`;
       },
@@ -29,11 +29,11 @@ export const ROUTES = {
       DETAILS: '/library/tvshows/:id',
       SEASON: '/library/tvshows/:id/:season',
       // Helper functions to generate TV show URLs
-      getDetails: (id: string | number | undefined) => {
+      getDetails: (id: number | undefined) => {
         if (!id) return '/not-found';
         return `/library/tvshows/${id}`;
       },
-      getSeason: (id: string | number | undefined, season: string | number | undefined) => {
+      getSeason: (id: number | undefined, season: number | undefined) => {
         if (!id || !season) return '/not-found';
         return `/library/tvshows/${id}/${season}`;
       },

@@ -9,19 +9,15 @@ import { Search as SearchIcon } from 'react-bootstrap-icons';
 
 const SearchTVShows = observer(() => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get('query')?.trim() || '';
 
   useEffect(() => {
-    searchTVShowsStore.searchShows(query);
+    if (query) {
+      searchTVShowsStore.searchShows(query);
+    }
   }, [query]);
 
-  const renderNoResults = () => (
-    <div className="text-center py-5">
-      <SearchIcon size={48} className="text-muted mb-3" />
-      <h4 className="text-muted">No TV shows found</h4>
-      <p className="text-muted mb-0">Try adjusting your search to find what you're looking for.</p>
-    </div>
-  );
+  const { loading, error, shows } = searchTVShowsStore;
 
   return (
     <Container className="mt-4">
@@ -29,30 +25,36 @@ const SearchTVShows = observer(() => {
         <MainSearch mode="tvshows" query={query} />
       </div>
 
-      {searchTVShowsStore.loading ? (
+      {loading && (
         <div className="text-center">
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         </div>
-      ) : (
+      )}
+
+      {!loading && error && <Alert variant="danger">{error}</Alert>}
+
+      {!loading && !error && (
         <>
-          {searchTVShowsStore.error ? (
-            <Alert variant="danger">{searchTVShowsStore.error}</Alert>
+          {shows.length > 0 ? (
+            <Row xs={1} md={2} lg={4} className="g-4">
+              {shows.map((show) => (
+                <Col key={show.id}>
+                  <TVShowCard show={show} />
+                </Col>
+              ))}
+            </Row>
           ) : (
-            <>
-              {searchTVShowsStore.shows.length > 0 ? (
-                <Row xs={1} md={2} lg={4} className="g-4">
-                  {searchTVShowsStore.shows.map((show) => (
-                    <Col key={show.id}>
-                      <TVShowCard show={show} />
-                    </Col>
-                  ))}
-                </Row>
-              ) : (
-                query && renderNoResults()
-              )}
-            </>
+            query && (
+              <div className="text-center py-5">
+                <SearchIcon size={48} className="text-muted mb-3" />
+                <h4 className="text-muted">No TV shows found</h4>
+                <p className="text-muted mb-0">
+                  Try adjusting your search to find what you're looking for.
+                </p>
+              </div>
+            )
           )}
         </>
       )}

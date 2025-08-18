@@ -7,16 +7,15 @@
 package api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -1573,12 +1572,12 @@ var File_media_delivery_videocontent_proto protoreflect.FileDescriptor
 
 const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\n" +
-	"!media-delivery/videocontent.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"?\n" +
-	"\bTVShowID\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12#\n" +
-	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"{\n" +
-	"\tContentID\x12\x1e\n" +
-	"\bmovie_id\x18\x01 \x01(\x04H\x00R\amovieId\x88\x01\x01\x125\n" +
+	"!media-delivery/videocontent.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
+	"\bTVShowID\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12#\n" +
+	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"\x84\x01\n" +
+	"\tContentID\x12'\n" +
+	"\bmovie_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03H\x00R\amovieId\x88\x01\x01\x125\n" +
 	"\atv_show\x18\x02 \x01(\v2\x17.mediadelivery.TVShowIDH\x01R\x06tvShow\x88\x01\x01B\v\n" +
 	"\t_movie_idB\n" +
 	"\n" +

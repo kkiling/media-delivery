@@ -7,16 +7,15 @@
 package api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -966,9 +965,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x05Image\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04w342\x18\x02 \x01(\tR\x04w342\x12\x1a\n" +
-	"\boriginal\x18\x03 \x01(\tR\boriginal\"\xd4\x02\n" +
-	"\vTVShowShort\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x12\n" +
+	"\boriginal\x18\x03 \x01(\tR\boriginal\"\xdd\x02\n" +
+	"\vTVShowShort\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\roriginal_name\x18\x03 \x01(\tR\foriginalName\x12\x1a\n" +
 	"\boverview\x18\x04 \x01(\tR\boverview\x121\n" +
@@ -980,9 +979,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"popularity\x18\t \x01(\x02R\n" +
 	"popularityB\t\n" +
-	"\a_poster\"\xae\x06\n" +
-	"\x06TVShow\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x12\n" +
+	"\a_poster\"\xb7\x06\n" +
+	"\x06TVShow\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\roriginal_name\x18\x03 \x01(\tR\foriginalName\x12\x1a\n" +
 	"\boverview\x18\x04 \x01(\tR\boverview\x121\n" +
@@ -1007,9 +1006,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x04type\x18\x13 \x01(\tR\x04type\x12/\n" +
 	"\aseasons\x18\x14 \x03(\v2\x15.mediadelivery.SeasonR\aseasonsB\t\n" +
 	"\a_posterB\v\n" +
-	"\t_backdrop\"\xaa\x02\n" +
-	"\x06Season\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x125\n" +
+	"\t_backdrop\"\xb3\x02\n" +
+	"\x06Season\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12#\n" +
 	"\repisode_count\x18\x03 \x01(\rR\fepisodeCount\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
@@ -1017,9 +1016,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x06poster\x18\x06 \x01(\v2\x14.mediadelivery.ImageH\x00R\x06poster\x88\x01\x01\x12#\n" +
 	"\rseason_number\x18\a \x01(\rR\fseasonNumber\x12!\n" +
 	"\fvote_average\x18\b \x01(\x02R\vvoteAverageB\t\n" +
-	"\a_poster\"\xe1\x02\n" +
-	"\aEpisode\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x125\n" +
+	"\a_poster\"\xea\x02\n" +
+	"\aEpisode\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12%\n" +
 	"\x0eepisode_number\x18\x03 \x01(\rR\repisodeNumber\x12!\n" +
 	"\fepisode_type\x18\x04 \x01(\tR\vepisodeType\x12\x12\n" +
@@ -1035,15 +1034,15 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x13SearchTVShowRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"H\n" +
 	"\x14SearchTVShowResponse\x120\n" +
-	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items\"4\n" +
-	"\x14GetTVShowInfoRequest\x12\x1c\n" +
+	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items\"=\n" +
+	"\x14GetTVShowInfoRequest\x12%\n" +
 	"\n" +
-	"tv_show_id\x18\x01 \x01(\x04R\btvShowId\"F\n" +
+	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\"F\n" +
 	"\x15GetTVShowInfoResponse\x12-\n" +
-	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"]\n" +
-	"\x18GetSeasonEpisodesRequest\x12\x1c\n" +
+	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"f\n" +
+	"\x18GetSeasonEpisodesRequest\x12%\n" +
 	"\n" +
-	"tv_show_id\x18\x01 \x01(\x04R\btvShowId\x12#\n" +
+	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\x12#\n" +
 	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"I\n" +
 	"\x19GetSeasonEpisodesResponse\x12,\n" +
 	"\x05items\x18\x01 \x03(\v2\x16.mediadelivery.EpisodeR\x05items\"\x1e\n" +

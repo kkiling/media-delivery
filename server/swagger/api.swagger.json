@@ -45,14 +45,14 @@
             "name": "content_id.movie_id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
             "name": "content_id.tv_show.id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
@@ -188,14 +188,14 @@
             "name": "content_id.movie_id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
             "name": "content_id.tv_show.id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
@@ -395,7 +395,7 @@
       "type": "object",
       "properties": {
         "movie_id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "tv_show": {
@@ -458,7 +458,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "air_date": {
@@ -631,7 +631,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "air_date": {
@@ -684,7 +684,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "name": {
@@ -835,7 +835,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "season_number": {
@@ -848,7 +848,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "name": {

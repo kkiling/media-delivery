@@ -56,12 +56,16 @@ service VideoContentService {
 }
 
 message TVShowID  {
-  uint64 id = 1;
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   uint32 season_number = 2;
 }
 
 message ContentID {
-  optional uint64 movie_id = 1;
+  optional uint64 movie_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   optional TVShowID tv_show = 2;
 }
 
