@@ -4,7 +4,8 @@ import { ROUTES } from '@/constants/routes';
 import { TVShowShort } from '@/api/api';
 import { useState } from 'react';
 import { Image as ImageIcon } from 'react-bootstrap-icons';
-import { formatDate, getRatingColor } from '@/utils/formatting';
+import { formatDate } from '@/utils/formatting';
+import { RatingSection } from './RatingSection';
 
 const CARD_CONFIG = {
   IMAGE_HEIGHT: 300,
@@ -40,17 +41,8 @@ export function TVShowCard({ show }: TVShowCardProps) {
         )}
 
         {show.vote_average !== undefined && (
-          <div
-            className={`position-absolute top-0 start-0 m-2 bg-${getRatingColor(
-              show.vote_average
-            )} text-white rounded-circle d-flex align-items-center justify-content-center`}
-            style={{
-              width: 40,
-              height: 40,
-              border: '2px solid white',
-            }}
-          >
-            <span className="fw-bold">{show.vote_average.toFixed(1)}</span>
+          <div className="position-absolute top-0 start-0 m-2">
+            <RatingSection voteAverage={show.vote_average} voteCount={0} showVoteCount={false} />
           </div>
         )}
       </div>

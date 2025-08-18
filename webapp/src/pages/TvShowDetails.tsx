@@ -6,80 +6,29 @@ import { tvShowDetailsStore } from '@/stores/tvShowDetailsStore';
 import { ROUTES } from '@/constants/routes';
 import { formatDate, getRatingColor } from '@/utils/formatting';
 import getCountryFlag from 'country-flag-icons/unicode';
+import { hasFlag } from 'country-flag-icons';
+import { RatingSection } from '@/components/RatingSection';
+import { PopularitySection } from '@/components/PopularitySection';
 
-const POPULARITY_CONFIG = {
-  MIN: 0,
-  MAX: 500,
-  BAR_HEIGHT: 6,
-} as const;
-
-const RatingSection = ({ voteAverage, voteCount }: { voteAverage: number; voteCount: number }) => {
+const CountrySection = ({ countries }: { countries: string[] }) => {
   return (
-    <div className="mb-3">
-      <div
-        className={`bg-${getRatingColor(voteAverage)} 
-          text-white rounded-circle 
-          d-flex align-items-center justify-content-center 
-          mx-auto mb-1`}
-        style={{
-          width: 42,
-          height: 42,
-          border: '2px solid white',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-        }}
-      >
-        <div className="fw-bold" style={{ fontSize: '1.1rem' }}>
-          {voteAverage.toFixed(1)}
-        </div>
+    <div className="mb-4">
+      <div className="d-flex flex-wrap gap-3">
+        {countries.map((country) => {
+          return (
+            <div key={country} className="d-flex align-items-center bg-light rounded px-3 py-2">
+              {hasFlag(country) && (
+                <span className="me-2" style={{ fontSize: '1.2rem' }}>
+                  {getCountryFlag(country)}
+                </span>
+              )}
+              <span>
+                {new Intl.DisplayNames(['en'], { type: 'region' }).of(country) || country}
+              </span>
+            </div>
+          );
+        })}
       </div>
-      <div>
-        <small className="text-muted" style={{ fontSize: '0.8rem' }}>
-          {voteCount.toLocaleString()} votes
-        </small>
-      </div>
-    </div>
-  );
-};
-
-const PopularitySection = ({ popularity }: { popularity: number }) => {
-  const getPopularityPercentage = (value: number) => {
-    const percentage =
-      ((value - POPULARITY_CONFIG.MIN) / (POPULARITY_CONFIG.MAX - POPULARITY_CONFIG.MIN)) * 100;
-    return Math.min(Math.max(percentage, 0), 100);
-  };
-
-  return (
-    <div>
-      <small className="text-muted d-block mb-1" style={{ fontSize: '0.8rem' }}>
-        Popularity
-      </small>
-      <div className="progress" style={{ height: `${POPULARITY_CONFIG.BAR_HEIGHT}px` }}>
-        <div
-          className="progress-bar bg-info"
-          role="progressbar"
-          style={{ width: `${getPopularityPercentage(popularity)}%` }}
-          aria-valuenow={getPopularityPercentage(popularity)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        />
-      </div>
-    </div>
-  );
-};
-
-const RatingAndPopularitySection = ({
-  voteAverage,
-  voteCount,
-  popularity,
-}: {
-  voteAverage: number;
-  voteCount: number;
-  popularity: number;
-}) => {
-  return (
-    <div className="text-center" style={{ width: '90px' }}>
-      <RatingSection voteAverage={voteAverage} voteCount={voteCount} />
-      <PopularitySection popularity={popularity} />
     </div>
   );
 };
@@ -139,25 +88,7 @@ const TvShowDetails = observer(() => {
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-4">
                 <div>
-                  <div className="d-flex align-items-center mb-2">
-                    <h2 className="mb-0 me-3">{show.name}</h2>
-                    {show.origin_country && show.origin_country.length > 0 && (
-                      <div className="d-flex align-items-center">
-                        {show.origin_country.map((country) => (
-                          <span
-                            key={country}
-                            className="me-2 p-1"
-                            style={{
-                              fontSize: '1.5rem',
-                              filter: 'drop-shadow(1px 1px 1px rgba(0,0,0,0.3))',
-                            }}
-                          >
-                            {getCountryFlag(country)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <h2 className="mb-0 me-1">{show.name}</h2>
                   {show.original_name && show.original_name !== show.name && (
                     <h5 className="text-muted mb-2">{show.original_name}</h5>
                   )}
@@ -165,20 +96,29 @@ const TvShowDetails = observer(() => {
                     <div className="text-muted">{formatDate(show.first_air_date)}</div>
                   )}
                 </div>
-                <div>
-                  {show.vote_average !== undefined && show.popularity !== undefined && (
-                    <RatingAndPopularitySection
+                <div className="text-center" style={{ width: '90px' }}>
+                  {show.vote_average !== undefined && (
+                    <RatingSection
                       voteAverage={show.vote_average}
                       voteCount={show.vote_count || 0}
-                      popularity={show.popularity}
+                      showVoteCount={true}
                     />
+                  )}
+                  {show.popularity !== undefined && (
+                    <PopularitySection popularity={show.popularity} />
                   )}
                 </div>
               </div>
 
+              {/* Countries */}
+              {show.origin_country && show.origin_country.length > 0 && (
+                <CountrySection countries={show.origin_country} />
+              )}
+
               {/* Genres */}
               {show.genres && show.genres.length > 0 && (
                 <div className="mb-4">
+                  <h6 className="text-muted mb-2">Genres:</h6>
                   {show.genres.map((genre) => (
                     <Badge bg="secondary" className="me-2 mb-2" key={genre}>
                       {genre}
