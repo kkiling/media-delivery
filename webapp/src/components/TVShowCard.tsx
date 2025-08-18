@@ -4,6 +4,7 @@ import { ROUTES } from '@/constants/routes';
 import { TVShowShort } from '@/api/api';
 import { useState } from 'react';
 import { Image as ImageIcon } from 'react-bootstrap-icons';
+import { formatDate, getRatingColor } from '@/utils/formatting';
 
 const CARD_CONFIG = {
   IMAGE_HEIGHT: 300,
@@ -12,22 +13,6 @@ const CARD_CONFIG = {
 type TVShowCardProps = {
   show: TVShowShort;
 };
-
-function formatDate(dateString?: string) {
-  if (!dateString) return '';
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
-function getRatingColor(rating?: number) {
-  if (!rating) return 'secondary';
-  if (rating >= 7.8) return 'success';
-  if (rating >= 5) return 'warning';
-  return 'danger';
-}
 
 export function TVShowCard({ show }: TVShowCardProps) {
   const navigate = useNavigate();

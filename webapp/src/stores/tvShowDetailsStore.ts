@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
-import { Api, TVShowShort } from '@/api/api';
+import { Api, TVShow } from '@/api/api';
 
-export class SearchTVShowsStore {
-  shows: TVShowShort[] = [];
+export class TVShowDetailsStore {
+  show: TVShow | null = null;
   loading = false;
   error: string | null = null;
 
@@ -10,8 +10,8 @@ export class SearchTVShowsStore {
     makeAutoObservable(this);
   }
 
-  setShows(shows: TVShowShort[]) {
-    this.shows = shows;
+  setShow(show: TVShow | null) {
+    this.show = show;
   }
 
   setLoading(loading: boolean) {
@@ -23,18 +23,13 @@ export class SearchTVShowsStore {
   }
 
   reset() {
-    this.shows = [];
+    this.show = null;
     this.loading = false;
     this.error = null;
   }
 
-  async searchShows(query: string) {
+  async fetchTVShowDetails(tvShowId: string) {
     this.reset();
-
-    if (!query.trim()) {
-      return;
-    }
-
     this.setLoading(true);
 
     try {
@@ -47,18 +42,15 @@ export class SearchTVShowsStore {
         },
       });
 
-      const response = await api.v1.tvShowLibraryServiceSearchTvShow({
-        query: query,
-      });
-
-      this.setShows(response.data.items || []);
+      const response = await api.v1.tvShowLibraryServiceGetTvShowInfo(tvShowId);
+      this.setShow(response.data.result || null);
     } catch (error) {
       console.error('Error:', error);
-      this.setError('Failed to fetch TV shows. Please try again.');
+      this.setError('Failed to fetch TV show details. Please try again.');
     } finally {
       this.setLoading(false);
     }
   }
 }
 
-export const searchTVShowsStore = new SearchTVShowsStore();
+export const tvShowDetailsStore = new TVShowDetailsStore();

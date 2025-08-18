@@ -237,8 +237,6 @@ export interface TVShow {
   genres?: string[];
   /** @format date-time */
   last_air_date?: string;
-  /** @format date-time */
-  next_episode_to_air?: string;
   /** @format int64 */
   number_of_episodes?: number;
   /** @format int64 */
