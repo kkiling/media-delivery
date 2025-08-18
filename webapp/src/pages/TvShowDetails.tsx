@@ -1,5 +1,5 @@
 import { useParams, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Card, Container, Row, Col, Badge, Spinner, Alert } from 'react-bootstrap';
 import { tvShowDetailsStore } from '@/stores/tvShowDetailsStore';
@@ -10,6 +10,7 @@ import { hasFlag } from 'country-flag-icons';
 import { RatingSection } from '@/components/RatingSection';
 import { PopularitySection } from '@/components/PopularitySection';
 import { Season, TVShow } from '@/api/api';
+import { Image as ImageIcon } from 'react-bootstrap-icons';
 
 const CountrySection = ({ countries }: { countries: string[] }) => {
   return (
@@ -35,18 +36,33 @@ const CountrySection = ({ countries }: { countries: string[] }) => {
 };
 
 const TVShowInfo = ({ show }: { show: TVShow }) => {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <Card className="mb-4">
       <Row className="g-0">
-        <Col md={3}>
-          {show.poster?.w342 && (
-            <img
-              src={show.poster.w342}
-              alt={show.name}
-              className="img-fluid h-100 object-fit-cover"
-              style={{ maxHeight: '500px' }}
-            />
-          )}
+        <Col md={3} className="h-100">
+          <div className="position-relative h-100">
+            {show.poster?.w342 && !imageError ? (
+              <img
+                src={show.poster.w342}
+                alt={show.name}
+                onError={() => setImageError(true)}
+                className="w-100 h-100 object-fit-cover tvshow-poster-img"
+                style={{
+                  minHeight: '400px',
+                }}
+              />
+            ) : (
+              <div
+                className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100"
+                style={{ minHeight: '400px' }}
+              >
+                <ImageIcon size={48} className="mb-2" />
+                <p className="mb-0">No Image Available</p>
+              </div>
+            )}
+          </div>
         </Col>
         <Col md={9}>
           <Card.Body>
@@ -101,23 +117,58 @@ const TVShowInfo = ({ show }: { show: TVShow }) => {
   );
 };
 
+const SEASON_CARD_CONFIG = {
+  IMAGE_HEIGHT: 500,
+} as const;
+
 const SeasonCard = ({ season }: { season: Season }) => {
+  const [imageError, setImageError] = useState(false);
+
   return (
-    <Card className="h-100">
-      {season.poster?.w342 && (
-        <Card.Img
-          variant="top"
-          src={season.poster.w342}
-          alt={season.name}
-          style={{ height: '300px', objectFit: 'cover' }}
-        />
-      )}
-      <Card.Body>
-        <Card.Title>{season.name}</Card.Title>
-        <Card.Text className="text-muted">{season.episode_count} episodes</Card.Text>
-        {season.air_date && (
-          <Card.Text className="text-muted">
-            <small>{formatDate(season.air_date)}</small>
+    <Card className="h-100 position-relative">
+      <div className="position-relative" style={{ height: `${SEASON_CARD_CONFIG.IMAGE_HEIGHT}px` }}>
+        {season.poster?.w342 && !imageError ? (
+          <Card.Img
+            variant="top"
+            src={season.poster.w342}
+            alt={season.name}
+            onError={() => setImageError(true)}
+            className="w-100 h-100 object-fit-cover"
+          />
+        ) : (
+          <Card.Body className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100">
+            <ImageIcon size={48} className="mb-2" />
+            <p className="mb-0">No Image Available</p>
+          </Card.Body>
+        )}
+
+        {season.vote_average !== undefined && (
+          <div className="position-absolute top-0 start-0 m-2">
+            <RatingSection voteAverage={season.vote_average} voteCount={0} showVoteCount={false} />
+          </div>
+        )}
+      </div>
+
+      <Card.Body className="d-flex flex-column">
+        <Card.Title>{season.name || 'No title'}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">
+          <div className="d-flex justify-content-between align-items-center">
+            <span>{formatDate(season.air_date) || 'Release date unknown'}</span>
+            <span>{season.episode_count} episodes</span>
+          </div>
+        </Card.Subtitle>
+        {season.overview && (
+          <Card.Text
+            className="flex-grow-1"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 5,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {season.overview || 'No overview available'}
           </Card.Text>
         )}
       </Card.Body>

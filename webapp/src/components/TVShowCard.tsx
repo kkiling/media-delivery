@@ -8,7 +8,7 @@ import { formatDate } from '@/utils/formatting';
 import { RatingSection } from './RatingSection';
 
 const CARD_CONFIG = {
-  IMAGE_HEIGHT: 300,
+  IMAGE_HEIGHT: 500,
 } as const;
 
 type TVShowCardProps = {
