@@ -9,6 +9,26 @@ import { Rating } from '@/components';
 import { Episode } from '@/api/api';
 import { ArrowLeft, Image as ImageIcon } from 'react-bootstrap-icons';
 
+const SEASON_INFO_CONFIG = {
+  MIN_IMAGE_HEIGHT: 400,
+  OVERVIEW_LINES: 8,
+} as const;
+
+const EPISODE_CONFIG = {
+  IMAGE_HEIGHT: 120, // Height for episode still images
+  OVERVIEW_LINES: 4,
+} as const;
+
+const TABLE_CONFIG = {
+  COLUMNS: {
+    NUMBER: '30px',
+    EPISODE: 'auto',
+    AIR_DATE: '160px',
+    DURATION: '80px',
+    RATING: '80px',
+  },
+} as const;
+
 interface NoImageFallbackProps {
   text?: string;
 }
@@ -23,9 +43,10 @@ const NoImageFallback = ({ text = 'No Image Available' }: NoImageFallbackProps) 
 interface PosterImageProps {
   src?: string;
   alt: string;
+  minHeight?: number;
 }
 
-const PosterImage = ({ src, alt }: PosterImageProps) => {
+const PosterImage = ({ src, alt, minHeight }: PosterImageProps) => {
   const [error, setError] = useState(false);
 
   if (!src || error) {
@@ -38,6 +59,7 @@ const PosterImage = ({ src, alt }: PosterImageProps) => {
       alt={alt}
       onError={() => setError(true)}
       className="w-100 h-100 object-fit-cover"
+      style={{ minHeight: minHeight ? `${minHeight}px` : 'auto' }}
     />
   );
 };
@@ -56,23 +78,33 @@ const EpisodeRow = ({ episode }: EpisodeRowProps) => (
             src={episode.still.w342}
             alt={episode.name}
             className="me-3"
-            style={{ width: '120px', height: '68px', objectFit: 'cover' }}
+            style={{
+              height: EPISODE_CONFIG.IMAGE_HEIGHT,
+              objectFit: 'cover',
+            }}
           />
         )}
         <div>
           <strong>{episode.name}</strong>
-          <p className="text-muted mb-0 small">{episode.overview}</p>
+          <p
+            className="text-muted mb-0 small"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: EPISODE_CONFIG.OVERVIEW_LINES,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {episode.overview}
+          </p>
         </div>
       </div>
     </td>
     <td>{formatDate(episode.air_date)}</td>
     <td>{episode.runtime} min</td>
     <td>
-      <Rating
-        voteAverage={episode.vote_average ?? 0}
-        voteCount={episode.vote_count ?? 0}
-        showVoteCount={false}
-      />
+      <Rating voteAverage={episode.vote_average ?? 0} voteCount={episode.vote_count ?? 0} />
     </td>
   </tr>
 );
@@ -126,7 +158,13 @@ const TvShowSeason = observer(() => {
       <Card className="mb-4">
         <Row className="g-0">
           <Col md={3}>
-            <PosterImage src={seasonData.poster?.w342} alt={seasonData.name || 'Season Poster'} />
+            <div style={{ height: SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT }}>
+              <PosterImage
+                src={seasonData.poster?.w342}
+                alt={seasonData.name || 'Season Poster'}
+                minHeight={SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT}
+              />
+            </div>
           </Col>
           <Col md={9}>
             <Card.Body>
@@ -150,7 +188,7 @@ const TvShowSeason = observer(() => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
-                    WebkitLineClamp: 5,
+                    WebkitLineClamp: SEASON_INFO_CONFIG.OVERVIEW_LINES,
                     WebkitBoxOrient: 'vertical',
                   }}
                 >
@@ -166,15 +204,13 @@ const TvShowSeason = observer(() => {
         <Card.Header as="h5">Episodes</Card.Header>
         <Card.Body>
           <Table responsive hover>
-            <thead>
-              <tr>
-                <th style={{ width: '80px' }}>#</th>
-                <th>Episode</th>
-                <th style={{ width: '120px' }}>Air Date</th>
-                <th style={{ width: '100px' }}>Duration</th>
-                <th style={{ width: '120px' }}>Rating</th>
-              </tr>
-            </thead>
+            <colgroup>
+              <col style={{ width: TABLE_CONFIG.COLUMNS.NUMBER }} />
+              <col style={{ width: TABLE_CONFIG.COLUMNS.EPISODE }} />
+              <col style={{ width: TABLE_CONFIG.COLUMNS.AIR_DATE }} />
+              <col style={{ width: TABLE_CONFIG.COLUMNS.DURATION }} />
+              <col style={{ width: TABLE_CONFIG.COLUMNS.RATING }} />
+            </colgroup>
             <tbody>
               {episodes.map((episode) => (
                 <EpisodeRow key={episode.id} episode={episode} />
