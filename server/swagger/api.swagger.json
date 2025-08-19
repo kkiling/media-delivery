@@ -590,7 +590,22 @@
         "id": {
           "type": "string"
         },
+        "w92": {
+          "type": "string"
+        },
+        "w154": {
+          "type": "string"
+        },
+        "w185": {
+          "type": "string"
+        },
         "w342": {
+          "type": "string"
+        },
+        "w500": {
+          "type": "string"
+        },
+        "w780": {
           "type": "string"
         },
         "original": {
