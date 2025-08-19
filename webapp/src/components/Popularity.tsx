@@ -11,11 +11,11 @@ const POPULARITY_CONFIG = {
   ],
 } as const;
 
-interface PopularitySectionProps {
+interface PopularityProps {
   popularity: number;
 }
 
-export const PopularitySection = ({ popularity }: PopularitySectionProps) => {
+export const Popularity = ({ popularity }: PopularityProps) => {
   const getPopularityPercentage = (value: number) => {
     // Using natural logarithm for smooth scaling
     const logMin = Math.log(POPULARITY_CONFIG.MIN + 1); // +1 to avoid log(0)
@@ -56,3 +56,5 @@ export const PopularitySection = ({ popularity }: PopularitySectionProps) => {
     </div>
   );
 };
+
+export default Popularity;

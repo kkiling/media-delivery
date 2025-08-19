@@ -155,8 +155,9 @@ export interface FileInfo {
   extension?: string;
 }
 
-export interface GetSeasonEpisodesResponse {
-  items?: Episode[];
+export interface GetSeasonInfoResponse {
+  season?: Season;
+  episodes?: Episode[];
 }
 
 export interface GetTVShowDeliveryDataResponse {
@@ -177,7 +178,12 @@ export interface GetVideoContentResponse {
 
 export interface Image {
   id?: string;
+  w92?: string;
+  w154?: string;
+  w185?: string;
   w342?: string;
+  w500?: string;
+  w780?: string;
   original?: string;
 }
 
@@ -724,16 +730,16 @@ export class Api<
      * No description
      *
      * @tags TVShowLibraryService
-     * @name TvShowLibraryServiceGetSeasonEpisodes
-     * @summary Получение информации о сериях сезона
+     * @name TvShowLibraryServiceGetSeasonInfo
+     * @summary Получение информации о сезоне сериала и его сериях
      * @request GET:/v1/tvshow/info/{tv_show_id}/{season_number}
      */
-    tvShowLibraryServiceGetSeasonEpisodes: (
+    tvShowLibraryServiceGetSeasonInfo: (
       tvShowId: string,
       seasonNumber: number,
       params: RequestParams = {},
     ) =>
-      this.request<GetSeasonEpisodesResponse, Status>({
+      this.request<GetSeasonInfoResponse, Status>({
         path: `/v1/tvshow/info/${tvShowId}/${seasonNumber}`,
         method: "GET",
         format: "json",

@@ -34,7 +34,7 @@ export const ROUTES = {
         return `/library/tvshows/${id}`;
       },
       getSeason: (id: number | undefined, season: number | undefined) => {
-        if (!id || !season) return '/not-found';
+        if (!id || season == undefined) return '/not-found';
         return `/library/tvshows/${id}/${season}`;
       },
     },

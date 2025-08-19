@@ -1,16 +1,12 @@
 import { getRatingColor } from '@/utils/formatting';
 
-interface RatingSectionProps {
+interface RatingProps {
   voteAverage: number;
   voteCount: number;
   showVoteCount?: boolean;
 }
 
-export const RatingSection = ({
-  voteAverage,
-  voteCount,
-  showVoteCount = true,
-}: RatingSectionProps) => {
+export const Rating = ({ voteAverage, voteCount, showVoteCount = true }: RatingProps) => {
   if (voteAverage === 0) {
     return null;
   }
@@ -34,7 +30,7 @@ export const RatingSection = ({
         </div>
       </div>
       {showVoteCount && (
-        <div>
+        <div className="text-center">
           <small className="text-muted" style={{ fontSize: '0.8rem' }}>
             {voteCount.toLocaleString()} votes
           </small>
@@ -43,3 +39,5 @@ export const RatingSection = ({
     </div>
   );
 };
+
+export default Rating;
