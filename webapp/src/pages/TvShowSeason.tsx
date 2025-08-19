@@ -93,13 +93,11 @@ const EpisodeCard = ({ episode }: EpisodeCardProps) => (
                 {formatDate(episode.air_date)} • {episode.runtime} min
               </div>
             </div>
-            <div>
-              <Rating
-                voteAverage={episode.vote_average ?? 0}
-                voteCount={episode.vote_count ?? 0}
-                showVoteCount={true}
-              />
-            </div>
+            <Rating
+              voteAverage={episode.vote_average ?? 0}
+              voteCount={episode.vote_count ?? 0}
+              showVoteCount={true}
+            />
           </div>
           {episode.overview && (
             <p
@@ -163,12 +161,7 @@ const SeasonInfoCard = ({ seasonData, numberId }: SeasonInfoCardProps) => (
                 {formatDate(seasonData.air_date)} • {seasonData.episode_count} episodes
               </Card.Subtitle>
             </div>
-
-            {seasonData.vote_average && (
-              <div className="text-center" style={{ width: 90 }}>
-                <Rating voteAverage={seasonData.vote_average} voteCount={0} showVoteCount={false} />
-              </div>
-            )}
+            <Rating voteAverage={seasonData.vote_average ?? 0} showVoteCount={false} />
           </div>
 
           {seasonData.overview && (

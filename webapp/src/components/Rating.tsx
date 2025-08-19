@@ -2,11 +2,11 @@ import { getRatingColor } from '@/utils/formatting';
 
 interface RatingProps {
   voteAverage: number;
-  voteCount: number;
+  voteCount?: number;
   showVoteCount?: boolean;
 }
 
-export const Rating = ({ voteAverage, voteCount, showVoteCount = true }: RatingProps) => {
+export const Rating = ({ voteAverage, voteCount = 0, showVoteCount = true }: RatingProps) => {
   if (voteAverage === 0) {
     return null;
   }
@@ -29,7 +29,7 @@ export const Rating = ({ voteAverage, voteCount, showVoteCount = true }: RatingP
           {voteAverage.toFixed(1)}
         </div>
       </div>
-      {showVoteCount && (
+      {showVoteCount && voteCount > 0 && (
         <div className="text-center">
           <small className="text-muted" style={{ fontSize: '0.8rem' }}>
             {voteCount.toLocaleString()} votes
