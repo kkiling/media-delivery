@@ -79,8 +79,7 @@ enum DeliveryStatus {
 message VideoContent {
   string id = 1;
   google.protobuf.Timestamp created_at = 2;
-  ContentID content_id = 3;
-  DeliveryStatus delivery_status = 4;
+  DeliveryStatus delivery_status = 3;
 }
 
 enum TVShowDeliveryStatus {

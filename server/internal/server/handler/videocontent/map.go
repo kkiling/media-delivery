@@ -48,7 +48,6 @@ func mapVideoContent(result videocontent.VideoContent) *desc.VideoContent {
 	return &desc.VideoContent{
 		Id:             result.ID.String(),
 		CreatedAt:      timestamppb.New(result.CreatedAt),
-		ContentId:      mapContentID(&result.ContentID),
 		DeliveryStatus: mapDeliveryStatus(result.DeliveryStatus),
 	}
 }

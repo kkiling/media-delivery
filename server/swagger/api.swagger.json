@@ -972,9 +972,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "content_id": {
-          "$ref": "#/definitions/ContentID"
-        },
         "delivery_status": {
           "$ref": "#/definitions/DeliveryStatus"
         }

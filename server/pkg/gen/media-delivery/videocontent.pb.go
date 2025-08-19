@@ -359,8 +359,7 @@ type VideoContent struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	ContentId      *ContentID             `protobuf:"bytes,3,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
-	DeliveryStatus DeliveryStatus         `protobuf:"varint,4,opt,name=delivery_status,json=deliveryStatus,proto3,enum=mediadelivery.DeliveryStatus" json:"delivery_status,omitempty"`
+	DeliveryStatus DeliveryStatus         `protobuf:"varint,3,opt,name=delivery_status,json=deliveryStatus,proto3,enum=mediadelivery.DeliveryStatus" json:"delivery_status,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -405,13 +404,6 @@ func (x *VideoContent) GetId() string {
 func (x *VideoContent) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *VideoContent) GetContentId() *ContentID {
-	if x != nil {
-		return x.ContentId
 	}
 	return nil
 }
@@ -1581,14 +1573,12 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\atv_show\x18\x02 \x01(\v2\x17.mediadelivery.TVShowIDH\x01R\x06tvShow\x88\x01\x01B\v\n" +
 	"\t_movie_idB\n" +
 	"\n" +
-	"\b_tv_show\"\xda\x01\n" +
+	"\b_tv_show\"\xa1\x01\n" +
 	"\fVideoContent\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
-	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x127\n" +
-	"\n" +
-	"content_id\x18\x03 \x01(\v2\x18.mediadelivery.ContentIDR\tcontentId\x12F\n" +
-	"\x0fdelivery_status\x18\x04 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus\"\xba\x01\n" +
+	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12F\n" +
+	"\x0fdelivery_status\x18\x03 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus\"\xba\x01\n" +
 	"\rTorrentSearch\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12\x12\n" +
 	"\x04href\x18\x02 \x01(\tR\x04href\x12\x12\n" +
@@ -1759,47 +1749,46 @@ var file_media_delivery_videocontent_proto_goTypes = []any{
 var file_media_delivery_videocontent_proto_depIdxs = []int32{
 	3,  // 0: mediadelivery.ContentID.tv_show:type_name -> mediadelivery.TVShowID
 	27, // 1: mediadelivery.VideoContent.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 2: mediadelivery.VideoContent.content_id:type_name -> mediadelivery.ContentID
-	0,  // 3: mediadelivery.VideoContent.delivery_status:type_name -> mediadelivery.DeliveryStatus
-	7,  // 4: mediadelivery.VideoFile.file:type_name -> mediadelivery.FileInfo
-	7,  // 5: mediadelivery.Track.file:type_name -> mediadelivery.FileInfo
-	8,  // 6: mediadelivery.ContentMatches.episode:type_name -> mediadelivery.EpisodeInfo
-	9,  // 7: mediadelivery.ContentMatches.video:type_name -> mediadelivery.VideoFile
-	10, // 8: mediadelivery.ContentMatches.audio_files:type_name -> mediadelivery.Track
-	10, // 9: mediadelivery.ContentMatches.subtitles:type_name -> mediadelivery.Track
-	2,  // 10: mediadelivery.TorrentDownloadStatus.state:type_name -> mediadelivery.TorrentDownloadStatus.TorrentState
-	15, // 11: mediadelivery.TVShowDeliveryData.search_query:type_name -> mediadelivery.SearchQuery
-	6,  // 12: mediadelivery.TVShowDeliveryData.torrent_search:type_name -> mediadelivery.TorrentSearch
-	11, // 13: mediadelivery.TVShowDeliveryData.content_matches:type_name -> mediadelivery.ContentMatches
-	12, // 14: mediadelivery.TVShowDeliveryData.torrent_download_status:type_name -> mediadelivery.TorrentDownloadStatus
-	13, // 15: mediadelivery.TVShowDeliveryData.merge_video_status:type_name -> mediadelivery.MergeVideoStatus
-	14, // 16: mediadelivery.TVShowDeliveryState.data:type_name -> mediadelivery.TVShowDeliveryData
-	1,  // 17: mediadelivery.TVShowDeliveryState.step:type_name -> mediadelivery.TVShowDeliveryStatus
-	4,  // 18: mediadelivery.CreateVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
-	5,  // 19: mediadelivery.CreateVideoContentResponse.result:type_name -> mediadelivery.VideoContent
-	4,  // 20: mediadelivery.GetVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
-	5,  // 21: mediadelivery.GetVideoContentResponse.items:type_name -> mediadelivery.VideoContent
-	4,  // 22: mediadelivery.GetTVShowDeliveryDataRequest.content_id:type_name -> mediadelivery.ContentID
-	16, // 23: mediadelivery.GetTVShowDeliveryDataResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	4,  // 24: mediadelivery.ChoseTorrentOptionsRequest.content_id:type_name -> mediadelivery.ContentID
-	16, // 25: mediadelivery.ChoseTorrentOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	4,  // 26: mediadelivery.ChoseFileMatchesOptionsRequest.content_id:type_name -> mediadelivery.ContentID
-	16, // 27: mediadelivery.ChoseFileMatchesOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	17, // 28: mediadelivery.VideoContentService.CreateVideoContent:input_type -> mediadelivery.CreateVideoContentRequest
-	19, // 29: mediadelivery.VideoContentService.GetVideoContent:input_type -> mediadelivery.GetVideoContentRequest
-	21, // 30: mediadelivery.VideoContentService.GetTVShowDeliveryData:input_type -> mediadelivery.GetTVShowDeliveryDataRequest
-	23, // 31: mediadelivery.VideoContentService.ChoseTorrentOptions:input_type -> mediadelivery.ChoseTorrentOptionsRequest
-	25, // 32: mediadelivery.VideoContentService.ChoseFileMatchesOptions:input_type -> mediadelivery.ChoseFileMatchesOptionsRequest
-	18, // 33: mediadelivery.VideoContentService.CreateVideoContent:output_type -> mediadelivery.CreateVideoContentResponse
-	20, // 34: mediadelivery.VideoContentService.GetVideoContent:output_type -> mediadelivery.GetVideoContentResponse
-	22, // 35: mediadelivery.VideoContentService.GetTVShowDeliveryData:output_type -> mediadelivery.GetTVShowDeliveryDataResponse
-	24, // 36: mediadelivery.VideoContentService.ChoseTorrentOptions:output_type -> mediadelivery.ChoseTorrentOptionsResponse
-	26, // 37: mediadelivery.VideoContentService.ChoseFileMatchesOptions:output_type -> mediadelivery.ChoseFileMatchesOptionsResponse
-	33, // [33:38] is the sub-list for method output_type
-	28, // [28:33] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	0,  // 2: mediadelivery.VideoContent.delivery_status:type_name -> mediadelivery.DeliveryStatus
+	7,  // 3: mediadelivery.VideoFile.file:type_name -> mediadelivery.FileInfo
+	7,  // 4: mediadelivery.Track.file:type_name -> mediadelivery.FileInfo
+	8,  // 5: mediadelivery.ContentMatches.episode:type_name -> mediadelivery.EpisodeInfo
+	9,  // 6: mediadelivery.ContentMatches.video:type_name -> mediadelivery.VideoFile
+	10, // 7: mediadelivery.ContentMatches.audio_files:type_name -> mediadelivery.Track
+	10, // 8: mediadelivery.ContentMatches.subtitles:type_name -> mediadelivery.Track
+	2,  // 9: mediadelivery.TorrentDownloadStatus.state:type_name -> mediadelivery.TorrentDownloadStatus.TorrentState
+	15, // 10: mediadelivery.TVShowDeliveryData.search_query:type_name -> mediadelivery.SearchQuery
+	6,  // 11: mediadelivery.TVShowDeliveryData.torrent_search:type_name -> mediadelivery.TorrentSearch
+	11, // 12: mediadelivery.TVShowDeliveryData.content_matches:type_name -> mediadelivery.ContentMatches
+	12, // 13: mediadelivery.TVShowDeliveryData.torrent_download_status:type_name -> mediadelivery.TorrentDownloadStatus
+	13, // 14: mediadelivery.TVShowDeliveryData.merge_video_status:type_name -> mediadelivery.MergeVideoStatus
+	14, // 15: mediadelivery.TVShowDeliveryState.data:type_name -> mediadelivery.TVShowDeliveryData
+	1,  // 16: mediadelivery.TVShowDeliveryState.step:type_name -> mediadelivery.TVShowDeliveryStatus
+	4,  // 17: mediadelivery.CreateVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
+	5,  // 18: mediadelivery.CreateVideoContentResponse.result:type_name -> mediadelivery.VideoContent
+	4,  // 19: mediadelivery.GetVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
+	5,  // 20: mediadelivery.GetVideoContentResponse.items:type_name -> mediadelivery.VideoContent
+	4,  // 21: mediadelivery.GetTVShowDeliveryDataRequest.content_id:type_name -> mediadelivery.ContentID
+	16, // 22: mediadelivery.GetTVShowDeliveryDataResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	4,  // 23: mediadelivery.ChoseTorrentOptionsRequest.content_id:type_name -> mediadelivery.ContentID
+	16, // 24: mediadelivery.ChoseTorrentOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	4,  // 25: mediadelivery.ChoseFileMatchesOptionsRequest.content_id:type_name -> mediadelivery.ContentID
+	16, // 26: mediadelivery.ChoseFileMatchesOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	17, // 27: mediadelivery.VideoContentService.CreateVideoContent:input_type -> mediadelivery.CreateVideoContentRequest
+	19, // 28: mediadelivery.VideoContentService.GetVideoContent:input_type -> mediadelivery.GetVideoContentRequest
+	21, // 29: mediadelivery.VideoContentService.GetTVShowDeliveryData:input_type -> mediadelivery.GetTVShowDeliveryDataRequest
+	23, // 30: mediadelivery.VideoContentService.ChoseTorrentOptions:input_type -> mediadelivery.ChoseTorrentOptionsRequest
+	25, // 31: mediadelivery.VideoContentService.ChoseFileMatchesOptions:input_type -> mediadelivery.ChoseFileMatchesOptionsRequest
+	18, // 32: mediadelivery.VideoContentService.CreateVideoContent:output_type -> mediadelivery.CreateVideoContentResponse
+	20, // 33: mediadelivery.VideoContentService.GetVideoContent:output_type -> mediadelivery.GetVideoContentResponse
+	22, // 34: mediadelivery.VideoContentService.GetTVShowDeliveryData:output_type -> mediadelivery.GetTVShowDeliveryDataResponse
+	24, // 35: mediadelivery.VideoContentService.ChoseTorrentOptions:output_type -> mediadelivery.ChoseTorrentOptionsResponse
+	26, // 36: mediadelivery.VideoContentService.ChoseFileMatchesOptions:output_type -> mediadelivery.ChoseFileMatchesOptionsResponse
+	32, // [32:37] is the sub-list for method output_type
+	27, // [27:32] is the sub-list for method input_type
+	27, // [27:27] is the sub-list for extension type_name
+	27, // [27:27] is the sub-list for extension extendee
+	0,  // [0:27] is the sub-list for field type_name
 }
 
 func init() { file_media_delivery_videocontent_proto_init() }
