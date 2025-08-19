@@ -48,6 +48,11 @@ type Season struct {
 	VoteAverage  float64
 }
 
+type SeasonWithEpisodes struct {
+	Season
+	Episodes []Episode
+}
+
 // Episode информация о эпизоде сезона
 type Episode struct {
 	ID uint64

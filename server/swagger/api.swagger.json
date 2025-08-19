@@ -245,13 +245,13 @@
     },
     "/v1/tvshow/info/{tv_show_id}/{season_number}": {
       "get": {
-        "summary": "Получение информации о сериях сезона",
-        "operationId": "TVShowLibraryService_GetSeasonEpisodes",
+        "summary": "Получение информации о сезоне сериала и его сериях",
+        "operationId": "TVShowLibraryService_GetSeasonInfo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GetSeasonEpisodesResponse"
+              "$ref": "#/definitions/GetSeasonInfoResponse"
             }
           },
           "default": {
@@ -529,10 +529,13 @@
         }
       }
     },
-    "GetSeasonEpisodesResponse": {
+    "GetSeasonInfoResponse": {
       "type": "object",
       "properties": {
-        "items": {
+        "season": {
+          "$ref": "#/definitions/Season"
+        },
+        "episodes": {
           "type": "array",
           "items": {
             "type": "object",

@@ -92,6 +92,11 @@ type Season struct {
 	VoteAverage  float64
 }
 
+type SeasonWithEpisodes struct {
+	Season
+	Episodes []Episode
+}
+
 // Episode contains TV show episode information
 type Episode struct {
 	ID uint64

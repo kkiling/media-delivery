@@ -83,13 +83,9 @@ func (s *Service) GetTVShowInfo(ctx context.Context, params GetTVShowParams) (*G
 	}, err
 }
 
-// GetSeasonEpisodes получение информации о сериях сезона
-func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisodesParams) (*GetSeasonEpisodesResult, error) {
+// GetSeasonInfo получение информации о сериях сезона
+func (s *Service) GetSeasonInfo(ctx context.Context, params GetSeasonInfoParams) (*GetSeasonInfoResult, error) {
 	// Сначала проверяем существует ли сам сериал
-	if _, err := s.GetTVShowInfo(ctx, GetTVShowParams{TVShowID: params.TVShowID}); err != nil {
-		return nil, fmt.Errorf("s.GetTVShowInfo: %w", err)
-	}
-
 	// сначала тянем информацию о эпизодах из библиотеки
 	/*if episodes, err := s.storage.GetSeasonEpisodes(ctx, params.TVShowID, params.SeasonNumber); err != nil {
 		switch {
@@ -104,7 +100,7 @@ func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisode
 		}, err
 	}*/
 
-	response, err := s.theMovieDb.GetSeasonEpisodes(ctx, params.TVShowID, params.SeasonNumber, language)
+	response, err := s.theMovieDb.GetSeasonInfo(ctx, params.TVShowID, params.SeasonNumber, language)
 	if err != nil {
 		if errors.Is(err, apierr.ContentNotFound) {
 			return nil, ucerr.NotFound
@@ -119,8 +115,11 @@ func (s *Service) GetSeasonEpisodes(ctx context.Context, params GetSeasonEpisode
 		return nil, fmt.Errorf("s.storage.SaveSeasonEpisode: %w", err)
 	}*/
 
-	return &GetSeasonEpisodesResult{
-		Items: mapEpisodes(response),
+	return &GetSeasonInfoResult{
+		Result: &SeasonWithEpisodes{
+			Season:   *mapSeason(response.Season),
+			Episodes: mapEpisodes(response.Episodes),
+		},
 	}, nil
 }
 

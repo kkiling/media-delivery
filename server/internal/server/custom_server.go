@@ -30,7 +30,7 @@ func NewCustomServer(
 ) *CustomServer {
 	return &CustomServer{
 		server:   server.NewServer(logger, serverConfig),
-		logger:   logger.Named("user_account_server"),
+		logger:   logger.Named("media_delivery_server"),
 		services: services,
 	}
 }

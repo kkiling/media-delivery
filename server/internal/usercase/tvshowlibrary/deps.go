@@ -9,7 +9,7 @@ import (
 type TheMovieDb interface {
 	SearchTV(ctx context.Context, params themoviedb.SearchQuery) (*themoviedb.TVShowSearchResponse, error)
 	GetTV(ctx context.Context, tvID uint64, language themoviedb.Language) (*themoviedb.TVShow, error)
-	GetSeasonEpisodes(ctx context.Context, tvID uint64, seasonNumber uint8, language themoviedb.Language) ([]themoviedb.Episode, error)
+	GetSeasonInfo(ctx context.Context, tvID uint64, seasonNumber uint8, language themoviedb.Language) (*themoviedb.SeasonWithEpisodes, error)
 }
 
 type Storage interface {

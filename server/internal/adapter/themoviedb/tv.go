@@ -11,7 +11,7 @@ import (
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
-func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVShow, error) {
+func (api *API) GetTV(_ context.Context, tvID uint64, language Language) (*TVShow, error) {
 	queryParams := url.Values{}
 	queryParams.Add("api_key", api.apiKey)
 	queryParams.Add("language", string(language))
@@ -66,7 +66,7 @@ func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVS
 		VoteCount   uint32  `json:"vote_count"`
 	}
 
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err = json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 

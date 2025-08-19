@@ -773,7 +773,7 @@ func (x *GetTVShowInfoResponse) GetResult() *TVShow {
 	return nil
 }
 
-type GetSeasonEpisodesRequest struct {
+type GetSeasonInfoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TvShowId      uint64                 `protobuf:"varint,1,opt,name=tv_show_id,json=tvShowId,proto3" json:"tv_show_id,omitempty"`
 	SeasonNumber  uint32                 `protobuf:"varint,2,opt,name=season_number,json=seasonNumber,proto3" json:"season_number,omitempty"`
@@ -781,20 +781,20 @@ type GetSeasonEpisodesRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetSeasonEpisodesRequest) Reset() {
-	*x = GetSeasonEpisodesRequest{}
+func (x *GetSeasonInfoRequest) Reset() {
+	*x = GetSeasonInfoRequest{}
 	mi := &file_media_delivery_tvshow_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetSeasonEpisodesRequest) String() string {
+func (x *GetSeasonInfoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetSeasonEpisodesRequest) ProtoMessage() {}
+func (*GetSeasonInfoRequest) ProtoMessage() {}
 
-func (x *GetSeasonEpisodesRequest) ProtoReflect() protoreflect.Message {
+func (x *GetSeasonInfoRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_tvshow_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -806,46 +806,47 @@ func (x *GetSeasonEpisodesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetSeasonEpisodesRequest.ProtoReflect.Descriptor instead.
-func (*GetSeasonEpisodesRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSeasonInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetSeasonInfoRequest) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *GetSeasonEpisodesRequest) GetTvShowId() uint64 {
+func (x *GetSeasonInfoRequest) GetTvShowId() uint64 {
 	if x != nil {
 		return x.TvShowId
 	}
 	return 0
 }
 
-func (x *GetSeasonEpisodesRequest) GetSeasonNumber() uint32 {
+func (x *GetSeasonInfoRequest) GetSeasonNumber() uint32 {
 	if x != nil {
 		return x.SeasonNumber
 	}
 	return 0
 }
 
-type GetSeasonEpisodesResponse struct {
+type GetSeasonInfoResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Items         []*Episode             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Season        *Season                `protobuf:"bytes,1,opt,name=season,proto3" json:"season,omitempty"`
+	Episodes      []*Episode             `protobuf:"bytes,2,rep,name=episodes,proto3" json:"episodes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetSeasonEpisodesResponse) Reset() {
-	*x = GetSeasonEpisodesResponse{}
+func (x *GetSeasonInfoResponse) Reset() {
+	*x = GetSeasonInfoResponse{}
 	mi := &file_media_delivery_tvshow_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetSeasonEpisodesResponse) String() string {
+func (x *GetSeasonInfoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetSeasonEpisodesResponse) ProtoMessage() {}
+func (*GetSeasonInfoResponse) ProtoMessage() {}
 
-func (x *GetSeasonEpisodesResponse) ProtoReflect() protoreflect.Message {
+func (x *GetSeasonInfoResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_tvshow_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -857,14 +858,21 @@ func (x *GetSeasonEpisodesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetSeasonEpisodesResponse.ProtoReflect.Descriptor instead.
-func (*GetSeasonEpisodesResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSeasonInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetSeasonInfoResponse) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *GetSeasonEpisodesResponse) GetItems() []*Episode {
+func (x *GetSeasonInfoResponse) GetSeason() *Season {
 	if x != nil {
-		return x.Items
+		return x.Season
+	}
+	return nil
+}
+
+func (x *GetSeasonInfoResponse) GetEpisodes() []*Episode {
+	if x != nil {
+		return x.Episodes
 	}
 	return nil
 }
@@ -1030,21 +1038,22 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\"F\n" +
 	"\x15GetTVShowInfoResponse\x12-\n" +
-	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"f\n" +
-	"\x18GetSeasonEpisodesRequest\x12%\n" +
+	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"b\n" +
+	"\x14GetSeasonInfoRequest\x12%\n" +
 	"\n" +
 	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\x12#\n" +
-	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"I\n" +
-	"\x19GetSeasonEpisodesResponse\x12,\n" +
-	"\x05items\x18\x01 \x03(\v2\x16.mediadelivery.EpisodeR\x05items\"\x1e\n" +
+	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"z\n" +
+	"\x15GetSeasonInfoResponse\x12-\n" +
+	"\x06season\x18\x01 \x01(\v2\x15.mediadelivery.SeasonR\x06season\x122\n" +
+	"\bepisodes\x18\x02 \x03(\v2\x16.mediadelivery.EpisodeR\bepisodes\"\x1e\n" +
 	"\x1cGetTVShowsFromLibraryRequest\"Q\n" +
 	"\x1dGetTVShowsFromLibraryResponse\x120\n" +
-	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items2\xdd\x06\n" +
+	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items2\xeb\x06\n" +
 	"\x14TVShowLibraryService\x12\xa8\x01\n" +
 	"\fSearchTVShow\x12\".mediadelivery.SearchTVShowRequest\x1a#.mediadelivery.SearchTVShowResponse\"O\x92A3\x121Поиск сериалов по названию\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/tvshow/search\x12\xdd\x01\n" +
 	"\x15GetTVShowsFromLibrary\x12+.mediadelivery.GetTVShowsFromLibraryRequest\x1a,.mediadelivery.GetTVShowsFromLibraryResponse\"i\x92AL\x12JПолучение списка сериалов из библиотеки\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/tvshow/library\x12\xd1\x01\n" +
-	"\rGetTVShowInfo\x12#.mediadelivery.GetTVShowInfoRequest\x1a$.mediadelivery.GetTVShowInfoResponse\"u\x92AN\x12LПолучение подробной информации о сериале\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/tvshow/info/{tv_show_id}\x12\xe5\x01\n" +
-	"\x11GetSeasonEpisodes\x12'.mediadelivery.GetSeasonEpisodesRequest\x1a(.mediadelivery.GetSeasonEpisodesResponse\"}\x92AF\x12DПолучение информации о сериях сезона\x82\xd3\xe4\x93\x02.\x12,/v1/tvshow/info/{tv_show_id}/{season_number}B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\rGetTVShowInfo\x12#.mediadelivery.GetTVShowInfoRequest\x1a$.mediadelivery.GetTVShowInfoResponse\"u\x92AN\x12LПолучение подробной информации о сериале\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/tvshow/info/{tv_show_id}\x12\xf3\x01\n" +
+	"\rGetSeasonInfo\x12#.mediadelivery.GetSeasonInfoRequest\x1a$.mediadelivery.GetSeasonInfoResponse\"\x96\x01\x92A_\x12]Получение информации о сезоне сериала и его сериях\x82\xd3\xe4\x93\x02.\x12,/v1/tvshow/info/{tv_show_id}/{season_number}B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_tvshow_proto_rawDescOnce sync.Once
@@ -1069,8 +1078,8 @@ var file_media_delivery_tvshow_proto_goTypes = []any{
 	(*SearchTVShowResponse)(nil),          // 6: mediadelivery.SearchTVShowResponse
 	(*GetTVShowInfoRequest)(nil),          // 7: mediadelivery.GetTVShowInfoRequest
 	(*GetTVShowInfoResponse)(nil),         // 8: mediadelivery.GetTVShowInfoResponse
-	(*GetSeasonEpisodesRequest)(nil),      // 9: mediadelivery.GetSeasonEpisodesRequest
-	(*GetSeasonEpisodesResponse)(nil),     // 10: mediadelivery.GetSeasonEpisodesResponse
+	(*GetSeasonInfoRequest)(nil),          // 9: mediadelivery.GetSeasonInfoRequest
+	(*GetSeasonInfoResponse)(nil),         // 10: mediadelivery.GetSeasonInfoResponse
 	(*GetTVShowsFromLibraryRequest)(nil),  // 11: mediadelivery.GetTVShowsFromLibraryRequest
 	(*GetTVShowsFromLibraryResponse)(nil), // 12: mediadelivery.GetTVShowsFromLibraryResponse
 	(*timestamppb.Timestamp)(nil),         // 13: google.protobuf.Timestamp
@@ -1089,21 +1098,22 @@ var file_media_delivery_tvshow_proto_depIdxs = []int32{
 	0,  // 10: mediadelivery.Episode.still:type_name -> mediadelivery.Image
 	1,  // 11: mediadelivery.SearchTVShowResponse.items:type_name -> mediadelivery.TVShowShort
 	2,  // 12: mediadelivery.GetTVShowInfoResponse.result:type_name -> mediadelivery.TVShow
-	4,  // 13: mediadelivery.GetSeasonEpisodesResponse.items:type_name -> mediadelivery.Episode
-	1,  // 14: mediadelivery.GetTVShowsFromLibraryResponse.items:type_name -> mediadelivery.TVShowShort
-	5,  // 15: mediadelivery.TVShowLibraryService.SearchTVShow:input_type -> mediadelivery.SearchTVShowRequest
-	11, // 16: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:input_type -> mediadelivery.GetTVShowsFromLibraryRequest
-	7,  // 17: mediadelivery.TVShowLibraryService.GetTVShowInfo:input_type -> mediadelivery.GetTVShowInfoRequest
-	9,  // 18: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:input_type -> mediadelivery.GetSeasonEpisodesRequest
-	6,  // 19: mediadelivery.TVShowLibraryService.SearchTVShow:output_type -> mediadelivery.SearchTVShowResponse
-	12, // 20: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:output_type -> mediadelivery.GetTVShowsFromLibraryResponse
-	8,  // 21: mediadelivery.TVShowLibraryService.GetTVShowInfo:output_type -> mediadelivery.GetTVShowInfoResponse
-	10, // 22: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:output_type -> mediadelivery.GetSeasonEpisodesResponse
-	19, // [19:23] is the sub-list for method output_type
-	15, // [15:19] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	3,  // 13: mediadelivery.GetSeasonInfoResponse.season:type_name -> mediadelivery.Season
+	4,  // 14: mediadelivery.GetSeasonInfoResponse.episodes:type_name -> mediadelivery.Episode
+	1,  // 15: mediadelivery.GetTVShowsFromLibraryResponse.items:type_name -> mediadelivery.TVShowShort
+	5,  // 16: mediadelivery.TVShowLibraryService.SearchTVShow:input_type -> mediadelivery.SearchTVShowRequest
+	11, // 17: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:input_type -> mediadelivery.GetTVShowsFromLibraryRequest
+	7,  // 18: mediadelivery.TVShowLibraryService.GetTVShowInfo:input_type -> mediadelivery.GetTVShowInfoRequest
+	9,  // 19: mediadelivery.TVShowLibraryService.GetSeasonInfo:input_type -> mediadelivery.GetSeasonInfoRequest
+	6,  // 20: mediadelivery.TVShowLibraryService.SearchTVShow:output_type -> mediadelivery.SearchTVShowResponse
+	12, // 21: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:output_type -> mediadelivery.GetTVShowsFromLibraryResponse
+	8,  // 22: mediadelivery.TVShowLibraryService.GetTVShowInfo:output_type -> mediadelivery.GetTVShowInfoResponse
+	10, // 23: mediadelivery.TVShowLibraryService.GetSeasonInfo:output_type -> mediadelivery.GetSeasonInfoResponse
+	20, // [20:24] is the sub-list for method output_type
+	16, // [16:20] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_media_delivery_tvshow_proto_init() }

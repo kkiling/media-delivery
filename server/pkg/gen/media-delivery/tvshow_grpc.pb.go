@@ -22,7 +22,7 @@ const (
 	TVShowLibraryService_SearchTVShow_FullMethodName          = "/mediadelivery.TVShowLibraryService/SearchTVShow"
 	TVShowLibraryService_GetTVShowsFromLibrary_FullMethodName = "/mediadelivery.TVShowLibraryService/GetTVShowsFromLibrary"
 	TVShowLibraryService_GetTVShowInfo_FullMethodName         = "/mediadelivery.TVShowLibraryService/GetTVShowInfo"
-	TVShowLibraryService_GetSeasonEpisodes_FullMethodName     = "/mediadelivery.TVShowLibraryService/GetSeasonEpisodes"
+	TVShowLibraryService_GetSeasonInfo_FullMethodName         = "/mediadelivery.TVShowLibraryService/GetSeasonInfo"
 )
 
 // TVShowLibraryServiceClient is the client API for TVShowLibraryService service.
@@ -32,7 +32,7 @@ type TVShowLibraryServiceClient interface {
 	SearchTVShow(ctx context.Context, in *SearchTVShowRequest, opts ...grpc.CallOption) (*SearchTVShowResponse, error)
 	GetTVShowsFromLibrary(ctx context.Context, in *GetTVShowsFromLibraryRequest, opts ...grpc.CallOption) (*GetTVShowsFromLibraryResponse, error)
 	GetTVShowInfo(ctx context.Context, in *GetTVShowInfoRequest, opts ...grpc.CallOption) (*GetTVShowInfoResponse, error)
-	GetSeasonEpisodes(ctx context.Context, in *GetSeasonEpisodesRequest, opts ...grpc.CallOption) (*GetSeasonEpisodesResponse, error)
+	GetSeasonInfo(ctx context.Context, in *GetSeasonInfoRequest, opts ...grpc.CallOption) (*GetSeasonInfoResponse, error)
 }
 
 type tVShowLibraryServiceClient struct {
@@ -73,10 +73,10 @@ func (c *tVShowLibraryServiceClient) GetTVShowInfo(ctx context.Context, in *GetT
 	return out, nil
 }
 
-func (c *tVShowLibraryServiceClient) GetSeasonEpisodes(ctx context.Context, in *GetSeasonEpisodesRequest, opts ...grpc.CallOption) (*GetSeasonEpisodesResponse, error) {
+func (c *tVShowLibraryServiceClient) GetSeasonInfo(ctx context.Context, in *GetSeasonInfoRequest, opts ...grpc.CallOption) (*GetSeasonInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetSeasonEpisodesResponse)
-	err := c.cc.Invoke(ctx, TVShowLibraryService_GetSeasonEpisodes_FullMethodName, in, out, cOpts...)
+	out := new(GetSeasonInfoResponse)
+	err := c.cc.Invoke(ctx, TVShowLibraryService_GetSeasonInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ type TVShowLibraryServiceServer interface {
 	SearchTVShow(context.Context, *SearchTVShowRequest) (*SearchTVShowResponse, error)
 	GetTVShowsFromLibrary(context.Context, *GetTVShowsFromLibraryRequest) (*GetTVShowsFromLibraryResponse, error)
 	GetTVShowInfo(context.Context, *GetTVShowInfoRequest) (*GetTVShowInfoResponse, error)
-	GetSeasonEpisodes(context.Context, *GetSeasonEpisodesRequest) (*GetSeasonEpisodesResponse, error)
+	GetSeasonInfo(context.Context, *GetSeasonInfoRequest) (*GetSeasonInfoResponse, error)
 	mustEmbedUnimplementedTVShowLibraryServiceServer()
 }
 
@@ -110,8 +110,8 @@ func (UnimplementedTVShowLibraryServiceServer) GetTVShowsFromLibrary(context.Con
 func (UnimplementedTVShowLibraryServiceServer) GetTVShowInfo(context.Context, *GetTVShowInfoRequest) (*GetTVShowInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTVShowInfo not implemented")
 }
-func (UnimplementedTVShowLibraryServiceServer) GetSeasonEpisodes(context.Context, *GetSeasonEpisodesRequest) (*GetSeasonEpisodesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSeasonEpisodes not implemented")
+func (UnimplementedTVShowLibraryServiceServer) GetSeasonInfo(context.Context, *GetSeasonInfoRequest) (*GetSeasonInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSeasonInfo not implemented")
 }
 func (UnimplementedTVShowLibraryServiceServer) mustEmbedUnimplementedTVShowLibraryServiceServer() {}
 func (UnimplementedTVShowLibraryServiceServer) testEmbeddedByValue()                              {}
@@ -188,20 +188,20 @@ func _TVShowLibraryService_GetTVShowInfo_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TVShowLibraryService_GetSeasonEpisodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSeasonEpisodesRequest)
+func _TVShowLibraryService_GetSeasonInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSeasonInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TVShowLibraryServiceServer).GetSeasonEpisodes(ctx, in)
+		return srv.(TVShowLibraryServiceServer).GetSeasonInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TVShowLibraryService_GetSeasonEpisodes_FullMethodName,
+		FullMethod: TVShowLibraryService_GetSeasonInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TVShowLibraryServiceServer).GetSeasonEpisodes(ctx, req.(*GetSeasonEpisodesRequest))
+		return srv.(TVShowLibraryServiceServer).GetSeasonInfo(ctx, req.(*GetSeasonInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -226,8 +226,8 @@ var TVShowLibraryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TVShowLibraryService_GetTVShowInfo_Handler,
 		},
 		{
-			MethodName: "GetSeasonEpisodes",
-			Handler:    _TVShowLibraryService_GetSeasonEpisodes_Handler,
+			MethodName: "GetSeasonInfo",
+			Handler:    _TVShowLibraryService_GetSeasonInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
