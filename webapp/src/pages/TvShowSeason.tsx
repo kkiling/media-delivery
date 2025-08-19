@@ -14,19 +14,10 @@ const SEASON_INFO_CONFIG = {
   OVERVIEW_LINES: 8,
 } as const;
 
+// Обновляем конфигурацию для эпизодов
 const EPISODE_CONFIG = {
-  IMAGE_HEIGHT: 120, // Height for episode still images
-  OVERVIEW_LINES: 4,
-} as const;
-
-const TABLE_CONFIG = {
-  COLUMNS: {
-    NUMBER: '30px',
-    EPISODE: 'auto',
-    AIR_DATE: '160px',
-    DURATION: '80px',
-    RATING: '80px',
-  },
+  STILL_HEIGHT: 152,
+  OVERVIEW_LINES: 3,
 } as const;
 
 interface NoImageFallbackProps {
@@ -64,49 +55,69 @@ const PosterImage = ({ src, alt, minHeight }: PosterImageProps) => {
   );
 };
 
-interface EpisodeRowProps {
+// Обновляем компонент EpisodeRow на EpisodeCard
+interface EpisodeCardProps {
   episode: Episode;
 }
 
-const EpisodeRow = ({ episode }: EpisodeRowProps) => (
-  <tr>
-    <td>{episode.episode_number}</td>
-    <td>
-      <div className="d-flex align-items-center">
+const EpisodeCard = ({ episode }: EpisodeCardProps) => (
+  <>
+    <div className="px-2">
+      <div className="d-flex flex-column flex-sm-row gap-3">
         {episode.still?.w342 && (
-          <img
-            src={episode.still.w342}
-            alt={episode.name}
-            className="me-3"
-            style={{
-              height: EPISODE_CONFIG.IMAGE_HEIGHT,
-              objectFit: 'cover',
-            }}
-          />
+          <div className="d-flex justify-content-center">
+            <div
+              style={{
+                width: '200px',
+                height: EPISODE_CONFIG.STILL_HEIGHT,
+              }}
+            >
+              <img
+                src={episode.still.w342}
+                alt={episode.name}
+                className="w-100 h-100 object-fit-cover rounded"
+              />
+            </div>
+          </div>
         )}
-        <div>
-          <strong>{episode.name}</strong>
-          <p
-            className="text-muted mb-0 small"
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitLineClamp: EPISODE_CONFIG.OVERVIEW_LINES,
-              WebkitBoxOrient: 'vertical',
-            }}
-          >
-            {episode.overview}
-          </p>
+        <div className="flex-grow-1">
+          <div className="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h5 className="mb-1">
+                <span className="text-muted me-2">#{episode.episode_number}</span>
+                {episode.name}
+              </h5>
+              <div className="text-muted small mb-2">
+                {formatDate(episode.air_date)} • {episode.runtime} min
+              </div>
+            </div>
+            <div>
+              <Rating
+                voteAverage={episode.vote_average ?? 0}
+                voteCount={episode.vote_count ?? 0}
+                showVoteCount={true}
+              />
+            </div>
+          </div>
+          {episode.overview && (
+            <p
+              className="text-secondary mb-0 small"
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: EPISODE_CONFIG.OVERVIEW_LINES,
+                WebkitBoxOrient: 'vertical',
+              }}
+            >
+              {episode.overview}
+            </p>
+          )}
         </div>
       </div>
-    </td>
-    <td>{formatDate(episode.air_date)}</td>
-    <td>{episode.runtime} min</td>
-    <td>
-      <Rating voteAverage={episode.vote_average ?? 0} voteCount={episode.vote_count ?? 0} />
-    </td>
-  </tr>
+    </div>
+    <hr className="my-3" />
+  </>
 );
 
 const TvShowSeason = observer(() => {
@@ -177,7 +188,11 @@ const TvShowSeason = observer(() => {
                 </div>
                 <div className="text-center" style={{ width: '90px' }}>
                   {seasonData.vote_average && (
-                    <Rating voteAverage={seasonData.vote_average} voteCount={0} />
+                    <Rating
+                      voteAverage={seasonData.vote_average}
+                      voteCount={0}
+                      showVoteCount={false}
+                    />
                   )}
                 </div>
               </div>
@@ -200,23 +215,19 @@ const TvShowSeason = observer(() => {
         </Row>
       </Card>
 
+      {/* Обновляем секцию с эпизодами в основном компоненте */}
       <Card>
         <Card.Header as="h5">Episodes</Card.Header>
         <Card.Body>
-          <Table responsive hover>
-            <colgroup>
-              <col style={{ width: TABLE_CONFIG.COLUMNS.NUMBER }} />
-              <col style={{ width: TABLE_CONFIG.COLUMNS.EPISODE }} />
-              <col style={{ width: TABLE_CONFIG.COLUMNS.AIR_DATE }} />
-              <col style={{ width: TABLE_CONFIG.COLUMNS.DURATION }} />
-              <col style={{ width: TABLE_CONFIG.COLUMNS.RATING }} />
-            </colgroup>
-            <tbody>
-              {episodes.map((episode) => (
-                <EpisodeRow key={episode.id} episode={episode} />
-              ))}
-            </tbody>
-          </Table>
+          <div className="d-flex flex-column">
+            {episodes.map((episode, index) => (
+              <div key={episode.id}>
+                <EpisodeCard episode={episode} />
+                {/* Remove last divider */}
+                {index === episodes.length - 1 && <hr className="d-none" />}
+              </div>
+            ))}
+          </div>
         </Card.Body>
       </Card>
     </Container>
