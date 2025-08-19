@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Card, Container, Row, Col, Spinner, Alert, Table, Button } from 'react-bootstrap';
+import { Card, Container, Row, Col, Spinner, Alert, Button } from 'react-bootstrap';
 import { seasonDetailsStore } from '@/stores/seasonDetailsStore';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
@@ -14,37 +14,39 @@ const SEASON_INFO_CONFIG = {
   OVERVIEW_LINES: 8,
 } as const;
 
-// Обновляем конфигурацию для эпизодов
 const EPISODE_CONFIG = {
   STILL_HEIGHT: 152,
   OVERVIEW_LINES: 3,
 } as const;
 
-interface NoImageFallbackProps {
-  text?: string;
-}
+const lineClampStyle = (lines: number) => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: '-webkit-box',
+  WebkitLineClamp: lines,
+  WebkitBoxOrient: 'vertical' as const,
+});
 
-const NoImageFallback = ({ text = 'No Image Available' }: NoImageFallbackProps) => (
+const NoImageFallback = ({ text = 'No Image Available' }: { text?: string }) => (
   <div className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100">
     <ImageIcon size={48} className="mb-2" />
     <p className="mb-0">{text}</p>
   </div>
 );
 
-interface PosterImageProps {
+const PosterImage = ({
+  src,
+  alt,
+  minHeight,
+}: {
   src?: string;
   alt: string;
   minHeight?: number;
-}
-
-const PosterImage = ({ src, alt, minHeight }: PosterImageProps) => {
+}) => {
   const [error, setError] = useState(false);
-
-  if (!src || error) {
-    return <NoImageFallback />;
-  }
-
-  return (
+  return !src || error ? (
+    <NoImageFallback />
+  ) : (
     <img
       src={src}
       alt={alt}
@@ -55,7 +57,7 @@ const PosterImage = ({ src, alt, minHeight }: PosterImageProps) => {
   );
 };
 
-// Обновляем компонент EpisodeRow на EpisodeCard
+// Обновленный (как в исходнике) EpisodeCard
 interface EpisodeCardProps {
   episode: Episode;
 }
@@ -120,6 +122,69 @@ const EpisodeCard = ({ episode }: EpisodeCardProps) => (
   </>
 );
 
+interface SeasonInfoCardProps {
+  seasonData: {
+    poster?: { w342?: string };
+    name?: string;
+    air_date?: string;
+    episode_count?: number;
+    vote_average?: number;
+    overview?: string;
+  };
+  numberId: number;
+}
+
+const SeasonInfoCard = ({ seasonData, numberId }: SeasonInfoCardProps) => (
+  <Card className="mb-4">
+    <Row className="g-0">
+      <Col md={3}>
+        <div style={{ height: SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT }}>
+          <PosterImage
+            src={seasonData.poster?.w342}
+            alt={seasonData.name || 'Season Poster'}
+            minHeight={SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT}
+          />
+        </div>
+      </Col>
+      <Col md={9}>
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <Card.Title as="h2" className="mb-0">
+                <Link
+                  to={ROUTES.LIBRARY.TV_SHOWS.getDetails(numberId)}
+                  className="text-decoration-none text-dark"
+                >
+                  {seasonData.name}
+                </Link>
+              </Card.Title>
+
+              <Card.Subtitle className="text-muted">
+                {formatDate(seasonData.air_date)} • {seasonData.episode_count} episodes
+              </Card.Subtitle>
+            </div>
+
+            {seasonData.vote_average && (
+              <div className="text-center" style={{ width: 90 }}>
+                <Rating voteAverage={seasonData.vote_average} voteCount={0} showVoteCount={false} />
+              </div>
+            )}
+          </div>
+
+          {seasonData.overview && (
+            <Card.Text
+              className="text-secondary"
+              style={lineClampStyle(SEASON_INFO_CONFIG.OVERVIEW_LINES)}
+            >
+              {seasonData.overview}
+            </Card.Text>
+          )}
+        </Card.Body>
+      </Col>
+    </Row>
+  </Card>
+);
+
 const TvShowSeason = observer(() => {
   const { id, season } = useParams<{ id: string; season: string }>();
   const numberId = id ? parseInt(id, 10) : null;
@@ -152,82 +217,18 @@ const TvShowSeason = observer(() => {
     );
   }
 
-  if (!seasonData) {
-    return null;
-  }
+  if (!seasonData) return null;
 
   return (
     <Container className="mt-4">
-      <div className="mb-4">
-        <Link to={ROUTES.LIBRARY.TV_SHOWS.getDetails(numberId)}>
-          <Button variant="outline-primary" className="d-inline-flex align-items-center">
-            <ArrowLeft className="me-2" /> Back to TV Show
-          </Button>
-        </Link>
-      </div>
+      <SeasonInfoCard seasonData={seasonData} numberId={numberId} />
 
-      <Card className="mb-4">
-        <Row className="g-0">
-          <Col md={3}>
-            <div style={{ height: SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT }}>
-              <PosterImage
-                src={seasonData.poster?.w342}
-                alt={seasonData.name || 'Season Poster'}
-                minHeight={SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT}
-              />
-            </div>
-          </Col>
-          <Col md={9}>
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-start mb-4">
-                <div>
-                  <Card.Title as="h2">{seasonData.name}</Card.Title>
-                  <Card.Subtitle className="mb-3 text-muted">
-                    {formatDate(seasonData.air_date)} • {seasonData.episode_count} episodes
-                  </Card.Subtitle>
-                </div>
-                <div className="text-center" style={{ width: '90px' }}>
-                  {seasonData.vote_average && (
-                    <Rating
-                      voteAverage={seasonData.vote_average}
-                      voteCount={0}
-                      showVoteCount={false}
-                    />
-                  )}
-                </div>
-              </div>
-              {seasonData.overview && (
-                <Card.Text
-                  className="text-secondary"
-                  style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: SEASON_INFO_CONFIG.OVERVIEW_LINES,
-                    WebkitBoxOrient: 'vertical',
-                  }}
-                >
-                  {seasonData.overview}
-                </Card.Text>
-              )}
-            </Card.Body>
-          </Col>
-        </Row>
-      </Card>
-
-      {/* Обновляем секцию с эпизодами в основном компоненте */}
       <Card>
         <Card.Header as="h5">Episodes</Card.Header>
-        <Card.Body>
-          <div className="d-flex flex-column">
-            {episodes.map((episode, index) => (
-              <div key={episode.id}>
-                <EpisodeCard episode={episode} />
-                {/* Remove last divider */}
-                {index === episodes.length - 1 && <hr className="d-none" />}
-              </div>
-            ))}
-          </div>
+        <Card.Body className="d-flex flex-column">
+          {episodes.map((episode) => (
+            <EpisodeCard key={episode.id} episode={episode} />
+          ))}
         </Card.Body>
       </Card>
     </Container>
