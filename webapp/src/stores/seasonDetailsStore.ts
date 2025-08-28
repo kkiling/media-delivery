@@ -34,7 +34,7 @@ export class SeasonDetailsStore {
     this.error = null;
   }
 
-  async fetchSeasonDetails(tvShowId: string, seasonNumber: number) {
+  async fetchSeasonDetails(tvShowId: number, seasonNumber: number) {
     this.reset();
     this.setLoading(true);
 
@@ -48,7 +48,10 @@ export class SeasonDetailsStore {
         },
       });
 
-      const response = await api.v1.tvShowLibraryServiceGetSeasonInfo(tvShowId, seasonNumber);
+      const response = await api.v1.tvShowLibraryServiceGetSeasonInfo(
+        tvShowId.toString(),
+        seasonNumber
+      );
 
       this.setSeason(response.data.season || null);
       this.setEpisodes(response.data.episodes || []);

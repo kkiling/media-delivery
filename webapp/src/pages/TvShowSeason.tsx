@@ -1,13 +1,14 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Card, Container, Row, Col, Spinner, Alert, Button } from 'react-bootstrap';
+import { Card, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
+import { VideoContent } from '@/components/VideoContent';
 import { seasonDetailsStore } from '@/stores/seasonDetailsStore';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
 import { Rating } from '@/components';
 import { Episode } from '@/api/api';
-import { ArrowLeft, Image as ImageIcon } from 'react-bootstrap-icons';
+import { Image as ImageIcon } from 'react-bootstrap-icons';
 
 const SEASON_INFO_CONFIG = {
   MIN_IMAGE_HEIGHT: 400,
@@ -129,10 +130,9 @@ interface SeasonInfoCardProps {
     vote_average?: number;
     overview?: string;
   };
-  numberId: number;
 }
 
-const SeasonInfoCard = ({ seasonData, numberId }: SeasonInfoCardProps) => (
+const SeasonInfoCard = ({ seasonData }: SeasonInfoCardProps) => (
   <Card className="mb-4">
     <Row className="g-0">
       <Col md={3}>
@@ -149,12 +149,7 @@ const SeasonInfoCard = ({ seasonData, numberId }: SeasonInfoCardProps) => (
           <div className="d-flex justify-content-between align-items-start mb-4">
             <div>
               <Card.Title as="h2" className="mb-0">
-                <Link
-                  to={ROUTES.LIBRARY.TV_SHOWS.getDetails(numberId)}
-                  className="text-decoration-none text-dark"
-                >
-                  {seasonData.name}
-                </Link>
+                {seasonData.name}
               </Card.Title>
 
               <Card.Subtitle className="text-muted">
@@ -186,7 +181,7 @@ const TvShowSeason = observer(() => {
 
   useEffect(() => {
     if (numberId && numberSeason !== null) {
-      seasonDetailsStore.fetchSeasonDetails(numberId.toString(), numberSeason);
+      seasonDetailsStore.fetchSeasonDetails(numberId, numberSeason);
     }
   }, [numberId, numberSeason]);
 
@@ -214,8 +209,25 @@ const TvShowSeason = observer(() => {
 
   return (
     <Container className="mt-4">
-      <SeasonInfoCard seasonData={seasonData} numberId={numberId} />
-
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to={ROUTES.LIBRARY.TV_SHOWS.getDetails(numberId)}>Back to show</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {seasonData.name || 'Season'}
+          </li>
+        </ol>
+      </nav>
+      <SeasonInfoCard seasonData={seasonData} />
+      <VideoContent
+        contentId={{
+          tv_show: {
+            id: numberId,
+            season_number: numberSeason,
+          },
+        }}
+      />
       <Card>
         <Card.Header as="h5">Episodes</Card.Header>
         <Card.Body className="d-flex flex-column">

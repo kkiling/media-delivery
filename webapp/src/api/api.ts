@@ -320,7 +320,6 @@ export interface VideoContent {
   id?: string;
   /** @format date-time */
   created_at?: string;
-  content_id?: ContentID;
   delivery_status?: DeliveryStatus;
 }
 
