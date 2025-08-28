@@ -35,3 +35,8 @@ type GetTVShowsFromLibraryParams struct {
 type GetTVShowsFromLibraryResult struct {
 	Items []TVShowShort
 }
+
+type AddTVShowInLibraryParams struct {
+	TVShowID     uint64
+	SeasonNumber uint8
+}

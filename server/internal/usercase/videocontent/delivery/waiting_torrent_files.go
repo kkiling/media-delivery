@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
@@ -75,6 +76,10 @@ func (s *Service) WaitingTorrentFiles(_ context.Context, params WaitingTorrentFi
 			Size:         file.Size,
 		})
 	}
+
+	sort.Slice(prepareTorrentFiles, func(i, j int) bool {
+		return prepareTorrentFiles[i].FullPath < prepareTorrentFiles[j].FullPath
+	})
 
 	return &TorrentFilesData{
 		ContentFullPath: fullPath,
