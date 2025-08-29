@@ -47,6 +47,7 @@ func mapContentMatchesFromPrepareTVShowSeason(
 
 		videoFile := fileMap[prepareEpisode.VideoFile.File.RelativePath]
 		episode.FileName += videoFile.Extension
+		episode.RelativePath += videoFile.Extension
 
 		content := ContentMatches{
 			Episode: episode,

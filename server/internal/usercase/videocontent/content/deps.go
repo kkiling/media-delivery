@@ -21,6 +21,7 @@ type Storage interface {
 type TVShowLibrary interface {
 	GetTVShowInfo(ctx context.Context, params tvshowlibrary.GetTVShowParams) (*tvshowlibrary.GetTVShowResult, error)
 	GetSeasonInfo(ctx context.Context, params tvshowlibrary.GetSeasonInfoParams) (*tvshowlibrary.GetSeasonInfoResult, error)
+	AddTVShowInLibrary(ctx context.Context, params tvshowlibrary.AddTVShowInLibraryParams) error
 }
 
 type TVShowDeliveryState interface {

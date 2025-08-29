@@ -59,22 +59,37 @@ func (api *Api) SearchTorrents(query string) (*TorrentResponse, error) {
 		title := titleLink.Text()
 		href := api.baseAPIUrl.String() + titleLink.AttrOr("href", "")
 		author := cols.Eq(4).Text()
-		size := cols.Eq(5).Text()
-		seeds := cols.Eq(6).Text()
-		leeches := cols.Eq(7).Text()
-		downloads := cols.Eq(8).Text()
 		addedDate := cols.Eq(9).Text()
 
+		var convertErr error
+		seeds, convertErr := convertTextToUint32(cols.Eq(6).Text())
+		if convertErr != nil {
+			seeds = 0
+		}
+		leeches, convertErr := convertTextToUint32(cols.Eq(7).Text())
+		if convertErr != nil {
+			leeches = 0
+		}
+		downloads, convertErr := convertTextToUint32(cols.Eq(8).Text())
+		if convertErr != nil {
+			downloads = 0
+		}
+		size, convertErr := convertFileSizeToBytes(cols.Eq(5).Text())
+		if convertErr != nil {
+			size = 0
+		}
+
 		results = append(results, Torrent{
-			Title:     strings.TrimSpace(title),
-			Href:      href,
-			Forum:     strings.TrimSpace(forum),
-			Author:    strings.TrimSpace(author),
-			Size:      strings.TrimSpace(size),
-			Seeds:     strings.TrimSpace(seeds),
-			Leeches:   strings.TrimSpace(leeches),
-			Downloads: strings.TrimSpace(downloads),
-			AddedDate: strings.TrimSpace(addedDate),
+			Title:      strings.TrimSpace(title),
+			Href:       href,
+			Category:   strings.TrimSpace(forum),
+			Author:     strings.TrimSpace(author),
+			SizeBytes:  size,
+			SizePretty: formatBytesWithPrecision(size, 2),
+			Seeds:      seeds,
+			Leeches:    leeches,
+			Downloads:  downloads,
+			AddedDate:  strings.TrimSpace(addedDate),
 		})
 	})
 

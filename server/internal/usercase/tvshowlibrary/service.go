@@ -25,7 +25,7 @@ func NewService(
 	theMovieDb TheMovieDb,
 ) *Service {
 	return &Service{
-		// storage:    storage,
+		storage:    storage,
 		theMovieDb: theMovieDb,
 	}
 }
@@ -134,7 +134,7 @@ func (s *Service) GetTVShowsFromLibrary(ctx context.Context, _ GetTVShowsFromLib
 	}, nil
 }
 
-/*func (s *Service) AddTVShowInLibrary(ctx context.Context, params AddTVShowInLibraryParams) error {
+func (s *Service) AddTVShowInLibrary(ctx context.Context, params AddTVShowInLibraryParams) error {
 	responseTVShow, err := s.theMovieDb.GetTV(ctx, params.TVShowID, language)
 	if err != nil {
 		if errors.Is(err, apierr.ContentNotFound) {
@@ -150,20 +150,5 @@ func (s *Service) GetTVShowsFromLibrary(ctx context.Context, _ GetTVShowsFromLib
 		return fmt.Errorf("s.storage.SaveTVShow: %w", err)
 	}
 
-	responseSeason, err := s.theMovieDb.GetSeasonInfo(ctx, params.TVShowID, params.SeasonNumber, language)
-	if err != nil {
-		if errors.Is(err, apierr.ContentNotFound) {
-			return ucerr.NotFound
-		}
-		return fmt.Errorf("theMovieDb.GetSeasonEpisodes: %w", err)
-	}
-
-	episodes := mapEpisodes(responseSeason)
-
-	// Получение информации о эпизодах сериала, автоматически добавляет их в библиотеку
-	if err = s.storage.SaveOrUpdateSeasonEpisode(ctx, params.TVShowID, params.SeasonNumber, episodes); err != nil {
-		return fmt.Errorf("s.storage.SaveSeasonEpisode: %w", err)
-	}
-
 	return nil
-}*/
+}

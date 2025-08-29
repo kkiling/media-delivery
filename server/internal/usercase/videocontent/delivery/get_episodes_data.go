@@ -68,6 +68,7 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 				EpisodeNumber: item.EpisodeNumber,
 				EpisodeName:   item.Name,
 				FileName:      filepath.Join(tvShowCatalogPath.FullSeasonPath(), name),
+				RelativePath:  name,
 			}
 		}),
 	}, nil

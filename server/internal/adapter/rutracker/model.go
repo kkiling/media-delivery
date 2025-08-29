@@ -5,20 +5,22 @@ type Torrent struct {
 	Title string
 	// Href ссылка на раздачу
 	Href string
-	// Forum раздел раздачи
-	Forum string
 	// Author автор раздачи
 	Author string
-	// Size Размер раздачи
-	Size string
+	// Size Размер раздачи (байты)
+	SizeBytes uint64
+	// Размер виде строки (32Gb)
+	SizePretty string
 	// Seeds Информация о сидах
-	Seeds string
+	Seeds uint32
 	// Leeches Информация о личах
-	Leeches string
+	Leeches uint32
 	// Downloads количество скачиваний
-	Downloads string
+	Downloads uint32
 	// AddedDate Дата добавления
 	AddedDate string
+	// Категория
+	Category string
 }
 
 type TorrentResponse struct {

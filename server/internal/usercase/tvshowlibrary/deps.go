@@ -13,7 +13,7 @@ type TheMovieDb interface {
 }
 
 type Storage interface {
-	//SaveOrUpdateTVShow(ctx context.Context, tvShow *TVShow) error
+	SaveOrUpdateTVShow(ctx context.Context, tvShow *TVShow) error
 	//GetTVShow(ctx context.Context, tvID uint64) (*TVShow, error)
 	GetTVShows(ctx context.Context) ([]TVShowShort, error)
 	//GetSeasonEpisodes(ctx context.Context, tvID uint64, seasonNumber uint8) ([]Episode, error)

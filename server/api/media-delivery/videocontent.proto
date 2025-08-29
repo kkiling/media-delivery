@@ -82,6 +82,14 @@ message VideoContent {
   DeliveryStatus delivery_status = 3;
 }
 
+enum Status {
+  StatusUnknown = 0;
+  NewStatus = 1;
+  InProgressStatus = 2;
+  CompletedStatus = 3;
+  FailedStatus = 4;
+}
+
 enum TVShowDeliveryStatus {
   // Неизвестный статус доставки
   TVShowDeliveryStatusUnknown = 0;
@@ -126,10 +134,11 @@ enum TVShowDeliveryStatus {
 message TorrentSearch {
   string title = 1;
   string href = 2;
+  string category = 8;
   string size = 3;
-  string seeds = 4;
-  string leeches   = 5;
-  string downloads = 6;
+  int64 seeds = 4;
+  int64 leeches   = 5;
+  int64 downloads = 6;
   string added_date = 7;
 }
 
@@ -144,6 +153,8 @@ message EpisodeInfo {
   uint32 season_number = 1;
   string episode_name = 2;
   uint32 episode_number = 3;
+  string file_name = 4;
+  string relative_path = 5;
 }
 
 message VideoFile {
@@ -182,16 +193,53 @@ message MergeVideoStatus {
   bool is_complete = 2;
 }
 
+message TVShowCatalogPath {
+  // Путь до каталога сериала
+  string tv_show_path = 1;
+  // Путь до каталога сезона (относительно каталога сериала)
+  string season_path = 2;
+}
+
+message TVShowCatalog {
+  // Путь до раздачи сезона сериала
+  string torrent_path = 1;
+  // Размер файлов раздачи сезона сериала
+  string torrent_size_pretty = 2;
+  // Путь до сезона сериала на медиасервере
+  TVShowCatalogPath media_server_path = 3;
+  // Размер файлов раздачи сезона сериала (байты)
+  string media_server_size_pretty = 4;
+  // Файлы скопированы с раздачи или созданы ссылочная связь
+  // True - файлы скопированы
+  // False - файлы созданы через линки
+  bool is_copy_files_in_media_server = 5;
+}
+
 message TVShowDeliveryData {
+  // Поисковый запрос поиска торрент файла
   optional SearchQuery search_query = 1;
-
+  // Результат поиска торрент раздач
   repeated TorrentSearch torrent_search = 2;
-
+  // Результат метча файлов
   repeated ContentMatches content_matches = 3;
   // статус скачивания раздачи
   optional TorrentDownloadStatus torrent_download_status = 4;
   // статус сшивания файлов
   optional MergeVideoStatus merge_video_status = 5;
+  // TVShowCatalogInfo информация о каталогах сериала
+  optional TVShowCatalog tv_show_catalog_info = 6;
+}
+
+message TVShowDeliveryError {
+  enum ErrorType {
+    TVShowDeliveryError_Unknown = 0;
+    // Торрент трекер не доступен
+    TorrentSiteForbidden = 1;
+    // Файлы на медиасервере уже существуют
+    FilesAlreadyExist = 2;
+  }
+  string raw_error = 1;
+  ErrorType error_type = 2;
 }
 
 message SearchQuery {
@@ -201,6 +249,8 @@ message SearchQuery {
 message TVShowDeliveryState {
   TVShowDeliveryData data = 1;
   TVShowDeliveryStatus step = 2;
+  Status status = 3;
+  optional TVShowDeliveryError error = 4;
 }
 
 message CreateVideoContentRequest {

@@ -115,6 +115,13 @@ func (s *Service) CreateVideoContent(ctx context.Context, params CreateVideoCont
 		return nil, fmt.Errorf("storage.SaveVideoContent: %w", err)
 	}
 
+	if err = s.tvShowLibrary.AddTVShowInLibrary(ctx, tvshowlibrary.AddTVShowInLibraryParams{
+		TVShowID:     params.ContentID.TVShow.ID,
+		SeasonNumber: params.ContentID.TVShow.SeasonNumber,
+	}); err != nil {
+		return nil, fmt.Errorf("tvShowLibrary.AddTVShowInLibrary: %w", err)
+	}
+
 	return &videoContent, nil
 }
 
@@ -189,7 +196,7 @@ func (s *Service) ChoseTorrentOptions(ctx context.Context,
 		return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
 	}
 	if executeErr != nil {
-		return nil, executeErr
+		s.logger.Errorf("tvShowDeliveryState.Complete: %v", executeErr)
 	}
 	return newState, nil
 }
@@ -211,7 +218,7 @@ func (s *Service) ChoseFileMatchesOptions(ctx context.Context,
 		return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
 	}
 	if executeErr != nil {
-		return nil, executeErr
+		s.logger.Errorf("tvShowDeliveryState.Complete: %v", executeErr)
 	}
 	return newState, nil
 }
@@ -230,7 +237,14 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 		// Добиваем стейт
 		newState, executeErr, err := s.tvShowDeliveryState.Complete(ctx, stateInfo.StateID)
 		if err != nil && !errors.Is(err, statemachine.ErrOptionsIsUndefined) {
-			return fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+			if errors.Is(err, statemachine.ErrInTerminalStatus) {
+				newState, err = s.tvShowDeliveryState.GetStateByID(ctx, stateInfo.StateID)
+				if err != nil {
+					return fmt.Errorf("tvShowDeliveryState.GetStateByID: %w", err)
+				}
+			} else {
+				return fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+			}
 		}
 		if executeErr != nil {
 			s.logger.Errorf("executeError: %v", executeErr)
