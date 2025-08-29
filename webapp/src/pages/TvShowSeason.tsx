@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Card, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
-import { VideoContent } from '@/components/VideoContent';
+import { VideoContent } from '@/components/videocontent/VideoContent';
 import { seasonDetailsStore } from '@/stores/seasonDetailsStore';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
@@ -11,7 +11,7 @@ import { Episode } from '@/api/api';
 import { Image as ImageIcon } from 'react-bootstrap-icons';
 
 const SEASON_INFO_CONFIG = {
-  MIN_IMAGE_HEIGHT: 400,
+  MIN_IMAGE_HEIGHT: 500,
   OVERVIEW_LINES: 8,
 } as const;
 
@@ -61,9 +61,10 @@ const PosterImage = ({
 // Обновленный (как в исходнике) EpisodeCard
 interface EpisodeCardProps {
   episode: Episode;
+  isLast: boolean;
 }
 
-const EpisodeCard = ({ episode }: EpisodeCardProps) => (
+const EpisodeCard = ({ episode, isLast }: EpisodeCardProps) => (
   <>
     <div className="px-2">
       <div className="d-flex flex-column flex-sm-row gap-3">
@@ -117,7 +118,7 @@ const EpisodeCard = ({ episode }: EpisodeCardProps) => (
         </div>
       </div>
     </div>
-    <hr className="my-3" />
+    {!isLast && <hr className="my-3" />}
   </>
 );
 
@@ -231,8 +232,12 @@ const TvShowSeason = observer(() => {
       <Card>
         <Card.Header as="h5">Episodes</Card.Header>
         <Card.Body className="d-flex flex-column">
-          {episodes.map((episode) => (
-            <EpisodeCard key={episode.id} episode={episode} />
+          {episodes.map((episode, index) => (
+            <EpisodeCard
+              key={episode.id}
+              episode={episode}
+              isLast={index === episodes.length - 1}
+            />
           ))}
         </Card.Body>
       </Card>

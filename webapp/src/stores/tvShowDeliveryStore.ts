@@ -5,6 +5,7 @@ export class TVShowDeliveryStore {
   deliveryState: TVShowDeliveryState | null = null;
   loading = false;
   error: string | null = null;
+  backgroundLoading = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -22,14 +23,22 @@ export class TVShowDeliveryStore {
     this.error = error;
   };
 
+  setBackgroundLoading = (loading: boolean) => {
+    this.backgroundLoading = loading;
+  };
+
   reset = () => {
     this.deliveryState = null;
     this.loading = false;
     this.error = null;
   };
 
-  fetchDeliveryData = async (contentId: ContentID) => {
-    this.setLoading(true);
+  fetchDeliveryData = async (contentId: ContentID, background = false) => {
+    if (background) {
+      this.setBackgroundLoading(true);
+    } else {
+      this.setLoading(true);
+    }
     this.setError(null);
 
     try {
@@ -54,7 +63,11 @@ export class TVShowDeliveryStore {
       console.error('Error:', error);
       this.setError('Failed to fetch delivery data. Please try again.');
     } finally {
-      this.setLoading(false);
+      if (background) {
+        this.setBackgroundLoading(false);
+      } else {
+        this.setLoading(false);
+      }
     }
   };
 
@@ -81,7 +94,6 @@ export class TVShowDeliveryStore {
     } catch (error) {
       console.error('Error:', error);
       this.setError('Failed to confirm file matches. Please try again.');
-      throw error;
     } finally {
       this.setLoading(false);
     }
@@ -111,7 +123,6 @@ export class TVShowDeliveryStore {
     } catch (error) {
       console.error('Error:', error);
       this.setError('Failed to select torrent. Please try again.');
-      throw error;
     } finally {
       this.setLoading(false);
     }

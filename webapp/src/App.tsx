@@ -1,6 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
 import { Layout, NotFound } from './components';
-import { Home, Library, TvShowSeason, TvShowDetails, SearchTVShows, SearchMovies } from './pages';
+import {
+  Home,
+  Library,
+  TvShowSeason,
+  TvShowDetails,
+  SearchTVShows,
+  SearchMovies,
+  TvShowsLibrary,
+} from './pages';
 import { ROUTES } from './constants/routes';
 
 function App() {
@@ -12,8 +20,8 @@ function App() {
         <Route path={ROUTES.SEARCH.MOVIES} element={<SearchMovies />} />
         <Route path={ROUTES.LIBRARY.ROOT} element={<Library />}>
           {/* <Route path={ROUTES.LIBRARY.MOVIES.ROOT} element={<Movies />} />
-          <Route path={ROUTES.LIBRARY.MOVIES.DETAILS} element={<MovieDetails />} />
-          <Route path={ROUTES.LIBRARY.TV_SHOWS.ROOT} element={<TvShows />} /> */}
+          <Route path={ROUTES.LIBRARY.MOVIES.DETAILS} element={<MovieDetails />} /> */}
+          <Route path={ROUTES.LIBRARY.TV_SHOWS.ROOT} element={<TvShowsLibrary />} />
           <Route path={ROUTES.LIBRARY.TV_SHOWS.DETAILS} element={<TvShowDetails />} />
           <Route path={ROUTES.LIBRARY.TV_SHOWS.SEASON} element={<TvShowSeason />} />
         </Route>

@@ -17,6 +17,7 @@
     "bootstrap": "^5.3.7",
     "country-flag-icons": "^1.5.19",
     "dayjs": "^1.11.13",
+    "lucide-react": "^0.542.0",
     "mobx": "^6.13.7",
     "mobx-react-lite": "^4.1.0",
     "react": "^19.1.1",

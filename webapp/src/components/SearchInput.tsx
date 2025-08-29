@@ -2,18 +2,26 @@ import { Form, Button, InputGroup } from 'react-bootstrap';
 import { Search as SearchIcon } from 'react-bootstrap-icons';
 import { useState, FormEvent, ChangeEvent } from 'react';
 
+export enum SearchInputSize {
+  Small = 'sm',
+  Medium = 'md',
+  Large = 'lg',
+}
+
 const SEARCH_VALIDATION = {
   MIN_LENGTH: 3,
   MAX_LENGTH: 256,
 } as const;
 
 interface SearchInputProps {
+  size: SearchInputSize;
   placeholder?: string;
   initialQuery?: string;
   onSubmit: (query: string) => void;
 }
 
 export function SearchInput({
+  size,
   placeholder = 'Search...',
   initialQuery = '',
   onSubmit,
@@ -44,7 +52,7 @@ export function SearchInput({
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputGroup size="lg">
+      <InputGroup size={size === SearchInputSize.Medium ? undefined : size}>
         <Form.Control
           type="search"
           placeholder={placeholder}
@@ -54,7 +62,7 @@ export function SearchInput({
           isInvalid={isInvalid}
         />
         <Button type="submit" variant="primary" className="px-4">
-          <SearchIcon size={20} className="me-2" />
+          <SearchIcon size={size === SearchInputSize.Large ? 20 : 16} className="me-2" />
           <span className="d-none d-sm-inline">Search</span>
         </Button>
         <Form.Control.Feedback type="invalid">

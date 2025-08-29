@@ -5,7 +5,6 @@ export class VideoContentStore {
   content: VideoContent | null = null;
   loading = false;
   error: string | null = null;
-  creating = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -21,10 +20,6 @@ export class VideoContentStore {
 
   setError = (error: string | null) => {
     this.error = error;
-  };
-
-  setCreating = (creating: boolean) => {
-    this.creating = creating;
   };
 
   reset = () => {
@@ -65,7 +60,7 @@ export class VideoContentStore {
   };
 
   createVideoContent = async (contentId: ContentID) => {
-    this.setCreating(true);
+    this.setLoading(true);
     this.setError(null);
 
     try {
@@ -88,9 +83,8 @@ export class VideoContentStore {
     } catch (error) {
       console.error('Error:', error);
       this.setError('Failed to create video content. Please try again.');
-      throw error;
     } finally {
-      this.setCreating(false);
+      this.setLoading(false);
     }
   };
 }

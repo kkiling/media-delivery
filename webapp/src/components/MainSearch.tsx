@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Film, Tv } from 'react-bootstrap-icons';
 import { ROUTES } from '@/constants/routes';
-import { SearchInput } from './SearchInput';
+import { SearchInput, SearchInputSize } from './SearchInput';
 
 const searchOptions = [
   { value: 'tvshows', label: 'TV Shows', icon: Tv },
@@ -72,7 +72,12 @@ export default function MainSearch({ mode = 'all', query = '', onSubmit }: MainS
         )}
 
         <Col xs={12}>
-          <SearchInput placeholder={placeholder} initialQuery={query} onSubmit={handleSearch} />
+          <SearchInput
+            placeholder={placeholder}
+            initialQuery={query}
+            onSubmit={handleSearch}
+            size={SearchInputSize.Large}
+          />
         </Col>
       </Row>
     </Form.Group>

@@ -14,11 +14,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TV_SHOW_CONFIG = {
-  MIN_IMAGE_HEIGHT: 400,
+  MIN_IMAGE_HEIGHT: 500,
 } as const;
 
 const SEASON_CARD_CONFIG = {
-  IMAGE_HEIGHT: 400,
+  IMAGE_HEIGHT: 500,
 } as const;
 
 interface NoImageFallbackProps {
