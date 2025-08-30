@@ -52,7 +52,7 @@ export const TVShowDeliveryContent = observer(
         }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [contentId, tvShowDeliveryStore.deliveryState?.status]);
+    }, [contentId, tvShowDeliveryStore.deliveryState?.step]);
 
     const onSearchSubmit = (query: string) => {
       tvShowDeliveryStore.selectTorrent(contentId, undefined, query);
