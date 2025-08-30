@@ -78,7 +78,7 @@ func (api *API) searchTV(params SearchQuery) (*TVShowSearchResponse, error) {
 	}, nil
 }
 
-func (api *API) SearchTV(ctx context.Context, params SearchQuery) (*TVShowSearchResponse, error) {
+func (api *API) SearchTV(_ context.Context, params SearchQuery) (*TVShowSearchResponse, error) {
 	if err := api.validate.Struct(params); err != nil {
 		return nil, fmt.Errorf("invalid tvshowlibrary query: %w", err)
 	}

@@ -7,16 +7,15 @@
 package api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -29,8 +28,13 @@ const (
 type Image struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	W342          string                 `protobuf:"bytes,2,opt,name=w342,proto3" json:"w342,omitempty"`
-	Original      string                 `protobuf:"bytes,3,opt,name=original,proto3" json:"original,omitempty"`
+	W92           string                 `protobuf:"bytes,2,opt,name=w92,proto3" json:"w92,omitempty"`
+	W154          string                 `protobuf:"bytes,3,opt,name=w154,proto3" json:"w154,omitempty"`
+	W185          string                 `protobuf:"bytes,4,opt,name=w185,proto3" json:"w185,omitempty"`
+	W342          string                 `protobuf:"bytes,5,opt,name=w342,proto3" json:"w342,omitempty"`
+	W500          string                 `protobuf:"bytes,6,opt,name=w500,proto3" json:"w500,omitempty"`
+	W780          string                 `protobuf:"bytes,7,opt,name=w780,proto3" json:"w780,omitempty"`
+	Original      string                 `protobuf:"bytes,8,opt,name=original,proto3" json:"original,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -72,9 +76,44 @@ func (x *Image) GetId() string {
 	return ""
 }
 
+func (x *Image) GetW92() string {
+	if x != nil {
+		return x.W92
+	}
+	return ""
+}
+
+func (x *Image) GetW154() string {
+	if x != nil {
+		return x.W154
+	}
+	return ""
+}
+
+func (x *Image) GetW185() string {
+	if x != nil {
+		return x.W185
+	}
+	return ""
+}
+
 func (x *Image) GetW342() string {
 	if x != nil {
 		return x.W342
+	}
+	return ""
+}
+
+func (x *Image) GetW500() string {
+	if x != nil {
+		return x.W500
+	}
+	return ""
+}
+
+func (x *Image) GetW780() string {
+	if x != nil {
+		return x.W780
 	}
 	return ""
 }
@@ -208,7 +247,6 @@ type TVShow struct {
 	Backdrop         *Image                 `protobuf:"bytes,10,opt,name=backdrop,proto3,oneof" json:"backdrop,omitempty"`
 	Genres           []string               `protobuf:"bytes,11,rep,name=genres,proto3" json:"genres,omitempty"`
 	LastAirDate      *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=last_air_date,json=lastAirDate,proto3" json:"last_air_date,omitempty"`
-	NextEpisodeToAir *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=next_episode_to_air,json=nextEpisodeToAir,proto3" json:"next_episode_to_air,omitempty"`
 	NumberOfEpisodes uint32                 `protobuf:"varint,14,opt,name=number_of_episodes,json=numberOfEpisodes,proto3" json:"number_of_episodes,omitempty"`
 	NumberOfSeasons  uint32                 `protobuf:"varint,15,opt,name=number_of_seasons,json=numberOfSeasons,proto3" json:"number_of_seasons,omitempty"`
 	OriginCountry    []string               `protobuf:"bytes,16,rep,name=origin_country,json=originCountry,proto3" json:"origin_country,omitempty"`
@@ -330,13 +368,6 @@ func (x *TVShow) GetGenres() []string {
 func (x *TVShow) GetLastAirDate() *timestamppb.Timestamp {
 	if x != nil {
 		return x.LastAirDate
-	}
-	return nil
-}
-
-func (x *TVShow) GetNextEpisodeToAir() *timestamppb.Timestamp {
-	if x != nil {
-		return x.NextEpisodeToAir
 	}
 	return nil
 }
@@ -782,7 +813,7 @@ func (x *GetTVShowInfoResponse) GetResult() *TVShow {
 	return nil
 }
 
-type GetSeasonEpisodesRequest struct {
+type GetSeasonInfoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TvShowId      uint64                 `protobuf:"varint,1,opt,name=tv_show_id,json=tvShowId,proto3" json:"tv_show_id,omitempty"`
 	SeasonNumber  uint32                 `protobuf:"varint,2,opt,name=season_number,json=seasonNumber,proto3" json:"season_number,omitempty"`
@@ -790,20 +821,20 @@ type GetSeasonEpisodesRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetSeasonEpisodesRequest) Reset() {
-	*x = GetSeasonEpisodesRequest{}
+func (x *GetSeasonInfoRequest) Reset() {
+	*x = GetSeasonInfoRequest{}
 	mi := &file_media_delivery_tvshow_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetSeasonEpisodesRequest) String() string {
+func (x *GetSeasonInfoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetSeasonEpisodesRequest) ProtoMessage() {}
+func (*GetSeasonInfoRequest) ProtoMessage() {}
 
-func (x *GetSeasonEpisodesRequest) ProtoReflect() protoreflect.Message {
+func (x *GetSeasonInfoRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_tvshow_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -815,46 +846,47 @@ func (x *GetSeasonEpisodesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetSeasonEpisodesRequest.ProtoReflect.Descriptor instead.
-func (*GetSeasonEpisodesRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSeasonInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetSeasonInfoRequest) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *GetSeasonEpisodesRequest) GetTvShowId() uint64 {
+func (x *GetSeasonInfoRequest) GetTvShowId() uint64 {
 	if x != nil {
 		return x.TvShowId
 	}
 	return 0
 }
 
-func (x *GetSeasonEpisodesRequest) GetSeasonNumber() uint32 {
+func (x *GetSeasonInfoRequest) GetSeasonNumber() uint32 {
 	if x != nil {
 		return x.SeasonNumber
 	}
 	return 0
 }
 
-type GetSeasonEpisodesResponse struct {
+type GetSeasonInfoResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Items         []*Episode             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Season        *Season                `protobuf:"bytes,1,opt,name=season,proto3" json:"season,omitempty"`
+	Episodes      []*Episode             `protobuf:"bytes,2,rep,name=episodes,proto3" json:"episodes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetSeasonEpisodesResponse) Reset() {
-	*x = GetSeasonEpisodesResponse{}
+func (x *GetSeasonInfoResponse) Reset() {
+	*x = GetSeasonInfoResponse{}
 	mi := &file_media_delivery_tvshow_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetSeasonEpisodesResponse) String() string {
+func (x *GetSeasonInfoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetSeasonEpisodesResponse) ProtoMessage() {}
+func (*GetSeasonInfoResponse) ProtoMessage() {}
 
-func (x *GetSeasonEpisodesResponse) ProtoReflect() protoreflect.Message {
+func (x *GetSeasonInfoResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_tvshow_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -866,14 +898,21 @@ func (x *GetSeasonEpisodesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetSeasonEpisodesResponse.ProtoReflect.Descriptor instead.
-func (*GetSeasonEpisodesResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSeasonInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetSeasonInfoResponse) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *GetSeasonEpisodesResponse) GetItems() []*Episode {
+func (x *GetSeasonInfoResponse) GetSeason() *Season {
 	if x != nil {
-		return x.Items
+		return x.Season
+	}
+	return nil
+}
+
+func (x *GetSeasonInfoResponse) GetEpisodes() []*Episode {
+	if x != nil {
+		return x.Episodes
 	}
 	return nil
 }
@@ -962,13 +1001,18 @@ var File_media_delivery_tvshow_proto protoreflect.FileDescriptor
 
 const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
-	"\x1bmedia-delivery/tvshow.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"G\n" +
+	"\x1bmedia-delivery/tvshow.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xa9\x01\n" +
 	"\x05Image\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04w342\x18\x02 \x01(\tR\x04w342\x12\x1a\n" +
-	"\boriginal\x18\x03 \x01(\tR\boriginal\"\xd4\x02\n" +
-	"\vTVShowShort\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
+	"\x03w92\x18\x02 \x01(\tR\x03w92\x12\x12\n" +
+	"\x04w154\x18\x03 \x01(\tR\x04w154\x12\x12\n" +
+	"\x04w185\x18\x04 \x01(\tR\x04w185\x12\x12\n" +
+	"\x04w342\x18\x05 \x01(\tR\x04w342\x12\x12\n" +
+	"\x04w500\x18\x06 \x01(\tR\x04w500\x12\x12\n" +
+	"\x04w780\x18\a \x01(\tR\x04w780\x12\x1a\n" +
+	"\boriginal\x18\b \x01(\tR\boriginal\"\xdd\x02\n" +
+	"\vTVShowShort\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\roriginal_name\x18\x03 \x01(\tR\foriginalName\x12\x1a\n" +
 	"\boverview\x18\x04 \x01(\tR\boverview\x121\n" +
@@ -980,9 +1024,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"popularity\x18\t \x01(\x02R\n" +
 	"popularityB\t\n" +
-	"\a_poster\"\xae\x06\n" +
-	"\x06TVShow\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x12\n" +
+	"\a_poster\"\xec\x05\n" +
+	"\x06TVShow\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\roriginal_name\x18\x03 \x01(\tR\foriginalName\x12\x1a\n" +
 	"\boverview\x18\x04 \x01(\tR\boverview\x121\n" +
@@ -997,8 +1041,7 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\bbackdrop\x18\n" +
 	" \x01(\v2\x14.mediadelivery.ImageH\x01R\bbackdrop\x88\x01\x01\x12\x16\n" +
 	"\x06genres\x18\v \x03(\tR\x06genres\x12>\n" +
-	"\rlast_air_date\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vlastAirDate\x12I\n" +
-	"\x13next_episode_to_air\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\x10nextEpisodeToAir\x12,\n" +
+	"\rlast_air_date\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vlastAirDate\x12,\n" +
 	"\x12number_of_episodes\x18\x0e \x01(\rR\x10numberOfEpisodes\x12*\n" +
 	"\x11number_of_seasons\x18\x0f \x01(\rR\x0fnumberOfSeasons\x12%\n" +
 	"\x0eorigin_country\x18\x10 \x03(\tR\roriginCountry\x12\x16\n" +
@@ -1007,9 +1050,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x04type\x18\x13 \x01(\tR\x04type\x12/\n" +
 	"\aseasons\x18\x14 \x03(\v2\x15.mediadelivery.SeasonR\aseasonsB\t\n" +
 	"\a_posterB\v\n" +
-	"\t_backdrop\"\xaa\x02\n" +
-	"\x06Season\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x125\n" +
+	"\t_backdrop\"\xb3\x02\n" +
+	"\x06Season\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12#\n" +
 	"\repisode_count\x18\x03 \x01(\rR\fepisodeCount\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
@@ -1017,9 +1060,9 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x06poster\x18\x06 \x01(\v2\x14.mediadelivery.ImageH\x00R\x06poster\x88\x01\x01\x12#\n" +
 	"\rseason_number\x18\a \x01(\rR\fseasonNumber\x12!\n" +
 	"\fvote_average\x18\b \x01(\x02R\vvoteAverageB\t\n" +
-	"\a_poster\"\xe1\x02\n" +
-	"\aEpisode\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x125\n" +
+	"\a_poster\"\xea\x02\n" +
+	"\aEpisode\x12\x17\n" +
+	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12%\n" +
 	"\x0eepisode_number\x18\x03 \x01(\rR\repisodeNumber\x12!\n" +
 	"\fepisode_type\x18\x04 \x01(\tR\vepisodeType\x12\x12\n" +
@@ -1035,26 +1078,27 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x13SearchTVShowRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"H\n" +
 	"\x14SearchTVShowResponse\x120\n" +
-	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items\"4\n" +
-	"\x14GetTVShowInfoRequest\x12\x1c\n" +
+	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items\"=\n" +
+	"\x14GetTVShowInfoRequest\x12%\n" +
 	"\n" +
-	"tv_show_id\x18\x01 \x01(\x04R\btvShowId\"F\n" +
+	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\"F\n" +
 	"\x15GetTVShowInfoResponse\x12-\n" +
-	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"]\n" +
-	"\x18GetSeasonEpisodesRequest\x12\x1c\n" +
+	"\x06result\x18\x01 \x01(\v2\x15.mediadelivery.TVShowR\x06result\"b\n" +
+	"\x14GetSeasonInfoRequest\x12%\n" +
 	"\n" +
-	"tv_show_id\x18\x01 \x01(\x04R\btvShowId\x12#\n" +
-	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"I\n" +
-	"\x19GetSeasonEpisodesResponse\x12,\n" +
-	"\x05items\x18\x01 \x03(\v2\x16.mediadelivery.EpisodeR\x05items\"\x1e\n" +
+	"tv_show_id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\btvShowId\x12#\n" +
+	"\rseason_number\x18\x02 \x01(\rR\fseasonNumber\"z\n" +
+	"\x15GetSeasonInfoResponse\x12-\n" +
+	"\x06season\x18\x01 \x01(\v2\x15.mediadelivery.SeasonR\x06season\x122\n" +
+	"\bepisodes\x18\x02 \x03(\v2\x16.mediadelivery.EpisodeR\bepisodes\"\x1e\n" +
 	"\x1cGetTVShowsFromLibraryRequest\"Q\n" +
 	"\x1dGetTVShowsFromLibraryResponse\x120\n" +
-	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items2\xdd\x06\n" +
+	"\x05items\x18\x01 \x03(\v2\x1a.mediadelivery.TVShowShortR\x05items2\xeb\x06\n" +
 	"\x14TVShowLibraryService\x12\xa8\x01\n" +
 	"\fSearchTVShow\x12\".mediadelivery.SearchTVShowRequest\x1a#.mediadelivery.SearchTVShowResponse\"O\x92A3\x121Поиск сериалов по названию\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/tvshow/search\x12\xdd\x01\n" +
 	"\x15GetTVShowsFromLibrary\x12+.mediadelivery.GetTVShowsFromLibraryRequest\x1a,.mediadelivery.GetTVShowsFromLibraryResponse\"i\x92AL\x12JПолучение списка сериалов из библиотеки\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/tvshow/library\x12\xd1\x01\n" +
-	"\rGetTVShowInfo\x12#.mediadelivery.GetTVShowInfoRequest\x1a$.mediadelivery.GetTVShowInfoResponse\"u\x92AN\x12LПолучение подробной информации о сериале\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/tvshow/info/{tv_show_id}\x12\xe5\x01\n" +
-	"\x11GetSeasonEpisodes\x12'.mediadelivery.GetSeasonEpisodesRequest\x1a(.mediadelivery.GetSeasonEpisodesResponse\"}\x92AF\x12DПолучение информации о сериях сезона\x82\xd3\xe4\x93\x02.\x12,/v1/tvshow/info/{tv_show_id}/{season_number}B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\rGetTVShowInfo\x12#.mediadelivery.GetTVShowInfoRequest\x1a$.mediadelivery.GetTVShowInfoResponse\"u\x92AN\x12LПолучение подробной информации о сериале\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/tvshow/info/{tv_show_id}\x12\xf3\x01\n" +
+	"\rGetSeasonInfo\x12#.mediadelivery.GetSeasonInfoRequest\x1a$.mediadelivery.GetSeasonInfoResponse\"\x96\x01\x92A_\x12]Получение информации о сезоне сериала и его сериях\x82\xd3\xe4\x93\x02.\x12,/v1/tvshow/info/{tv_show_id}/{season_number}B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_tvshow_proto_rawDescOnce sync.Once
@@ -1079,8 +1123,8 @@ var file_media_delivery_tvshow_proto_goTypes = []any{
 	(*SearchTVShowResponse)(nil),          // 6: mediadelivery.SearchTVShowResponse
 	(*GetTVShowInfoRequest)(nil),          // 7: mediadelivery.GetTVShowInfoRequest
 	(*GetTVShowInfoResponse)(nil),         // 8: mediadelivery.GetTVShowInfoResponse
-	(*GetSeasonEpisodesRequest)(nil),      // 9: mediadelivery.GetSeasonEpisodesRequest
-	(*GetSeasonEpisodesResponse)(nil),     // 10: mediadelivery.GetSeasonEpisodesResponse
+	(*GetSeasonInfoRequest)(nil),          // 9: mediadelivery.GetSeasonInfoRequest
+	(*GetSeasonInfoResponse)(nil),         // 10: mediadelivery.GetSeasonInfoResponse
 	(*GetTVShowsFromLibraryRequest)(nil),  // 11: mediadelivery.GetTVShowsFromLibraryRequest
 	(*GetTVShowsFromLibraryResponse)(nil), // 12: mediadelivery.GetTVShowsFromLibraryResponse
 	(*timestamppb.Timestamp)(nil),         // 13: google.protobuf.Timestamp
@@ -1092,24 +1136,24 @@ var file_media_delivery_tvshow_proto_depIdxs = []int32{
 	13, // 3: mediadelivery.TVShow.first_air_date:type_name -> google.protobuf.Timestamp
 	0,  // 4: mediadelivery.TVShow.backdrop:type_name -> mediadelivery.Image
 	13, // 5: mediadelivery.TVShow.last_air_date:type_name -> google.protobuf.Timestamp
-	13, // 6: mediadelivery.TVShow.next_episode_to_air:type_name -> google.protobuf.Timestamp
-	3,  // 7: mediadelivery.TVShow.seasons:type_name -> mediadelivery.Season
-	13, // 8: mediadelivery.Season.air_date:type_name -> google.protobuf.Timestamp
-	0,  // 9: mediadelivery.Season.poster:type_name -> mediadelivery.Image
-	13, // 10: mediadelivery.Episode.air_date:type_name -> google.protobuf.Timestamp
-	0,  // 11: mediadelivery.Episode.still:type_name -> mediadelivery.Image
-	1,  // 12: mediadelivery.SearchTVShowResponse.items:type_name -> mediadelivery.TVShowShort
-	2,  // 13: mediadelivery.GetTVShowInfoResponse.result:type_name -> mediadelivery.TVShow
-	4,  // 14: mediadelivery.GetSeasonEpisodesResponse.items:type_name -> mediadelivery.Episode
+	3,  // 6: mediadelivery.TVShow.seasons:type_name -> mediadelivery.Season
+	13, // 7: mediadelivery.Season.air_date:type_name -> google.protobuf.Timestamp
+	0,  // 8: mediadelivery.Season.poster:type_name -> mediadelivery.Image
+	13, // 9: mediadelivery.Episode.air_date:type_name -> google.protobuf.Timestamp
+	0,  // 10: mediadelivery.Episode.still:type_name -> mediadelivery.Image
+	1,  // 11: mediadelivery.SearchTVShowResponse.items:type_name -> mediadelivery.TVShowShort
+	2,  // 12: mediadelivery.GetTVShowInfoResponse.result:type_name -> mediadelivery.TVShow
+	3,  // 13: mediadelivery.GetSeasonInfoResponse.season:type_name -> mediadelivery.Season
+	4,  // 14: mediadelivery.GetSeasonInfoResponse.episodes:type_name -> mediadelivery.Episode
 	1,  // 15: mediadelivery.GetTVShowsFromLibraryResponse.items:type_name -> mediadelivery.TVShowShort
 	5,  // 16: mediadelivery.TVShowLibraryService.SearchTVShow:input_type -> mediadelivery.SearchTVShowRequest
 	11, // 17: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:input_type -> mediadelivery.GetTVShowsFromLibraryRequest
 	7,  // 18: mediadelivery.TVShowLibraryService.GetTVShowInfo:input_type -> mediadelivery.GetTVShowInfoRequest
-	9,  // 19: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:input_type -> mediadelivery.GetSeasonEpisodesRequest
+	9,  // 19: mediadelivery.TVShowLibraryService.GetSeasonInfo:input_type -> mediadelivery.GetSeasonInfoRequest
 	6,  // 20: mediadelivery.TVShowLibraryService.SearchTVShow:output_type -> mediadelivery.SearchTVShowResponse
 	12, // 21: mediadelivery.TVShowLibraryService.GetTVShowsFromLibrary:output_type -> mediadelivery.GetTVShowsFromLibraryResponse
 	8,  // 22: mediadelivery.TVShowLibraryService.GetTVShowInfo:output_type -> mediadelivery.GetTVShowInfoResponse
-	10, // 23: mediadelivery.TVShowLibraryService.GetSeasonEpisodes:output_type -> mediadelivery.GetSeasonEpisodesResponse
+	10, // 23: mediadelivery.TVShowLibraryService.GetSeasonInfo:output_type -> mediadelivery.GetSeasonInfoResponse
 	20, // [20:24] is the sub-list for method output_type
 	16, // [16:20] is the sub-list for method input_type
 	16, // [16:16] is the sub-list for extension type_name

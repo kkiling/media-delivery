@@ -36,7 +36,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -45,14 +45,14 @@
             "name": "content_id.movie_id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
             "name": "content_id.tv_show.id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
@@ -80,7 +80,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -113,7 +113,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -146,7 +146,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -179,7 +179,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -188,14 +188,14 @@
             "name": "content_id.movie_id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
             "name": "content_id.tv_show.id",
             "in": "query",
             "required": false,
-            "type": "string",
+            "type": "integer",
             "format": "uint64"
           },
           {
@@ -225,7 +225,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -245,19 +245,19 @@
     },
     "/v1/tvshow/info/{tv_show_id}/{season_number}": {
       "get": {
-        "summary": "Получение информации о сериях сезона",
-        "operationId": "TVShowLibraryService_GetSeasonEpisodes",
+        "summary": "Получение информации о сезоне сериала и его сериях",
+        "operationId": "TVShowLibraryService_GetSeasonInfo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GetSeasonEpisodesResponse"
+              "$ref": "#/definitions/GetSeasonInfoResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -296,7 +296,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -319,7 +319,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/Status"
+              "$ref": "#/definitions/rpc.Status"
             }
           }
         },
@@ -395,7 +395,7 @@
       "type": "object",
       "properties": {
         "movie_id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "tv_show": {
@@ -458,7 +458,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "air_date": {
@@ -508,8 +508,24 @@
         "episode_number": {
           "type": "integer",
           "format": "int64"
+        },
+        "file_name": {
+          "type": "string"
+        },
+        "relative_path": {
+          "type": "string"
         }
       }
+    },
+    "ErrorType": {
+      "type": "string",
+      "enum": [
+        "TVShowDeliveryError_Unknown",
+        "TorrentSiteForbidden",
+        "FilesAlreadyExist"
+      ],
+      "default": "TVShowDeliveryError_Unknown",
+      "title": "- TorrentSiteForbidden: Торрент трекер не доступен\n - FilesAlreadyExist: Файлы на медиасервере уже существуют"
     },
     "FileInfo": {
       "type": "object",
@@ -529,10 +545,13 @@
         }
       }
     },
-    "GetSeasonEpisodesResponse": {
+    "GetSeasonInfoResponse": {
       "type": "object",
       "properties": {
-        "items": {
+        "season": {
+          "$ref": "#/definitions/Season"
+        },
+        "episodes": {
           "type": "array",
           "items": {
             "type": "object",
@@ -587,7 +606,22 @@
         "id": {
           "type": "string"
         },
+        "w92": {
+          "type": "string"
+        },
+        "w154": {
+          "type": "string"
+        },
+        "w185": {
+          "type": "string"
+        },
         "w342": {
+          "type": "string"
+        },
+        "w500": {
+          "type": "string"
+        },
+        "w780": {
           "type": "string"
         },
         "original": {
@@ -631,7 +665,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "air_date": {
@@ -661,30 +695,11 @@
         }
       }
     },
-    "Status": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/Any"
-          }
-        }
-      }
-    },
     "TVShow": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "name": {
@@ -728,10 +743,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "next_episode_to_air": {
-          "type": "string",
-          "format": "date-time"
-        },
         "number_of_episodes": {
           "type": "integer",
           "format": "int64"
@@ -764,25 +775,66 @@
         }
       }
     },
+    "TVShowCatalog": {
+      "type": "object",
+      "properties": {
+        "torrent_path": {
+          "type": "string",
+          "title": "Путь до раздачи сезона сериала"
+        },
+        "torrent_size_pretty": {
+          "type": "string",
+          "title": "Размер файлов раздачи сезона сериала"
+        },
+        "media_server_path": {
+          "$ref": "#/definitions/TVShowCatalogPath",
+          "title": "Путь до сезона сериала на медиасервере"
+        },
+        "media_server_size_pretty": {
+          "type": "string",
+          "title": "Размер файлов раздачи сезона сериала (байты)"
+        },
+        "is_copy_files_in_media_server": {
+          "type": "boolean",
+          "title": "Файлы скопированы с раздачи или созданы ссылочная связь\nTrue - файлы скопированы\nFalse - файлы созданы через линки"
+        }
+      }
+    },
+    "TVShowCatalogPath": {
+      "type": "object",
+      "properties": {
+        "tv_show_path": {
+          "type": "string",
+          "title": "Путь до каталога сериала"
+        },
+        "season_path": {
+          "type": "string",
+          "title": "Путь до каталога сезона (относительно каталога сериала)"
+        }
+      }
+    },
     "TVShowDeliveryData": {
       "type": "object",
       "properties": {
         "search_query": {
-          "$ref": "#/definitions/SearchQuery"
+          "$ref": "#/definitions/SearchQuery",
+          "title": "Поисковый запрос поиска торрент файла"
         },
         "torrent_search": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/TorrentSearch"
-          }
+          },
+          "title": "Результат поиска торрент раздач"
         },
         "content_matches": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/ContentMatches"
-          }
+          },
+          "title": "Результат метча файлов"
         },
         "torrent_download_status": {
           "$ref": "#/definitions/TorrentDownloadStatus",
@@ -791,6 +843,21 @@
         "merge_video_status": {
           "$ref": "#/definitions/MergeVideoStatus",
           "title": "статус сшивания файлов"
+        },
+        "tv_show_catalog_info": {
+          "$ref": "#/definitions/TVShowCatalog",
+          "title": "TVShowCatalogInfo информация о каталогах сериала"
+        }
+      }
+    },
+    "TVShowDeliveryError": {
+      "type": "object",
+      "properties": {
+        "raw_error": {
+          "type": "string"
+        },
+        "error_type": {
+          "$ref": "#/definitions/ErrorType"
         }
       }
     },
@@ -802,6 +869,12 @@
         },
         "step": {
           "$ref": "#/definitions/TVShowDeliveryStatus"
+        },
+        "status": {
+          "$ref": "#/definitions/mediadelivery.Status"
+        },
+        "error": {
+          "$ref": "#/definitions/TVShowDeliveryError"
         }
       }
     },
@@ -835,7 +908,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "season_number": {
@@ -848,7 +921,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "format": "uint64"
         },
         "name": {
@@ -905,17 +978,23 @@
         "href": {
           "type": "string"
         },
+        "category": {
+          "type": "string"
+        },
         "size": {
           "type": "string"
         },
         "seeds": {
-          "type": "string"
+          "type": "string",
+          "format": "int64"
         },
         "leeches": {
-          "type": "string"
+          "type": "string",
+          "format": "int64"
         },
         "downloads": {
-          "type": "string"
+          "type": "string",
+          "format": "int64"
         },
         "added_date": {
           "type": "string"
@@ -958,9 +1037,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "content_id": {
-          "$ref": "#/definitions/ContentID"
-        },
         "delivery_status": {
           "$ref": "#/definitions/DeliveryStatus"
         }
@@ -971,6 +1047,36 @@
       "properties": {
         "file": {
           "$ref": "#/definitions/FileInfo"
+        }
+      }
+    },
+    "mediadelivery.Status": {
+      "type": "string",
+      "enum": [
+        "StatusUnknown",
+        "NewStatus",
+        "InProgressStatus",
+        "CompletedStatus",
+        "FailedStatus"
+      ],
+      "default": "StatusUnknown"
+    },
+    "rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
         }
       }
     }

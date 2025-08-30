@@ -60,7 +60,7 @@ func main() {
 		}
 	}()
 
-	srv := server.NewTorrent2EmbyServer(
+	srv := server.NewMediaDeliveryServer(
 		logger,
 		platformserver.Config{
 			Host:                    cfg.Server.Host,

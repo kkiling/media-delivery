@@ -152,10 +152,10 @@ func (s *Storage) SaveOrUpdateTVShow(ctx context.Context, tvShow *tvshowlibrary.
         INSERT OR REPLACE INTO tv_shows (
             id, name, original_name, overview, poster_id,
             first_air_date, vote_average, vote_count, popularity,
-            backdrop_id, genres, last_air_date, next_episode_to_air,
+            backdrop_id, genres, last_air_date,
             number_of_episodes, number_of_seasons, origin_country,
             status, tagline, type
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
 
 		_, err = s.base.Next(tCtx).ExecContext(ctx, query,
@@ -171,7 +171,6 @@ func (s *Storage) SaveOrUpdateTVShow(ctx context.Context, tvShow *tvshowlibrary.
 			lo.EmptyableToPtr(lo.FromPtr(tvShow.Backdrop).ID),
 			genresJSON,
 			tvShow.LastAirDate,
-			tvShow.NextEpisodeToAir,
 			tvShow.NumberOfEpisodes,
 			tvShow.NumberOfSeasons,
 			originCountryJSON,
@@ -206,7 +205,7 @@ func (s *Storage) GetTVShow(ctx context.Context, tvID uint64) (*tvshowlibrary.TV
         SELECT 
             id, name, original_name, overview, poster_id,
             first_air_date, vote_average, vote_count, popularity,
-            backdrop_id, genres, last_air_date, next_episode_to_air,
+            backdrop_id, genres, last_air_date,
             number_of_episodes, number_of_seasons, origin_country,
             status, tagline, type
         FROM tv_shows
@@ -224,7 +223,6 @@ func (s *Storage) GetTVShow(ctx context.Context, tvID uint64) (*tvshowlibrary.TV
 		&backdropID,
 		&genresJSON,
 		&tvShow.LastAirDate,
-		&tvShow.NextEpisodeToAir,
 		&tvShow.NumberOfEpisodes,
 		&tvShow.NumberOfSeasons,
 		&originCountryJSON,

@@ -2,9 +2,11 @@ package tvshowdeliverystate
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
@@ -165,7 +167,13 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						return stepContext.Error(fmt.Errorf("WaitingTorrentFiles: %w", err))
 					}
 					if res == nil {
-						return stepContext.Empty()
+						data.TorrentDownloadStatus, err = r.contentDelivery.WaitingTorrentDownloadComplete(ctx, delivery.WaitingTorrentDownloadCompleteParams{
+							Hash: data.Torrent.MagnetLink.Hash,
+						})
+						if err != nil {
+							return stepContext.Error(fmt.Errorf("WaitingTorrentDownloadComplete: %w", err))
+						}
+						return stepContext.Empty().WithData(data)
 					}
 					data.TorrentFilesData = res
 					return stepContext.Next(GetEpisodesData).WithData(data)
@@ -192,7 +200,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					contentMatches, err := r.contentDelivery.PrepareFileMatches(ctx, delivery.PreparingFileMatchesParams{
 						TorrentFiles: data.TorrentFilesData.Files,
 						Episodes:     data.EpisodesData.Episodes,
-						TVShowID:     *stepContext.State.MetaData.ContentID.TVShow,
+						SeasonInfo:   data.EpisodesData.SeasonInfo,
 					})
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))
@@ -203,11 +211,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 
 					data.ContentMatches = contentMatches
 					// Определение необходимости конвертации файлов
-					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches) {
-						return stepContext.Next(WaitingChoseFileMatches).WithData(data)
-					}
-					// Если нечего конвертировать то идем сразу на ожидание скачивания
-					return stepContext.Next(WaitingTorrentDownloadComplete).WithData(data)
+					return stepContext.Next(WaitingChoseFileMatches).WithData(data)
 				},
 			},
 			WaitingChoseFileMatches: {
@@ -238,7 +242,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						Hash: data.Torrent.MagnetLink.Hash,
 					})
 					if err != nil {
-						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))
+						return stepContext.Error(fmt.Errorf("WaitingTorrentDownloadComplete: %w", err))
 					}
 					data.TorrentDownloadStatus = res
 					if res.IsComplete {
@@ -342,7 +346,9 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					}
 
 					data.TVShowCatalogInfo.TorrentSize = torrentTVShowSeasonSize
+					data.TVShowCatalogInfo.TorrentSizePretty = formatBytesWithPrecision(torrentTVShowSeasonSize, 2)
 					data.TVShowCatalogInfo.MediaServerSize = mediaServerTVShowSize
+					data.TVShowCatalogInfo.MediaServerSizePretty = formatBytesWithPrecision(mediaServerTVShowSize, 2)
 
 					return stepContext.Next(SetMediaMetaData).WithData(data)
 				},
@@ -356,6 +362,10 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						TVShowID:   *stepContext.State.MetaData.ContentID.TVShow,
 					})
 					if err != nil {
+						if errors.Is(err, apierr.ContentNotFound) {
+							// emby не сразу раздупляет, поможет ретрай
+							return stepContext.Empty()
+						}
 						return stepContext.Error(fmt.Errorf("SetMediaMetaData: %w", err))
 					}
 

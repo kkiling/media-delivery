@@ -11,7 +11,7 @@ import (
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
-func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVShow, error) {
+func (api *API) GetTV(_ context.Context, tvID uint64, language Language) (*TVShow, error) {
 	queryParams := url.Values{}
 	queryParams.Add("api_key", api.apiKey)
 	queryParams.Add("language", string(language))
@@ -38,10 +38,10 @@ func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVS
 		Genres       []struct {
 			Name string `json:"name"`
 		} `json:"genres"`
-		ID               uint64   `json:"id"`
-		LastAirDate      string   `json:"last_air_date"`
-		Name             string   `json:"name"`
-		NextEpisodeToAir string   `json:"next_episode_to_air"`
+		ID          uint64 `json:"id"`
+		LastAirDate string `json:"last_air_date"`
+		Name        string `json:"name"`
+		// NextEpisodeToAir string   `json:"next_episode_to_air"`
 		NumberOfEpisodes uint32   `json:"number_of_episodes"`
 		NumberOfSeasons  uint32   `json:"number_of_seasons"`
 		OriginCountry    []string `json:"origin_country"`
@@ -66,7 +66,7 @@ func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVS
 		VoteCount   uint32  `json:"vote_count"`
 	}
 
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err = json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
@@ -101,10 +101,10 @@ func (api *API) GetTV(ctx context.Context, tvID uint64, language Language) (*TVS
 			VoteCount:    result.VoteCount,
 			Popularity:   result.Popularity,
 		},
-		Backdrop:         api.getImage(result.BackdropPath),
-		Genres:           genres,
-		LastAirDate:      parseDate(result.LastAirDate),
-		NextEpisodeToAir: parseDate(result.NextEpisodeToAir),
+		Backdrop:    api.getImage(result.BackdropPath),
+		Genres:      genres,
+		LastAirDate: parseDate(result.LastAirDate),
+		// NextEpisodeToAir: parseDate(result.NextEpisodeToAir),
 		NumberOfEpisodes: result.NumberOfEpisodes,
 		NumberOfSeasons:  result.NumberOfSeasons,
 		OriginCountry:    result.OriginCountry,

@@ -37,7 +37,7 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 	}
 
 	// Достаем инфу о эпизодах
-	episodes, err := s.tvShowLibrary.GetSeasonEpisodes(ctx, tvshowlibrary.GetSeasonEpisodesParams{
+	seasonInfo, err := s.tvShowLibrary.GetSeasonInfo(ctx, tvshowlibrary.GetSeasonInfoParams{
 		TVShowID:     params.TVShowID.ID,
 		SeasonNumber: params.TVShowID.SeasonNumber,
 	})
@@ -61,13 +61,21 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 	}
 	return &EpisodesData{
 		TVShowCatalogPath: tvShowCatalogPath,
-		Episodes: lo.Map(episodes.Items, func(item tvshowlibrary.Episode, _ int) EpisodeInfo {
+		SeasonInfo: SeasonInfo{
+			TVShowName:    tvShowInfo.Result.Name,
+			FirstAirYear:  fmt.Sprintf("%d", tvShowInfo.Result.FirstAirDate.Year()),
+			SeasonName:    season.Name,
+			SeasonNumber:  season.SeasonNumber,
+			SeasonAirYear: fmt.Sprintf("%d", season.AirDate.Year()),
+		},
+		Episodes: lo.Map(seasonInfo.Result.Episodes, func(item tvshowlibrary.Episode, _ int) EpisodeInfo {
 			name := fmt.Sprintf("S%02dE%02d %s", season.SeasonNumber, item.EpisodeNumber, item.Name)
 			return EpisodeInfo{
 				SeasonNumber:  season.SeasonNumber,
 				EpisodeNumber: item.EpisodeNumber,
 				EpisodeName:   item.Name,
 				FileName:      filepath.Join(tvShowCatalogPath.FullSeasonPath(), name),
+				RelativePath:  name,
 			}
 		}),
 	}, nil

@@ -1,6 +1,9 @@
 package videocontent
 
 import (
+	"strings"
+
+	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -48,7 +51,6 @@ func mapVideoContent(result videocontent.VideoContent) *desc.VideoContent {
 	return &desc.VideoContent{
 		Id:             result.ID.String(),
 		CreatedAt:      timestamppb.New(result.CreatedAt),
-		ContentId:      mapContentID(&result.ContentID),
 		DeliveryStatus: mapDeliveryStatus(result.DeliveryStatus),
 	}
 }
@@ -116,6 +118,21 @@ func mapDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStatus {
 	}
 }
 
+func mapStatus(status statemachine.Status) desc.Status {
+	switch status {
+	case statemachine.NewStatus:
+		return desc.Status_NewStatus
+	case statemachine.InProgressStatus:
+		return desc.Status_InProgressStatus
+	case statemachine.CompletedStatus:
+		return desc.Status_CompletedStatus
+	case statemachine.FailedStatus:
+		return desc.Status_FailedStatus
+	default:
+		return desc.Status_StatusUnknown
+	}
+}
+
 func maTorrentState(state videocontent.TorrentState) desc.TorrentDownloadStatus_TorrentState {
 	switch state {
 	case videocontent.TorrentStateError:
@@ -152,34 +169,41 @@ func mapTracks(tracks []videocontent.Track) []*desc.Track {
 	})
 }
 
-func mapTVShowDeliveryData(step videocontent.StepDelivery, data *videocontent.TVShowDeliveryData) *desc.TVShowDeliveryData {
-
+func mapTVShowDeliveryData(state *videocontent.TVShowDeliveryState) *desc.TVShowDeliveryData {
 	result := &desc.TVShowDeliveryData{
 		SearchQuery: &desc.SearchQuery{
-			Query: data.SearchQuery.Query,
+			Query: func() string {
+				if state.Data.SearchQuery == nil {
+					return ""
+				}
+				return state.Data.SearchQuery.Query
+			}(),
 		},
 	}
 
-	if step == videocontent.WaitingUserChoseTorrent {
-		result.TorrentSearch = lo.Map(data.TorrentSearch, func(item videocontent.TorrentSearch, _ int) *desc.TorrentSearch {
+	if state.Step == videocontent.WaitingUserChoseTorrent {
+		result.TorrentSearch = lo.Map(state.Data.TorrentSearch, func(item videocontent.TorrentSearch, _ int) *desc.TorrentSearch {
 			return &desc.TorrentSearch{
 				Title:     item.Title,
 				Href:      item.Href,
-				Size:      item.Size,
-				Seeds:     item.Seeds,
-				Leeches:   item.Leeches,
-				Downloads: item.Downloads,
+				Size:      item.SizePretty,
+				Seeds:     int64(item.Seeds),
+				Leeches:   int64(item.Leeches),
+				Downloads: int64(item.Downloads),
 				AddedDate: item.AddedDate,
+				Category:  item.Category,
 			}
 		})
 	}
-	if step == videocontent.WaitingChoseFileMatches {
-		result.ContentMatches = lo.Map(data.ContentMatches, func(item videocontent.ContentMatches, _ int) *desc.ContentMatches {
+	if state.Step == videocontent.WaitingChoseFileMatches {
+		result.ContentMatches = lo.Map(state.Data.ContentMatches, func(item videocontent.ContentMatches, _ int) *desc.ContentMatches {
 			return &desc.ContentMatches{
 				Episode: &desc.EpisodeInfo{
 					SeasonNumber:  uint32(item.Episode.SeasonNumber),
 					EpisodeName:   item.Episode.EpisodeName,
 					EpisodeNumber: uint32(item.Episode.EpisodeNumber),
+					FileName:      item.Episode.FileName,
+					RelativePath:  item.Episode.RelativePath,
 				},
 				Video: &desc.VideoFile{
 					File: mapFile(item.Video.File),
@@ -190,17 +214,19 @@ func mapTVShowDeliveryData(step videocontent.StepDelivery, data *videocontent.TV
 		})
 	}
 
-	if step == videocontent.WaitingTorrentDownloadComplete {
-		st := data.TorrentDownloadStatus
-		result.TorrentDownloadStatus = &desc.TorrentDownloadStatus{
-			State:      maTorrentState(st.State),
-			Progress:   float32(st.Progress),
-			IsComplete: st.IsComplete,
+	if state.Step == videocontent.WaitingTorrentDownloadComplete || state.Step == videocontent.WaitingTorrentFiles {
+		st := state.Data.TorrentDownloadStatus
+		if st != nil {
+			result.TorrentDownloadStatus = &desc.TorrentDownloadStatus{
+				State:      maTorrentState(st.State),
+				Progress:   float32(st.Progress),
+				IsComplete: st.IsComplete,
+			}
 		}
 	}
 
-	if step == videocontent.WaitingMergeVideoFiles {
-		st := data.MergeVideoStatus
+	if state.Step == videocontent.WaitingMergeVideoFiles {
+		st := state.Data.MergeVideoStatus
 
 		result.MergeVideoStatus = &desc.MergeVideoStatus{
 			Progress:   float32(st.Progress),
@@ -208,12 +234,50 @@ func mapTVShowDeliveryData(step videocontent.StepDelivery, data *videocontent.TV
 		}
 	}
 
+	if state.Status == statemachine.CompletedStatus {
+		inf := state.Data.TVShowCatalogInfo
+		result.TvShowCatalogInfo = &desc.TVShowCatalog{
+			TorrentPath:       inf.TorrentPath,
+			TorrentSizePretty: inf.TorrentSizePretty,
+			MediaServerPath: &desc.TVShowCatalogPath{
+				TvShowPath: inf.MediaServerPath.TVShowPath,
+				SeasonPath: inf.MediaServerPath.SeasonPath,
+			},
+			MediaServerSizePretty:    inf.MediaServerSizePretty,
+			IsCopyFilesInMediaServer: inf.IsCopyFilesInMediaServer,
+		}
+	}
+
 	return result
+}
+
+func mapTVShowDeliveryError(state *videocontent.TVShowDeliveryState) *desc.TVShowDeliveryError {
+	if state.Error == nil {
+		return nil
+	}
+	errorType := desc.TVShowDeliveryError_TVShowDeliveryError_Unknown
+	if state.Step == videocontent.SearchTorrents {
+		if strings.Contains(*state.Error, "Forbidden") {
+			errorType = desc.TVShowDeliveryError_TorrentSiteForbidden
+		}
+	}
+	if state.Step == videocontent.CreateVideoContentCatalogs {
+		if strings.Contains(*state.Error, "already exists") {
+			errorType = desc.TVShowDeliveryError_FilesAlreadyExist
+		}
+	}
+
+	return &desc.TVShowDeliveryError{
+		RawError:  *state.Error,
+		ErrorType: errorType,
+	}
 }
 
 func mapTVShowDeliveryState(state *videocontent.TVShowDeliveryState) *desc.TVShowDeliveryState {
 	return &desc.TVShowDeliveryState{
-		Data: mapTVShowDeliveryData(state.Step, &state.Data),
-		Step: mapDeliveryStep(state.Step),
+		Data:   mapTVShowDeliveryData(state),
+		Step:   mapDeliveryStep(state.Step),
+		Status: mapStatus(state.Status),
+		Error:  mapTVShowDeliveryError(state),
 	}
 }

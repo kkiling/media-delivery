@@ -8,6 +8,7 @@ CREATE TABLE state (
     status INTEGER NOT NULL,  -- uint8
     step TEXT NOT NULL,  -- string
     type TEXT NOT NULL,  -- string
+    error TEXT, -- string
     data BLOB,  -- []byte (JSONB equivalent)
     fail_data BLOB,  -- []byte (JSONB equivalent)
     meta_data BLOB  -- []byte (JSONB equivalent)

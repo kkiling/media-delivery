@@ -15,6 +15,9 @@ func (s *Service) CreateHardLinkCopyToMediaServer(_ context.Context, params Crea
 	for _, match := range params.ContentMatches {
 		from := match.Video.File.FullPath
 		to := match.Episode.FileName
+		if from == "" || to == "" {
+			continue
+		}
 		// Создание hardlink ссылки (to) на файл from
 		// Create hard link
 		err := os.Link(from, to)

@@ -19,7 +19,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/kkiling/goplatform v0.2.0
-	github.com/kkiling/statemachine v0.2.1
+	github.com/kkiling/statemachine v0.2.4
 	github.com/markthree/go-get-folder-size v0.5.5
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/samber/lo v1.51.0

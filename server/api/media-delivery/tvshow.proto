@@ -34,24 +34,31 @@ service TVShowLibraryService {
       summary: "Получение подробной информации о сериале"
     };
   };
-  rpc GetSeasonEpisodes(GetSeasonEpisodesRequest)  returns (GetSeasonEpisodesResponse) {
+  rpc GetSeasonInfo(GetSeasonInfoRequest)  returns (GetSeasonInfoResponse) {
     option (google.api.http) = {
       get: "/v1/tvshow/info/{tv_show_id}/{season_number}";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Получение информации о сериях сезона"
+      summary: "Получение информации о сезоне сериала и его сериях"
     };
   };
 }
 
 message Image {
   string id = 1;
-  string w342 = 2;
-  string original = 3;
+  string w92 = 2;
+  string w154 = 3;
+  string w185 = 4;
+  string w342 = 5;
+  string w500 = 6;
+  string w780 = 7;
+  string original = 8;
 }
 
 message TVShowShort {
-  uint64 id = 1;
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   string name = 2;
   string original_name = 3;
   string overview = 4;
@@ -63,7 +70,9 @@ message TVShowShort {
 }
 
 message TVShow {
-  uint64 id = 1;
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   string name = 2;
   string original_name = 3;
   string overview = 4;
@@ -75,7 +84,6 @@ message TVShow {
   optional Image backdrop = 10;
   repeated string genres = 11;
   google.protobuf.Timestamp last_air_date = 12;
-  google.protobuf.Timestamp next_episode_to_air = 13;
   uint32 number_of_episodes = 14;
   uint32 number_of_seasons = 15;
   repeated string origin_country = 16;
@@ -86,7 +94,9 @@ message TVShow {
 }
 
 message Season {
-  uint64 id = 1;
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   google.protobuf.Timestamp air_date = 2;
   uint32 episode_count = 3;
   string name = 4;
@@ -97,7 +107,9 @@ message Season {
 }
 
 message Episode {
-  uint64 id = 1;
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   google.protobuf.Timestamp air_date = 2;
   uint32 episode_number = 3;
   string episode_type = 4;
@@ -118,20 +130,25 @@ message SearchTVShowResponse {
 }
 
 message GetTVShowInfoRequest {
-  uint64 tv_show_id = 1;
+  uint64 tv_show_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
 }
 
 message GetTVShowInfoResponse {
   TVShow result = 1;
 }
 
-message GetSeasonEpisodesRequest {
-  uint64 tv_show_id = 1;
+message GetSeasonInfoRequest {
+  uint64 tv_show_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
   uint32 season_number = 2;
 }
 
-message GetSeasonEpisodesResponse {
-  repeated Episode items = 1;
+message GetSeasonInfoResponse {
+  Season season = 1;
+  repeated Episode episodes = 2;
 }
 
 message GetTVShowsFromLibraryRequest {

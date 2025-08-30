@@ -12,7 +12,12 @@ func mapImage(image *themoviedb.Image) *Image {
 	}
 	return &Image{
 		ID:       image.ID,
+		W92:      image.W92,
+		W154:     image.W154,
+		W185:     image.W185,
 		W342:     image.W342,
+		W500:     image.W500,
+		W780:     image.W780,
 		Original: image.Original,
 	}
 }
@@ -52,17 +57,15 @@ func mapSeason(season themoviedb.Season) *Season {
 
 func mapTVShow(response *themoviedb.TVShow) *TVShow {
 	return &TVShow{
-		TVShowShort:      *mapTVShowShort(response.TVShowShort),
-		Backdrop:         mapImage(response.Backdrop),
-		Genres:           response.Genres,
-		LastAirDate:      response.LastAirDate,
-		NextEpisodeToAir: response.NextEpisodeToAir,
-		NumberOfEpisodes: response.NumberOfEpisodes,
-		NumberOfSeasons:  response.NumberOfSeasons,
-		OriginCountry:    response.OriginCountry,
-		Status:           response.Status,
-		Tagline:          response.Tagline,
-		Type:             response.Type,
+		TVShowShort:     *mapTVShowShort(response.TVShowShort),
+		Backdrop:        mapImage(response.Backdrop),
+		Genres:          response.Genres,
+		LastAirDate:     response.LastAirDate,
+		NumberOfSeasons: response.NumberOfSeasons,
+		OriginCountry:   response.OriginCountry,
+		Status:          response.Status,
+		Tagline:         response.Tagline,
+		Type:            response.Type,
 		Seasons: lo.Map(response.Seasons, func(item themoviedb.Season, index int) Season {
 			return *mapSeason(item)
 		}),

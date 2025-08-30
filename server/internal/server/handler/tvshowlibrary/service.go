@@ -16,7 +16,7 @@ import (
 type TVShowLibrary interface {
 	SearchTVShow(ctx context.Context, params tvshowlibrary.TVShowSearchParams) (*tvshowlibrary.TVShowSearchResult, error)
 	GetTVShowInfo(ctx context.Context, params tvshowlibrary.GetTVShowParams) (*tvshowlibrary.GetTVShowResult, error)
-	GetSeasonEpisodes(ctx context.Context, params tvshowlibrary.GetSeasonEpisodesParams) (*tvshowlibrary.GetSeasonEpisodesResult, error)
+	GetSeasonInfo(ctx context.Context, params tvshowlibrary.GetSeasonInfoParams) (*tvshowlibrary.GetSeasonInfoResult, error)
 	GetTVShowsFromLibrary(ctx context.Context, params tvshowlibrary.GetTVShowsFromLibraryParams) (*tvshowlibrary.GetTVShowsFromLibraryResult, error)
 }
 

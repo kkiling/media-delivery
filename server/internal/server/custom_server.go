@@ -7,6 +7,7 @@ import (
 	interceptor "github.com/kkiling/goplatform/interseptors"
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/server"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -30,14 +31,32 @@ func NewCustomServer(
 ) *CustomServer {
 	return &CustomServer{
 		server:   server.NewServer(logger, serverConfig),
-		logger:   logger.Named("user_account_server"),
+		logger:   logger.Named("media_delivery_server"),
 		services: services,
+	}
+}
+
+// NewPanicRecoverInterceptor интерсептор паники
+func NewPanicRecoverInterceptor(logger log.Logger) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+		defer func() {
+			if r := recover(); r != nil {
+				logger.Error("panic recovered",
+					zap.Any("panic_value", r),
+					zap.Stack("stack"),
+				)
+				err = server.ErrInternal(fmt.Errorf("panic recovered: %v", r))
+			}
+		}()
+
+		resp, err = handler(ctx, req)
+		return resp, err
 	}
 }
 
 func (p *CustomServer) unaryServerInterceptors() ([]grpc.UnaryServerInterceptor, error) {
 	return []grpc.UnaryServerInterceptor{
-		interceptor.NewPanicRecoverInterceptor(p.logger),
+		NewPanicRecoverInterceptor(p.logger),
 		interceptor.NewLoggerInterceptor(p.logger),
 	}, nil
 }

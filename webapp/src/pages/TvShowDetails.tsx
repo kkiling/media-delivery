@@ -1,0 +1,197 @@
+import { useParams, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Card, Container, Row, Col, Badge, Spinner, Alert } from 'react-bootstrap';
+import { tvShowDetailsStore } from '@/stores/tvShowDetailsStore';
+import { ROUTES } from '@/constants/routes';
+import { formatDate } from '@/utils/formatting';
+import getCountryFlag from 'country-flag-icons/unicode';
+import { hasFlag } from 'country-flag-icons';
+import { Rating, Popularity, PosterImage } from '@/components';
+import { Season, TVShow } from '@/api/api';
+import { Image as ImageIcon } from 'react-bootstrap-icons';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const TV_SHOW_CONFIG = {
+  MIN_IMAGE_HEIGHT: 400,
+} as const;
+
+const SEASON_CARD_CONFIG = {
+  IMAGE_HEIGHT: 300,
+} as const;
+
+interface CountrySectionProps {
+  countries: string[];
+}
+
+const CountrySection = ({ countries }: CountrySectionProps) => (
+  <div className="mb-2 d-flex flex-wrap gap-3">
+    {countries.map((country) => (
+      <div key={country} className="d-flex align-items-center bg-light rounded px-3 py-2">
+        {hasFlag(country) && (
+          <span className="me-2" style={{ fontSize: '1.2rem' }}>
+            {getCountryFlag(country)}
+          </span>
+        )}
+        <span>{new Intl.DisplayNames(['en'], { type: 'region' }).of(country) || country}</span>
+      </div>
+    ))}
+  </div>
+);
+
+interface TVShowInfoProps {
+  show: TVShow;
+}
+
+const TVShowInfo = ({ show }: TVShowInfoProps) => (
+  <Card className="mb-4">
+    <Row className="g-0">
+      <Col md={3}>
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ height: '100%' }}
+        >
+          <PosterImage
+            src={show.poster?.w185}
+            alt={show.name || 'TV Show Poster'}
+            minHeight={TV_SHOW_CONFIG.MIN_IMAGE_HEIGHT}
+          />
+        </div>
+      </Col>
+      <Col md={9}>
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h2 className="mb-0">{show.name}</h2>
+              {show.original_name && show.original_name !== show.name && (
+                <h5 className="text-muted">{show.original_name}</h5>
+              )}
+              {show.first_air_date && (
+                <div className="text-muted mb-2">{formatDate(show.first_air_date)}</div>
+              )}
+
+              {Array.isArray(show.origin_country) && show.origin_country.length > 0 && (
+                <CountrySection countries={show.origin_country} />
+              )}
+
+              {Array.isArray(show.genres) && show.genres.length > 0 && (
+                <>
+                  {show.genres.map((genre) => (
+                    <Badge bg="secondary" className="me-1" key={genre}>
+                      {genre}
+                    </Badge>
+                  ))}
+                </>
+              )}
+            </div>
+            <div className="text-center" style={{ width: '80px' }}>
+              {show.vote_average !== undefined && (
+                <Rating
+                  voteAverage={show.vote_average}
+                  voteCount={show.vote_count || 0}
+                  showVoteCount
+                />
+              )}
+              {show.popularity !== undefined && <Popularity popularity={show.popularity} />}
+            </div>
+          </div>
+          {show.overview && <p className="text-secondary mb-0">{show.overview}</p>}
+        </Card.Body>
+      </Col>
+    </Row>
+  </Card>
+);
+
+interface SeasonCardProps {
+  season: Season;
+}
+
+const SeasonCard = ({ season }: SeasonCardProps) => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  return (
+    <Card
+      className="h-100 position-relative cursor-pointer"
+      onClick={() => navigate(ROUTES.LIBRARY.TV_SHOWS.getSeason(Number(id), season.season_number))}
+    >
+      <div className="position-relative" style={{ height: SEASON_CARD_CONFIG.IMAGE_HEIGHT }}>
+        <PosterImage
+          src={season.poster?.w185}
+          alt={season.name || 'Season Poster'}
+          minHeight={SEASON_CARD_CONFIG.IMAGE_HEIGHT}
+        />
+        {season.vote_average ? (
+          <div className="position-absolute top-0 start-0 m-2">
+            <Rating voteAverage={season.vote_average} voteCount={0} showVoteCount={false} />
+          </div>
+        ) : null}
+      </div>
+
+      <Card.Body className="d-flex flex-column">
+        <Card.Title>{season.name}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted d-flex justify-content-between">
+          <span>{formatDate(season.air_date) || 'Release date unknown'}</span>
+          <span>{season.episode_count || 0} episodes</span>
+        </Card.Subtitle>
+        {season.overview && (
+          <Card.Text
+            className="flex-grow-1"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 5,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {season.overview}
+          </Card.Text>
+        )}
+      </Card.Body>
+    </Card>
+  );
+};
+
+const TvShowDetails = observer(() => {
+  const { id } = useParams<{ id: string }>();
+  const numberId = id ? parseInt(id, 10) : null;
+  const { show, loading, error } = tvShowDetailsStore;
+
+  useEffect(() => {
+    if (numberId) tvShowDetailsStore.fetchTVShowDetails(numberId.toString());
+  }, [numberId]);
+
+  if (!numberId || isNaN(numberId)) return <Navigate to={ROUTES.NOT_FOUND} />;
+  if (loading)
+    return (
+      <Container className="mt-4 text-center">
+        <Spinner animation="border" role="status" />
+      </Container>
+    );
+  if (error)
+    return (
+      <Container className="mt-4">
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  if (!show) return null;
+
+  return (
+    <Container className="mt-4">
+      <TVShowInfo show={show} />
+      {show.seasons && (
+        <Row xs={1} md={2} lg={4} className="g-4">
+          {show.seasons.map((season) => (
+            <Col key={season.id}>
+              <SeasonCard season={season} />
+            </Col>
+          ))}
+        </Row>
+      )}
+    </Container>
+  );
+});
+
+export default TvShowDetails;

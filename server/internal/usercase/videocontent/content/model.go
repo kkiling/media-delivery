@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
@@ -39,10 +39,10 @@ type TorrentInfo struct {
 type VideoContent struct {
 	// ID информации о файлах
 	ID uuid.UUID
-	// CreatedAt Датоа создания
-	CreatedAt time.Time
 	// ID сериала/фильма
 	ContentID common.ContentID
+	// CreatedAt Датоа создания
+	CreatedAt time.Time
 	// Статус
 	DeliveryStatus DeliveryStatus
 	// Стейты привязанные к текущему контенту

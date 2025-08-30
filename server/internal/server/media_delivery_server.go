@@ -10,19 +10,19 @@ import (
 	"github.com/kkiling/media-delivery/internal/server/handler/videocontent"
 )
 
-// Torrent2EmbyServer сервер
-type Torrent2EmbyServer struct {
+// MediaDeliveryServer сервер
+type MediaDeliveryServer struct {
 	*CustomServer
 }
 
-// NewTorrent2EmbyServer новый сервер
-func NewTorrent2EmbyServer(
+// NewMediaDeliveryServer новый сервер
+func NewMediaDeliveryServer(
 	logger log.Logger,
 	cfg server.Config,
 	tvShowLibrary tvshowlibrary.TVShowLibrary,
 	videoContent videocontent.VideoContent,
-) *Torrent2EmbyServer {
-	return &Torrent2EmbyServer{
+) *MediaDeliveryServer {
+	return &MediaDeliveryServer{
 		CustomServer: NewCustomServer(
 			logger,
 			cfg,
@@ -33,6 +33,6 @@ func NewTorrent2EmbyServer(
 }
 
 // Start старт сервера
-func (s *Torrent2EmbyServer) Start(ctx context.Context) error {
+func (s *MediaDeliveryServer) Start(ctx context.Context) error {
 	return s.CustomServer.Start(ctx, "api")
 }

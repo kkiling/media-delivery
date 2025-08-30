@@ -16,13 +16,24 @@ type SearchQuery struct {
 
 // TorrentSearch результат поиска торрент раздачи
 type TorrentSearch struct {
-	Title     string
-	Href      string
-	Size      string // TODO: переделать на int
-	Seeds     string // TODO: переделать на int
-	Leeches   string // TODO: переделать на int
-	Downloads string // TODO: переделать на int
-	AddedDate string // TODO: переделать на time.Time
+	// Наименование раздачи
+	Title string
+	// Категория
+	Category string
+	// Ссылка на раздачу
+	Href string
+	// Size Размер раздачи (байты)
+	SizeBytes uint64
+	// Размер виде строки (32Gb)
+	SizePretty string
+	// Seeds Информация о сидах
+	Seeds uint32
+	// Leeches Информация о личах
+	Leeches uint32
+	// Downloads количество скачиваний
+	Downloads uint32
+	// AddedDate Дата добавления
+	AddedDate string
 }
 
 type MagnetLink struct {
@@ -61,9 +72,17 @@ func (m TVShowCatalogPath) FullSeasonPath() string {
 
 type EpisodesData struct {
 	TVShowCatalogPath TVShowCatalogPath
+	SeasonInfo        SeasonInfo
 	Episodes          []EpisodeInfo
 }
 
+type SeasonInfo struct {
+	TVShowName    string
+	FirstAirYear  string
+	SeasonName    string
+	SeasonNumber  uint8
+	SeasonAirYear string
+}
 type EpisodeInfo struct {
 	// Номер сезона
 	SeasonNumber uint8
@@ -73,6 +92,8 @@ type EpisodeInfo struct {
 	EpisodeName string
 	// Наименование файла эпизода который будет лежать на медиасервере (без расширения файла)
 	FileName string
+	//
+	RelativePath string
 }
 
 type FileInfo struct {
@@ -168,10 +189,13 @@ type TVShowCatalog struct {
 	TorrentPath string
 	// Размер файлов раздачи сезона сериала (байты)
 	TorrentSize uint64
+	//
+	TorrentSizePretty string
 	// Путь до сезона сериала на медиасервере
 	MediaServerPath TVShowCatalogPath
 	// Размер файлов раздачи сезона сериала (байты)
-	MediaServerSize uint64
+	MediaServerSize       uint64
+	MediaServerSizePretty string
 	// Файлы скопированы с раздачи или созданы ссылочная связь
 	// True - файлы скопированы
 	// False - файлы созданы через линки

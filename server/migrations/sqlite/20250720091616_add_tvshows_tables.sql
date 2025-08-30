@@ -37,7 +37,6 @@ CREATE TABLE tv_shows (
     backdrop_id INTEGER,
     genres TEXT, -- массив genres в формате JSON
     last_air_date TIMESTAMP NOT NULL,  -- time.Time
-    next_episode_to_air TIMESTAMP NOT NULL,  -- time.Time
     number_of_episodes INTEGER,
     number_of_seasons INTEGER,
     origin_country TEXT, -- массив origin_country в формате JSON

@@ -71,7 +71,6 @@ type TVShow struct {
 	Backdrop         *Image
 	Genres           []string
 	LastAirDate      time.Time
-	NextEpisodeToAir time.Time
 	NumberOfEpisodes uint32
 	NumberOfSeasons  uint32
 	OriginCountry    []string
@@ -91,6 +90,11 @@ type Season struct {
 	Poster       *Image
 	SeasonNumber uint8
 	VoteAverage  float64
+}
+
+type SeasonWithEpisodes struct {
+	Season
+	Episodes []Episode
 }
 
 // Episode contains TV show episode information

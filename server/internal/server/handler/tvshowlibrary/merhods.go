@@ -34,8 +34,8 @@ func (h *Handler) GetTVShowInfo(ctx context.Context, request *desc.GetTVShowInfo
 	return &desc.GetTVShowInfoResponse{Result: mapTvShow(result.Result)}, nil
 }
 
-func (h *Handler) GetSeasonEpisodes(ctx context.Context, request *desc.GetSeasonEpisodesRequest) (*desc.GetSeasonEpisodesResponse, error) {
-	result, err := h.tvShowLibrary.GetSeasonEpisodes(ctx, tvshowlibrary.GetSeasonEpisodesParams{
+func (h *Handler) GetSeasonInfo(ctx context.Context, request *desc.GetSeasonInfoRequest) (*desc.GetSeasonInfoResponse, error) {
+	res, err := h.tvShowLibrary.GetSeasonInfo(ctx, tvshowlibrary.GetSeasonInfoParams{
 		TVShowID:     request.TvShowId,
 		SeasonNumber: uint8(request.SeasonNumber),
 	})
@@ -44,8 +44,9 @@ func (h *Handler) GetSeasonEpisodes(ctx context.Context, request *desc.GetSeason
 		return nil, handler.HandleError(err, "tvShowLibrary.GetSeasonEpisodes")
 	}
 
-	return &desc.GetSeasonEpisodesResponse{
-		Items: mapEpisodes(result.Items),
+	return &desc.GetSeasonInfoResponse{
+		Season:   mapSeason(res.Result.Season),
+		Episodes: mapEpisodes(res.Result.Episodes),
 	}, nil
 }
 

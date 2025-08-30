@@ -14,7 +14,12 @@ func mapImage(res *tvshowlibrary.Image) *desc.Image {
 	}
 	return &desc.Image{
 		Id:       res.ID,
+		W92:      res.W92,
+		W154:     res.W154,
+		W185:     res.W185,
 		W342:     res.W342,
+		W500:     res.W500,
+		W780:     res.W780,
 		Original: res.Original,
 	}
 }
@@ -66,7 +71,6 @@ func mapTvShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 		Backdrop:         mapImage(res.Backdrop),
 		Genres:           res.Genres,
 		LastAirDate:      timestamppb.New(res.LastAirDate),
-		NextEpisodeToAir: timestamppb.New(res.NextEpisodeToAir),
 		NumberOfEpisodes: res.NumberOfEpisodes,
 		NumberOfSeasons:  res.NumberOfSeasons,
 		OriginCountry:    res.OriginCountry,

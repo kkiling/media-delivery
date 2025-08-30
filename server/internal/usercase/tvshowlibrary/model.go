@@ -4,7 +4,12 @@ import "time"
 
 type Image struct {
 	ID       string
+	W92      string
+	W154     string
+	W185     string
 	W342     string
+	W500     string
+	W780     string
 	Original string
 }
 
@@ -27,7 +32,6 @@ type TVShow struct {
 	Backdrop         *Image
 	Genres           []string
 	LastAirDate      time.Time
-	NextEpisodeToAir time.Time
 	NumberOfEpisodes uint32
 	NumberOfSeasons  uint32
 	OriginCountry    []string
@@ -47,6 +51,11 @@ type Season struct {
 	Poster       *Image
 	SeasonNumber uint8
 	VoteAverage  float64
+}
+
+type SeasonWithEpisodes struct {
+	Season
+	Episodes []Episode
 }
 
 // Episode информация о эпизоде сезона
