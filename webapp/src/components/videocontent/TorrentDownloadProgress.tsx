@@ -1,6 +1,6 @@
 import { TorrentState, TorrentDownloadStatus } from '@/api/api';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { Download, Upload, Pause, AlertCircle, HelpCircle, Loader } from 'lucide-react';
+import { Download, Upload, Pause, AlertCircle, HelpCircle } from 'lucide-react';
 import Loading from '../Loading';
 
 interface TorrentDownloadProgressProps {

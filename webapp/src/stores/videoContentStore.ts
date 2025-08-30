@@ -42,7 +42,7 @@ export class VideoContentStore {
         },
       });
 
-      const query: Record<string, any> = {};
+      const query: Record<string, unknown> = {};
       if (contentId?.movie_id) query['content_id.movie_id'] = contentId.movie_id;
       if (contentId?.tv_show?.id) query['content_id.tv_show.id'] = contentId.tv_show.id;
       if (contentId?.tv_show?.season_number)

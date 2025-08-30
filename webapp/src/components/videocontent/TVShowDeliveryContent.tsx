@@ -8,6 +8,8 @@ import { ContentMatche } from './ContentMatches';
 import { TorrentDownloadProgress, TorrentWaitingFiles } from './TorrentDownloadProgress';
 import { MergeVideoProgress } from './MergeVideoProgress';
 
+const AUTO_RELOAD_TIMEOUT = 3000 as const;
+
 interface TVShowDeliveryContentProps {
   contentId: ContentID;
   onNeedReload: () => void; // добавляем новый callback
@@ -35,13 +37,13 @@ export const TVShowDeliveryContent = observer(
           await tvShowDeliveryStore.fetchDeliveryData(contentId, true);
 
           // Check if step is Unknown and reload parent component data
-          if (
-            tvShowDeliveryStore.deliveryState?.status === MediadeliveryStatus.FailedStatus ||
-            tvShowDeliveryStore.deliveryState?.status === MediadeliveryStatus.CompletedStatus
-          ) {
-            onNeedReload(); // Вызываем callback для перезагрузки данных
+          switch (tvShowDeliveryStore.deliveryState?.status) {
+            case MediadeliveryStatus.FailedStatus:
+            case MediadeliveryStatus.CompletedStatus:
+              onNeedReload();
+              break;
           }
-        }, 3000);
+        }, AUTO_RELOAD_TIMEOUT);
       }
 
       return () => {
@@ -49,7 +51,7 @@ export const TVShowDeliveryContent = observer(
           clearInterval(interval);
         }
       };
-    }, [contentId, tvShowDeliveryStore.deliveryState?.step]);
+    }, [contentId, onNeedReload]);
 
     const onSearchSubmit = (query: string) => {
       tvShowDeliveryStore.selectTorrent(contentId, undefined, query);
