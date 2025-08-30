@@ -12,6 +12,7 @@ import (
 	"github.com/kkiling/goplatform/storagebase"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
+	"go.uber.org/zap"
 
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
@@ -291,6 +292,15 @@ func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoConte
 }
 
 func (s *Service) completeTVShowDeliveries(ctx context.Context) error {
+	defer func() {
+		if r := recover(); r != nil {
+			s.logger.Error("panic recovered",
+				zap.Any("panic_value", r),
+				zap.Stack("stack"),
+			)
+		}
+	}()
+
 	contents, err := s.storage.GetVideoContentsByStatus(ctx, DeliveryStatusInProgress, 10)
 	if err != nil {
 		return fmt.Errorf("storage.GetVideoContents: %w", err)
