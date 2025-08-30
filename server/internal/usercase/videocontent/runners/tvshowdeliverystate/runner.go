@@ -200,7 +200,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					contentMatches, err := r.contentDelivery.PrepareFileMatches(ctx, delivery.PreparingFileMatchesParams{
 						TorrentFiles: data.TorrentFilesData.Files,
 						Episodes:     data.EpisodesData.Episodes,
-						TVShowID:     *stepContext.State.MetaData.ContentID.TVShow,
+						SeasonInfo:   data.EpisodesData.SeasonInfo,
 					})
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))

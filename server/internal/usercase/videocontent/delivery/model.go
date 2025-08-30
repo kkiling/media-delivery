@@ -72,9 +72,17 @@ func (m TVShowCatalogPath) FullSeasonPath() string {
 
 type EpisodesData struct {
 	TVShowCatalogPath TVShowCatalogPath
+	SeasonInfo        SeasonInfo
 	Episodes          []EpisodeInfo
 }
 
+type SeasonInfo struct {
+	TVShowName    string
+	FirstAirYear  string
+	SeasonName    string
+	SeasonNumber  uint8
+	SeasonAirYear string
+}
 type EpisodeInfo struct {
 	// Номер сезона
 	SeasonNumber uint8

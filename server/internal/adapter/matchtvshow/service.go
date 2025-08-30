@@ -56,9 +56,9 @@ func splitPath(path string) []string {
 
 // processFile на основе торрент файлов получаем спиос кафйлов нужных расшерений
 func processFiles(
-	files []TorrentFile,
+	files []string,
 	allowedExtensions []string,
-) ([]TorrentFile, error) {
+) ([]string, error) {
 
 	// Создаем map для быстрой проверки расширений
 	extMap := make(map[string]bool)
@@ -66,9 +66,9 @@ func processFiles(
 		extMap[strings.ToLower(ext)] = true
 	}
 
-	var result []TorrentFile
+	var result []string
 	for _, file := range files {
-		ext := strings.ToLower(filepath.Ext(file.RelativePath))
+		ext := strings.ToLower(filepath.Ext(file))
 		// Проверяем расширение файла
 		if !extMap[ext] {
 			continue
@@ -80,16 +80,16 @@ func processFiles(
 	return result, nil
 }
 
-func processVideoFiles(torrentFiles []TorrentFile) ([]TorrentFile, error) {
+func processVideoFiles(torrentFiles []string) ([]string, error) {
 	prepareVideoFiles, err := processFiles(torrentFiles, videoExtensions)
 	if err != nil {
 		return nil, fmt.Errorf("processFiles: %w", err)
 	}
 
-	result := make([]TorrentFile, 0)
+	result := make([]string, 0)
 	for _, file := range prepareVideoFiles {
 		// Исходим из того что файлы видео файлов серий всегда лежат в корне
-		splitRelativePath := splitPath(file.RelativePath)
+		splitRelativePath := splitPath(file)
 		if len(splitRelativePath) > 1 {
 			continue
 		}
@@ -111,7 +111,7 @@ func (s *Service) tryGetLanguage(path string) string {
 	return ""
 }
 
-func (s *Service) processMetaFiles(torrentFiles []TorrentFile, extensions []string) (map[string][]PrepareTrack, error) {
+func (s *Service) processMetaFiles(torrentFiles []string, extensions []string) (map[string][]PrepareTrack, error) {
 	prepareVideoFiles, err := processFiles(torrentFiles, extensions)
 	if err != nil {
 		return nil, fmt.Errorf("processFiles: %w", err)
@@ -121,7 +121,7 @@ func (s *Service) processMetaFiles(torrentFiles []TorrentFile, extensions []stri
 	for _, file := range prepareVideoFiles {
 		// Исходим из того что озвучка/субтитры лежит в каком то каталоге
 		// Название этого каталога и берем за название озвучки/субтитры
-		splitRelativePath := splitPath(file.RelativePath)
+		splitRelativePath := splitPath(file)
 		if len(splitRelativePath) < 2 {
 			continue
 		}
@@ -159,6 +159,15 @@ func (s *Service) processMetaFiles(torrentFiles []TorrentFile, extensions []stri
 }
 
 func (s *Service) PrepareTvShowSeason(params *PrepareTvShowPrams) (*PrepareTVShowSeason, error) {
+	//input, err := json.Marshal(params)
+	//if err != nil {
+	//	return nil, fmt.Errorf("json.Marshal: %w", err)
+	//}
+	//err = os.WriteFile("input.json", input, 0644)
+	//if err != nil {
+	//	return nil, fmt.Errorf("os.WriteFile: %w", err)
+	//}
+
 	result := PrepareTVShowSeason{}
 
 	// Получаем список видео файлов эпизодов
@@ -207,6 +216,15 @@ func (s *Service) PrepareTvShowSeason(params *PrepareTvShowPrams) (*PrepareTVSho
 
 		result.Episodes = append(result.Episodes, prepareEpisode)
 	}
+
+	//output, err := json.Marshal(result)
+	//if err != nil {
+	//	return nil, fmt.Errorf("json.Marshal: %w", err)
+	//}
+	//err = os.WriteFile("output.json", output, 0644)
+	//if err != nil {
+	//	return nil, fmt.Errorf("os.WriteFile: %w", err)
+	//}
 
 	return &result, nil
 }

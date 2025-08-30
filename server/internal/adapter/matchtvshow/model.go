@@ -1,23 +1,28 @@
 package matchtvshow
 
+type TVShowSeasonInfo struct {
+	TVShowName    string
+	FirstAirYear  string
+	SeasonName    string
+	SeasonNumber  uint8
+	SeasonAirYear string
+}
+
 type EpisodeInfo struct {
 	// Номер эпизода в сезоне
 	EpisodeNumber int
-}
-
-type TorrentFile struct {
-	// Путь до файла торрента (путь относительно ContentPath)
-	RelativePath string
+	// Наименования эпизода
+	EpisodeName string
 }
 
 type PrepareTrack struct {
 	Name     string
 	Language string
-	File     TorrentFile
+	File     string
 }
 
 type PrepareVideo struct {
-	File TorrentFile
+	File string
 }
 
 type PrepareEpisode struct {
