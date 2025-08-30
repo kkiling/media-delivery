@@ -51,7 +51,8 @@ export const TVShowDeliveryContent = observer(
           clearInterval(interval);
         }
       };
-    }, [contentId, onNeedReload]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [contentId, tvShowDeliveryStore.deliveryState?.status]);
 
     const onSearchSubmit = (query: string) => {
       tvShowDeliveryStore.selectTorrent(contentId, undefined, query);
