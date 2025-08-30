@@ -11,7 +11,7 @@ import { Episode } from '@/api/api';
 import { Image as ImageIcon } from 'react-bootstrap-icons';
 
 const SEASON_INFO_CONFIG = {
-  MIN_IMAGE_HEIGHT: 500,
+  MIN_IMAGE_HEIGHT: 400,
   OVERVIEW_LINES: 8,
 } as const;
 
@@ -53,7 +53,7 @@ const PosterImage = ({
       alt={alt}
       onError={() => setError(true)}
       className="w-100 h-100 object-fit-cover"
-      style={{ minHeight: minHeight ? `${minHeight}px` : 'auto' }}
+      style={{ minHeight: minHeight ? `${minHeight}px` : 'auto', width: 200 }}
     />
   );
 };
@@ -68,7 +68,7 @@ const EpisodeCard = ({ episode, isLast }: EpisodeCardProps) => (
   <>
     <div className="px-2">
       <div className="d-flex flex-column flex-sm-row gap-3">
-        {episode.still?.w342 && (
+        {episode.still?.w185 && (
           <div className="d-flex justify-content-center">
             <div
               style={{
@@ -77,7 +77,7 @@ const EpisodeCard = ({ episode, isLast }: EpisodeCardProps) => (
               }}
             >
               <img
-                src={episode.still.w342}
+                src={episode.still.w185}
                 alt={episode.name}
                 className="w-100 h-100 object-fit-cover rounded"
               />
@@ -124,7 +124,7 @@ const EpisodeCard = ({ episode, isLast }: EpisodeCardProps) => (
 
 interface SeasonInfoCardProps {
   seasonData: {
-    poster?: { w342?: string };
+    poster?: { w185?: string };
     name?: string;
     air_date?: string;
     episode_count?: number;
@@ -139,7 +139,7 @@ const SeasonInfoCard = ({ seasonData }: SeasonInfoCardProps) => (
       <Col md={3}>
         <div style={{ height: SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT }}>
           <PosterImage
-            src={seasonData.poster?.w342}
+            src={seasonData.poster?.w185}
             alt={seasonData.name || 'Season Poster'}
             minHeight={SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT}
           />

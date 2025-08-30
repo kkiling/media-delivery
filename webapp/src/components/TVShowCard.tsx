@@ -1,8 +1,6 @@
 import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { TVShowShort } from '@/api/api';
-import { useState } from 'react';
-import { Image as ImageIcon } from 'react-bootstrap-icons';
 import { Rating } from '@/components';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
@@ -17,7 +15,6 @@ type TVShowCardProps = {
 
 export function TVShowCard({ show }: TVShowCardProps) {
   const navigate = useNavigate();
-  const [imageError, setImageError] = useState(false);
 
   return (
     <Card
@@ -25,20 +22,12 @@ export function TVShowCard({ show }: TVShowCardProps) {
       onClick={() => navigate(ROUTES.LIBRARY.TV_SHOWS.getDetails(show.id))}
     >
       <div className="position-relative" style={{ height: `${CARD_CONFIG.IMAGE_HEIGHT}px` }}>
-        {show.poster?.w342 && !imageError ? (
-          <Card.Img
-            variant="top"
-            src={show.poster.w342}
-            alt={show.name}
-            onError={() => setImageError(true)}
-            className="w-100 h-100 object-fit-cover"
-          />
-        ) : (
-          <Card.Body className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100">
-            <ImageIcon size={48} className="mb-2" />
-            <p className="mb-0">No Image Available</p>
-          </Card.Body>
-        )}
+        <Card.Img
+          variant="top"
+          src={show.poster?.w185 || show.poster?.w342}
+          alt={show.name}
+          className="w-100 h-100 object-fit-cover"
+        />
 
         {show.vote_average !== undefined && (
           <div className="position-absolute top-0 start-0 m-2">

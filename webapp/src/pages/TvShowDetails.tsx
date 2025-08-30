@@ -7,54 +7,19 @@ import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
 import getCountryFlag from 'country-flag-icons/unicode';
 import { hasFlag } from 'country-flag-icons';
-import { Rating, Popularity } from '@/components';
+import { Rating, Popularity, PosterImage } from '@/components';
 import { Season, TVShow } from '@/api/api';
 import { Image as ImageIcon } from 'react-bootstrap-icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TV_SHOW_CONFIG = {
-  MIN_IMAGE_HEIGHT: 500,
+  MIN_IMAGE_HEIGHT: 400,
 } as const;
 
 const SEASON_CARD_CONFIG = {
-  IMAGE_HEIGHT: 500,
+  IMAGE_HEIGHT: 300,
 } as const;
-
-interface NoImageFallbackProps {
-  text?: string;
-}
-
-const NoImageFallback = ({ text = 'No Image Available' }: NoImageFallbackProps) => (
-  <div className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100">
-    <ImageIcon size={48} className="mb-2" />
-    <p className="mb-0">{text}</p>
-  </div>
-);
-
-interface PosterImageProps {
-  src?: string;
-  alt: string;
-  minHeight?: number;
-}
-
-const PosterImage = ({ src, alt, minHeight = 400 }: PosterImageProps) => {
-  const [error, setError] = useState(false);
-
-  if (!src || error) {
-    return <NoImageFallback />;
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setError(true)}
-      className="w-100 h-100 object-fit-cover"
-      style={{ minHeight }}
-    />
-  );
-};
 
 interface CountrySectionProps {
   countries: string[];
@@ -83,11 +48,16 @@ const TVShowInfo = ({ show }: TVShowInfoProps) => (
   <Card className="mb-4">
     <Row className="g-0">
       <Col md={3}>
-        <PosterImage
-          src={show.poster?.w342}
-          alt={show.name || 'TV Show Poster'}
-          minHeight={TV_SHOW_CONFIG.MIN_IMAGE_HEIGHT}
-        />
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ height: '100%' }}
+        >
+          <PosterImage
+            src={show.poster?.w185}
+            alt={show.name || 'TV Show Poster'}
+            minHeight={TV_SHOW_CONFIG.MIN_IMAGE_HEIGHT}
+          />
+        </div>
       </Col>
       <Col md={9}>
         <Card.Body>
@@ -148,7 +118,7 @@ const SeasonCard = ({ season }: SeasonCardProps) => {
     >
       <div className="position-relative" style={{ height: SEASON_CARD_CONFIG.IMAGE_HEIGHT }}>
         <PosterImage
-          src={season.poster?.w342}
+          src={season.poster?.w185}
           alt={season.name || 'Season Poster'}
           minHeight={SEASON_CARD_CONFIG.IMAGE_HEIGHT}
         />
