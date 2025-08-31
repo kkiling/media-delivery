@@ -16,7 +16,7 @@ func (s *Storage) saveOrUpdateImage(ctx context.Context, img *tvshowlibrary.Imag
 		return nil
 	}
 	_, err := s.base.Next(ctx).ExecContext(ctx, `
-        INSERT OR REPLACE INTO images (id, w92, w185, w342, original) VALUES (?, ?, ?)
+        INSERT OR REPLACE INTO images (id, w92, w185, w342, original) VALUES (?, ?, ?, ?, ?)
     `, img.ID, img.W92, img.W185, img.W342, img.Original)
 
 	if err != nil {
