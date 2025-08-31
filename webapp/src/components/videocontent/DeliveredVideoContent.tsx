@@ -14,14 +14,23 @@ interface InfoItemProps {
   label: string;
   value: string;
   isCode?: boolean;
+  isLink?: boolean;
 }
 
-const InfoItem = ({ icon, label, value, isCode = false }: InfoItemProps) => (
+const InfoItem = ({ icon, label, value, isCode = false, isLink = false }: InfoItemProps) => (
   <div className="d-flex align-items-center mb-3 info-item">
     <div className="me-2 text-primary">{icon}</div>
     <div>
       <div className="text-muted small">{label}</div>
-      {isCode ? <code className="ms-0">{value}</code> : <div className="fw-medium">{value}</div>}
+      {isLink ? (
+        <a href={value} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+          <code className="ms-0 cursor-pointer">{value}</code>
+        </a>
+      ) : isCode ? (
+        <code className="ms-0">{value}</code>
+      ) : (
+        <div className="fw-medium">{value}</div>
+      )}
     </div>
   </div>
 );
@@ -46,7 +55,7 @@ export const DeliveredVideoContent = observer(({ contentId }: DeliveredVideoCont
   }
 
   const catalogInfo: TVShowCatalog = deliveryState.data.tv_show_catalog_info;
-
+  const torrent = deliveryState.data.torrent;
   return (
     <div className="delivered-content">
       <style>{`
@@ -67,6 +76,9 @@ export const DeliveredVideoContent = observer(({ contentId }: DeliveredVideoCont
           padding: 2px 4px;
           border-radius: 4px;
         }
+        .info-item code.cursor-pointer:hover {
+          text-decoration: underline;
+        }
       `}</style>
 
       <div className="row">
@@ -75,6 +87,13 @@ export const DeliveredVideoContent = observer(({ contentId }: DeliveredVideoCont
             <HardDrive className="me-2" size={20} />
             Torrent Files
           </h6>
+          <InfoItem
+            icon={<FileBox size={18} />}
+            label="Torrent Link"
+            value={torrent?.href ?? 'No link available'}
+            isCode={true}
+            isLink={Boolean(torrent?.href)}
+          />
           <InfoItem
             icon={<FolderOpen size={18} />}
             label="Torrent Location"

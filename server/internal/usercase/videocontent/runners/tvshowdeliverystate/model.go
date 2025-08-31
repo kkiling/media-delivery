@@ -47,7 +47,7 @@ const (
 	// -- Ветвь если не нужно изменять исходные файлы
 
 	// CreateHardLinkCopy Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
-	CreateHardLinkCopy StepDelivery = "create_symlink_copy"
+	CreateHardLinkCopy StepDelivery = "create_hardlink_copy"
 	// GetCatalogsSize получение размеров каталогов сериала
 	GetCatalogsSize = "get_catalogs_size"
 

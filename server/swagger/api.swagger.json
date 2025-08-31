@@ -609,23 +609,16 @@
         "w92": {
           "type": "string"
         },
-        "w154": {
-          "type": "string"
-        },
         "w185": {
-          "type": "string"
+          "type": "string",
+          "title": "string w154 = 3;"
         },
         "w342": {
           "type": "string"
         },
-        "w500": {
-          "type": "string"
-        },
-        "w780": {
-          "type": "string"
-        },
         "original": {
-          "type": "string"
+          "type": "string",
+          "title": "string w500 = 6;\nstring w780 = 7;"
         }
       }
     },
@@ -847,6 +840,10 @@
         "tv_show_catalog_info": {
           "$ref": "#/definitions/TVShowCatalog",
           "title": "TVShowCatalogInfo информация о каталогах сериала"
+        },
+        "torrent": {
+          "$ref": "#/definitions/Torrent",
+          "title": "Информация о раздаче"
         }
       }
     },
@@ -951,6 +948,15 @@
         "popularity": {
           "type": "number",
           "format": "float"
+        }
+      }
+    },
+    "Torrent": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "title": "Ссылка на раздачу"
         }
       }
     },

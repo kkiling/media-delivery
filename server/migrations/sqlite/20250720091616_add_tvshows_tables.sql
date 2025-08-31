@@ -4,6 +4,8 @@
 -- Таблица для хранения изображений
 CREATE TABLE images (
     id TEXT PRIMARY KEY,
+    w92 TEXT,
+    w185 TEXT,
     w342 TEXT,
     original TEXT
 );

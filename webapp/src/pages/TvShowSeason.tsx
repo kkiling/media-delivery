@@ -1,14 +1,13 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Card, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { VideoContent } from '@/components/videocontent/VideoContent';
 import { seasonDetailsStore } from '@/stores/seasonDetailsStore';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
-import { Rating } from '@/components';
+import { PosterImage, Rating } from '@/components';
 import { Episode } from '@/api/api';
-import { Image as ImageIcon } from 'react-bootstrap-icons';
 
 const SEASON_INFO_CONFIG = {
   MIN_IMAGE_HEIGHT: 400,
@@ -27,36 +26,6 @@ const lineClampStyle = (lines: number) => ({
   WebkitLineClamp: lines,
   WebkitBoxOrient: 'vertical' as const,
 });
-
-const NoImageFallback = ({ text = 'No Image Available' }: { text?: string }) => (
-  <div className="d-flex flex-column align-items-center justify-content-center bg-secondary text-white w-100 h-100">
-    <ImageIcon size={48} className="mb-2" />
-    <p className="mb-0">{text}</p>
-  </div>
-);
-
-const PosterImage = ({
-  src,
-  alt,
-  minHeight,
-}: {
-  src?: string;
-  alt: string;
-  minHeight?: number;
-}) => {
-  const [error, setError] = useState(false);
-  return !src || error ? (
-    <NoImageFallback />
-  ) : (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setError(true)}
-      className="w-100 h-100 object-fit-cover"
-      style={{ minHeight: minHeight ? `${minHeight}px` : 'auto', width: 200 }}
-    />
-  );
-};
 
 // Обновленный (как в исходнике) EpisodeCard
 interface EpisodeCardProps {
@@ -140,7 +109,7 @@ const SeasonInfoCard = ({ seasonData }: SeasonInfoCardProps) => (
         <div style={{ height: SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT }}>
           <PosterImage
             src={seasonData.poster?.w185}
-            alt={seasonData.name || 'Season Poster'}
+            alt={seasonData.name}
             minHeight={SEASON_INFO_CONFIG.MIN_IMAGE_HEIGHT}
           />
         </div>

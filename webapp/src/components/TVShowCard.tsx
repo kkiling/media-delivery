@@ -1,7 +1,7 @@
 import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { TVShowShort } from '@/api/api';
-import { Rating } from '@/components';
+import { PosterImage, Rating } from '@/components';
 import { ROUTES } from '@/constants/routes';
 import { formatDate } from '@/utils/formatting';
 
@@ -22,11 +22,10 @@ export function TVShowCard({ show }: TVShowCardProps) {
       onClick={() => navigate(ROUTES.LIBRARY.TV_SHOWS.getDetails(show.id))}
     >
       <div className="position-relative" style={{ height: `${CARD_CONFIG.IMAGE_HEIGHT}px` }}>
-        <Card.Img
-          variant="top"
+        <PosterImage
           src={show.poster?.w185 || show.poster?.w342}
           alt={show.name}
-          className="w-100 h-100 object-fit-cover"
+          minHeight={CARD_CONFIG.IMAGE_HEIGHT}
         />
 
         {show.vote_average !== undefined && (

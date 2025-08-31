@@ -23,7 +23,14 @@ type Api struct {
 	logger     log.Logger
 }
 
-func NewApi(logger log.Logger, username, password, cookiesDir string) (*Api, error) {
+type Config struct {
+	Username   string
+	Password   string
+	CookiesDir string
+	ProxyURL   *string
+}
+
+func NewApi(logger log.Logger, cfg Config) (*Api, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, fmt.Errorf("cookiejar.New: %w", err)
@@ -33,12 +40,29 @@ func NewApi(logger log.Logger, username, password, cookiesDir string) (*Api, err
 		return nil, fmt.Errorf("url.Parse: %w", err)
 	}
 
+	// Создаем базовый HTTP клиент
+	httpClient := &http.Client{Jar: jar}
+	logThis := logger.Named("rutracker")
+	// Если передан прокси, настраиваем его
+	if cfg.ProxyURL != nil {
+		proxy, err := url.Parse(*cfg.ProxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse proxy URL: %w", err)
+		}
+
+		transport := &http.Transport{
+			Proxy: http.ProxyURL(proxy),
+		}
+		httpClient.Transport = transport
+		logThis.Infof("proxy configured")
+	}
+
 	return &Api{
-		username:   username,
-		password:   password,
-		cookiesDir: cookiesDir,
+		username:   cfg.Username,
+		password:   cfg.Password,
+		cookiesDir: cfg.CookiesDir,
 		baseAPIUrl: baseAPIUrl,
 		httpClient: &http.Client{Jar: jar},
-		logger:     logger.Named("rutracker"),
+		logger:     logThis,
 	}, nil
 }

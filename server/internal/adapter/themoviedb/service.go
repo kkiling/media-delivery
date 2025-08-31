@@ -16,6 +16,11 @@ const (
 	maxPages   = 5
 )
 
+type Config struct {
+	APIKey   string
+	ProxyURL *string
+}
+
 type API struct {
 	apiKey     string
 	baseAPIUrl *url.URL
@@ -25,7 +30,7 @@ type API struct {
 	validate   *validator.Validate
 }
 
-func NewApi(apiKey string, logger log.Logger) (*API, error) {
+func NewApi(logger log.Logger, cfg Config) (*API, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, fmt.Errorf("cookiejar.New: %w", err)
@@ -39,12 +44,29 @@ func NewApi(apiKey string, logger log.Logger) (*API, error) {
 		return nil, fmt.Errorf("url.Parse: %w", err)
 	}
 
+	// Создаем базовый HTTP клиент
+	httpClient := &http.Client{Jar: jar}
+	logThis := logger.Named("the_movie_db")
+	// Если передан прокси, настраиваем его
+	if cfg.ProxyURL != nil {
+		proxy, err := url.Parse(*cfg.ProxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse proxy URL: %w", err)
+		}
+
+		transport := &http.Transport{
+			Proxy: http.ProxyURL(proxy),
+		}
+		httpClient.Transport = transport
+		logThis.Infof("proxy configured")
+	}
+
 	return &API{
-		apiKey:     apiKey,
+		apiKey:     cfg.APIKey,
 		baseAPIUrl: urlApi,
 		baseImgUrl: urlImg,
-		httpClient: &http.Client{Jar: jar},
-		logger:     logger.Named("the_movie_db"),
+		httpClient: httpClient,
+		logger:     logThis,
 		validate:   validator.New(),
 	}, nil
 }

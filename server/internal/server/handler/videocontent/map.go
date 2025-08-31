@@ -246,6 +246,9 @@ func mapTVShowDeliveryData(state *videocontent.TVShowDeliveryState) *desc.TVShow
 			MediaServerSizePretty:    inf.MediaServerSizePretty,
 			IsCopyFilesInMediaServer: inf.IsCopyFilesInMediaServer,
 		}
+		result.Torrent = &desc.Torrent{
+			Href: state.Data.Torrent.Href,
+		}
 	}
 
 	return result
