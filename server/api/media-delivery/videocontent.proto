@@ -215,6 +215,11 @@ message TVShowCatalog {
   bool is_copy_files_in_media_server = 5;
 }
 
+message Torrent {
+  // Ссылка на раздачу
+  string href = 1;
+}
+
 message TVShowDeliveryData {
   // Поисковый запрос поиска торрент файла
   optional SearchQuery search_query = 1;
@@ -228,6 +233,8 @@ message TVShowDeliveryData {
   optional MergeVideoStatus merge_video_status = 5;
   // TVShowCatalogInfo информация о каталогах сериала
   optional TVShowCatalog tv_show_catalog_info = 6;
+  // Информация о раздаче
+  optional Torrent torrent = 7;
 }
 
 message TVShowDeliveryError {

@@ -64,8 +64,11 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 
 	// Adapter
 	themoviedbApi, err := themoviedb.NewApi(
-		cfg.TheMovieDb.ApiKey,
 		logger,
+		themoviedb.Config{
+			APIKey:   cfg.TheMovieDb.ApiKey,
+			ProxyURL: cfg.TheMovieDb.ProxyURL,
+		},
 	)
 	if err != nil {
 		return nil, fmt.Errorf("themoviedb.NewApi: %w", err)
@@ -89,9 +92,12 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 
 	rutrackerApi, err := rutracker.NewApi(
 		logger,
-		cfg.Rutracker.Username,
-		cfg.Rutracker.Password,
-		cfg.Rutracker.CookieDir,
+		rutracker.Config{
+			Username:   cfg.Rutracker.Username,
+			Password:   cfg.Rutracker.Password,
+			CookiesDir: cfg.Rutracker.CookiesDir,
+			ProxyURL:   cfg.Rutracker.ProxyURL,
+		},
 	)
 	if err != nil {
 		return nil, fmt.Errorf("rutracker.NewApi: %w", err)

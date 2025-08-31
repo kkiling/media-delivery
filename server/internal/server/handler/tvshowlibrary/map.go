@@ -13,13 +13,13 @@ func mapImage(res *tvshowlibrary.Image) *desc.Image {
 		return nil
 	}
 	return &desc.Image{
-		Id:       res.ID,
-		W92:      res.W92,
-		W154:     res.W154,
-		W185:     res.W185,
-		W342:     res.W342,
-		W500:     res.W500,
-		W780:     res.W780,
+		Id:  res.ID,
+		W92: res.W92,
+		//W154:     res.W154,
+		W185: res.W185,
+		W342: res.W342,
+		//W500:     res.W500,
+		//W780:     res.W780,
 		Original: res.Original,
 	}
 }

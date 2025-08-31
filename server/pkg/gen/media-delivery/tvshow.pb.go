@@ -26,15 +26,15 @@ const (
 )
 
 type Image struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	W92           string                 `protobuf:"bytes,2,opt,name=w92,proto3" json:"w92,omitempty"`
-	W154          string                 `protobuf:"bytes,3,opt,name=w154,proto3" json:"w154,omitempty"`
-	W185          string                 `protobuf:"bytes,4,opt,name=w185,proto3" json:"w185,omitempty"`
-	W342          string                 `protobuf:"bytes,5,opt,name=w342,proto3" json:"w342,omitempty"`
-	W500          string                 `protobuf:"bytes,6,opt,name=w500,proto3" json:"w500,omitempty"`
-	W780          string                 `protobuf:"bytes,7,opt,name=w780,proto3" json:"w780,omitempty"`
-	Original      string                 `protobuf:"bytes,8,opt,name=original,proto3" json:"original,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	W92   string                 `protobuf:"bytes,2,opt,name=w92,proto3" json:"w92,omitempty"`
+	// string w154 = 3;
+	W185 string `protobuf:"bytes,4,opt,name=w185,proto3" json:"w185,omitempty"`
+	W342 string `protobuf:"bytes,5,opt,name=w342,proto3" json:"w342,omitempty"`
+	// string w500 = 6;
+	// string w780 = 7;
+	Original      string `protobuf:"bytes,8,opt,name=original,proto3" json:"original,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -83,13 +83,6 @@ func (x *Image) GetW92() string {
 	return ""
 }
 
-func (x *Image) GetW154() string {
-	if x != nil {
-		return x.W154
-	}
-	return ""
-}
-
 func (x *Image) GetW185() string {
 	if x != nil {
 		return x.W185
@@ -100,20 +93,6 @@ func (x *Image) GetW185() string {
 func (x *Image) GetW342() string {
 	if x != nil {
 		return x.W342
-	}
-	return ""
-}
-
-func (x *Image) GetW500() string {
-	if x != nil {
-		return x.W500
-	}
-	return ""
-}
-
-func (x *Image) GetW780() string {
-	if x != nil {
-		return x.W780
 	}
 	return ""
 }
@@ -1001,15 +980,12 @@ var File_media_delivery_tvshow_proto protoreflect.FileDescriptor
 
 const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
-	"\x1bmedia-delivery/tvshow.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xa9\x01\n" +
+	"\x1bmedia-delivery/tvshow.proto\x12\rmediadelivery\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"m\n" +
 	"\x05Image\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
 	"\x03w92\x18\x02 \x01(\tR\x03w92\x12\x12\n" +
-	"\x04w154\x18\x03 \x01(\tR\x04w154\x12\x12\n" +
 	"\x04w185\x18\x04 \x01(\tR\x04w185\x12\x12\n" +
-	"\x04w342\x18\x05 \x01(\tR\x04w342\x12\x12\n" +
-	"\x04w500\x18\x06 \x01(\tR\x04w500\x12\x12\n" +
-	"\x04w780\x18\a \x01(\tR\x04w780\x12\x1a\n" +
+	"\x04w342\x18\x05 \x01(\tR\x04w342\x12\x1a\n" +
 	"\boriginal\x18\b \x01(\tR\boriginal\"\xdd\x02\n" +
 	"\vTVShowShort\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +

@@ -11,13 +11,13 @@ func mapImage(image *themoviedb.Image) *Image {
 		return nil
 	}
 	return &Image{
-		ID:       image.ID,
-		W92:      image.W92,
-		W154:     image.W154,
-		W185:     image.W185,
-		W342:     image.W342,
-		W500:     image.W500,
-		W780:     image.W780,
+		ID:  image.ID,
+		W92: image.W92,
+		//W154:     image.W154,
+		W185: image.W185,
+		W342: image.W342,
+		//W500:     image.W500,
+		//W780:     image.W780,
 		Original: image.Original,
 	}
 }

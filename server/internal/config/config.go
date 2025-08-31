@@ -36,14 +36,16 @@ type AppConfig struct {
 
 // TheMovieDbConfig конфигурация для The Movie DB API
 type TheMovieDbConfig struct {
-	ApiKey string `yaml:"api_key"`
+	ApiKey   string  `yaml:"api_key"`
+	ProxyURL *string `yaml:"proxy_url" optional:"true"`
 }
 
 // RutrackerConfig конфигурация для Rutracker
 type RutrackerConfig struct {
-	Username  string `yaml:"username"`
-	Password  string `yaml:"password"`
-	CookieDir string `yaml:"cookie_dir"`
+	Username   string  `yaml:"username"`
+	Password   string  `yaml:"password"`
+	CookiesDir string  `yaml:"cookie_dir"`
+	ProxyURL   *string `yaml:"proxy_url" optional:"true"`
 }
 
 // QBittorrentConfig конфигурация для QBittorrent

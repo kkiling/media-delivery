@@ -16,8 +16,8 @@ func (s *Storage) saveOrUpdateImage(ctx context.Context, img *tvshowlibrary.Imag
 		return nil
 	}
 	_, err := s.base.Next(ctx).ExecContext(ctx, `
-        INSERT OR REPLACE INTO images (id, w342, original) VALUES (?, ?, ?)
-    `, img.ID, img.W342, img.Original)
+        INSERT OR REPLACE INTO images (id, w92, w185, w342, original) VALUES (?, ?, ?)
+    `, img.ID, img.W92, img.W185, img.W342, img.Original)
 
 	if err != nil {
 		return s.base.HandleError(err)
@@ -63,8 +63,8 @@ func (s *Storage) saveOrUpdateSeason(ctx context.Context, tvID uint64, season tv
 func (s *Storage) getImage(ctx context.Context, imageID string) (*tvshowlibrary.Image, error) {
 	var img tvshowlibrary.Image
 	err := s.base.Next(ctx).QueryRowContext(ctx, `
-        SELECT id, w342, original FROM images WHERE id = ?
-    `, imageID).Scan(&img.ID, &img.W342, &img.Original)
+        SELECT id,  w92, w185, w342, original FROM images WHERE id = ?
+    `, imageID).Scan(&img.ID, &img.W92, &img.W185, &img.W342, &img.Original)
 
 	if err != nil {
 		return nil, s.base.HandleError(err)
