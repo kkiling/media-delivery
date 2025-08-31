@@ -22,11 +22,7 @@ export function TVShowCard({ show }: TVShowCardProps) {
       onClick={() => navigate(ROUTES.LIBRARY.TV_SHOWS.getDetails(show.id))}
     >
       <div className="position-relative" style={{ height: `${CARD_CONFIG.IMAGE_HEIGHT}px` }}>
-        <PosterImage
-          src={show.poster?.w185 || show.poster?.w342}
-          alt={show.name}
-          minHeight={CARD_CONFIG.IMAGE_HEIGHT}
-        />
+        <PosterImage src={show.poster?.w185} alt={show.name} minHeight={CARD_CONFIG.IMAGE_HEIGHT} />
 
         {show.vote_average !== undefined && (
           <div className="position-absolute top-0 start-0 m-2">

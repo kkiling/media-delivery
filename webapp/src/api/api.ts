@@ -201,11 +201,13 @@ export interface GetVideoContentResponse {
 export interface Image {
   id?: string;
   w92?: string;
-  w154?: string;
+  /** string w154 = 3; */
   w185?: string;
   w342?: string;
-  w500?: string;
-  w780?: string;
+  /**
+   * string w500 = 6;
+   * string w780 = 7;
+   */
   original?: string;
 }
 
