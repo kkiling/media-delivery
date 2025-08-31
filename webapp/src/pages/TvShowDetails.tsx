@@ -9,8 +9,6 @@ import getCountryFlag from 'country-flag-icons/unicode';
 import { hasFlag } from 'country-flag-icons';
 import { Rating, Popularity, PosterImage } from '@/components';
 import { Season, TVShow } from '@/api/api';
-import { Image as ImageIcon } from 'react-bootstrap-icons';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TV_SHOW_CONFIG = {
@@ -54,7 +52,7 @@ const TVShowInfo = ({ show }: TVShowInfoProps) => (
         >
           <PosterImage
             src={show.poster?.w185}
-            alt={show.name || 'TV Show Poster'}
+            alt={show.name}
             minHeight={TV_SHOW_CONFIG.MIN_IMAGE_HEIGHT}
           />
         </div>
@@ -119,7 +117,7 @@ const SeasonCard = ({ season }: SeasonCardProps) => {
       <div className="position-relative" style={{ height: SEASON_CARD_CONFIG.IMAGE_HEIGHT }}>
         <PosterImage
           src={season.poster?.w185}
-          alt={season.name || 'Season Poster'}
+          alt={season.name}
           minHeight={SEASON_CARD_CONFIG.IMAGE_HEIGHT}
         />
         {season.vote_average ? (

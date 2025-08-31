@@ -14,7 +14,7 @@ const NoImageFallback = ({ text = 'No Image Available' }: NoImageFallbackProps) 
 
 interface PosterImageProps {
   src?: string;
-  alt: string;
+  alt?: string;
   minHeight?: number;
 }
 
