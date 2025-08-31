@@ -273,7 +273,7 @@ func (s *Storage) GetTVShows(ctx context.Context) ([]tvshowlibrary.TVShowShort, 
         SELECT 
             ts.id, ts.name, ts.original_name, ts.overview,
             ts.first_air_date, ts.vote_average, ts.vote_count, ts.popularity,
-            poster.w342, poster.original
+            poster.w92, poster.w185, poster.w342, poster.original
         FROM tv_shows ts
         LEFT JOIN images poster ON ts.poster_id = poster.id
         ORDER BY ts.popularity DESC
@@ -286,7 +286,7 @@ func (s *Storage) GetTVShows(ctx context.Context) ([]tvshowlibrary.TVShowShort, 
 	var shows []tvshowlibrary.TVShowShort
 	for rows.Next() {
 		var show tvshowlibrary.TVShowShort
-		var posterW342, posterOriginal sql.NullString
+		var posterW92, posterW185, posterW342, posterOriginal sql.NullString
 
 		err := rows.Scan(
 			&show.ID,
@@ -297,6 +297,8 @@ func (s *Storage) GetTVShows(ctx context.Context) ([]tvshowlibrary.TVShowShort, 
 			&show.VoteAverage,
 			&show.VoteCount,
 			&show.Popularity,
+			&posterW92,
+			&posterW185,
 			&posterW342,
 			&posterOriginal,
 		)
@@ -305,8 +307,10 @@ func (s *Storage) GetTVShows(ctx context.Context) ([]tvshowlibrary.TVShowShort, 
 		}
 
 		// Заполняем изображение постера если есть
-		if posterW342.Valid && posterOriginal.Valid {
+		if posterOriginal.Valid {
 			show.Poster = &tvshowlibrary.Image{
+				W92:      posterW92.String,
+				W185:     posterW185.String,
 				W342:     posterW342.String,
 				Original: posterOriginal.String,
 			}
