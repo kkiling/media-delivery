@@ -7,6 +7,7 @@ import Loading from '../Loading';
 import { ContentMatche } from './ContentMatches';
 import { TorrentDownloadProgress, TorrentWaitingFiles } from './TorrentDownloadProgress';
 import { MergeVideoProgress } from './MergeVideoProgress';
+import { mapContentMatches } from './mapContentMatches';
 
 const AUTO_RELOAD_TIMEOUT = 3000 as const;
 
@@ -119,7 +120,7 @@ export const TVShowDeliveryContent = observer(
         return (
           <ContentMatche
             loading={loading}
-            contentMatches={deliveryState.data?.content_matches}
+            contentMatches={mapContentMatches(deliveryState.data?.content_matches || [])}
             onConfirm={onConfirmFileMatches}
           />
         );

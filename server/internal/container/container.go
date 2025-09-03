@@ -106,7 +106,7 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 	mkvMerge := mkvmerge.NewMerge(logger)
 	mkvPipeline := mkvmerge.NewPipeline(mkvMerge, mkvPipelineStorage, logger)
 
-	prepareTVShowService := prepareTVShow.NewService(mkvMerge)
+	prepareTVShowService := prepareTVShow.NewService()
 
 	// UserCase
 	tvShowLibrary := tvshowlibrary.NewService(tvShowLibraryStorage, themoviedbApi)

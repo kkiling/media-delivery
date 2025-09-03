@@ -1,37 +1,15 @@
 package matchtvshow
 
-type TVShowSeasonInfo struct {
-	TVShowName    string
-	FirstAirYear  string
-	SeasonName    string
-	SeasonNumber  uint8
-	SeasonAirYear string
-}
-
-type EpisodeInfo struct {
-	// Номер эпизода в сезоне
-	EpisodeNumber int
-	// Наименования эпизода
-	EpisodeName string
-}
-
-type PrepareTrack struct {
+type Track struct {
 	Name     string
 	Language string
 	File     string
 }
 
-type PrepareVideo struct {
-	File string
-}
-
-type PrepareEpisode struct {
-	Episode    EpisodeInfo
-	VideoFile  *PrepareVideo
-	AudioFiles []PrepareTrack
-	Subtitles  []PrepareTrack
-}
-
-type PrepareTVShowSeason struct {
-	Episodes []PrepareEpisode
+type Episode struct {
+	EpisodeNumber int
+	SeasonNumber  uint8
+	VideoFile     string
+	AudioFiles    []Track
+	Subtitles     []Track
 }
