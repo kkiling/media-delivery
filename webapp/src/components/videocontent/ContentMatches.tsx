@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button, Accordion, Spinner, Modal, Alert } from 'react-bootstrap';
-import { Video, Mic2, Subtitles, CheckCircle, Pencil } from 'lucide-react';
-import AceEditor from 'react-ace';
-import yaml from 'js-yaml';
-
-import 'ace-builds/src-noconflict/mode-yaml';
-import 'ace-builds/src-noconflict/theme-github';
+import { Button, Accordion, Spinner } from 'react-bootstrap';
+import { Video, Mic2, Subtitles, CheckCircle, Trash2 } from 'lucide-react';
 
 export interface Episode {
   episode_number: number;
@@ -13,9 +8,12 @@ export interface Episode {
   episode_file: string;
 }
 
+export type TrackType = 'video' | 'audio' | 'subtitle';
+
 export interface Track {
-  name: string;
+  name?: string;
   file: string;
+  type: TrackType;
 }
 
 export interface ContentMatches {
@@ -40,115 +38,65 @@ export const ContentMatche = ({
 }: ContentMatchesProps) => {
   const [matches, setMatches] = useState<ContentMatches[]>([]);
   const [unallocated, setUnallocated] = useState<Track[]>([]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [editorValue, setEditorValue] = useState('');
-  const [error, setError] = useState<string | null>(null);
-
   // Инициализация из props
   useEffect(() => {
     setMatches(contentMatches);
     setUnallocated(unallocatedTracks);
   }, [contentMatches, unallocatedTracks]);
 
-  const handleEdit = () => {
-    const yamlString = yaml.dump(
-      {
-        episodes: matches.map((c) => ({
-          episode: c.episode.episode_file,
-          video: c.video.file,
-          audio: c.audio_tracks.map((a) => a.file),
-          subtitles: c.subtitle_tracks.map((s) => s.file),
-        })),
-      },
-      { lineWidth: -1 } // всегда в одну строку
-    );
+  const handleRemoveVideo = (index: number, video: Track) => {
+    // Удаляем видео из эпизода
+    const newMatches = matches.map((m, idx) => {
+      if (idx === index) {
+        return {
+          ...m,
+          video: { file: '', type: 'video' as TrackType }, // пустое видео
+        };
+      }
+      return m;
+    });
 
-    setEditorValue(yamlString);
-    setError(null);
-    setShowModal(true);
+    // Добавляем видео в unallocated
+    setUnallocated([...unallocated, video]);
+    setMatches(newMatches);
   };
 
-  const handleSave = () => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parsed = yaml.load(editorValue) as any;
-
-      if (!parsed || !Array.isArray(parsed.episodes)) {
-        throw new Error('The YAML must have an "episodes" section');
-      }
-
-      // 1. Собираем все допустимые файлы
-      const allowedFiles = new Set<string>([
-        ...matches.map((m) => m.video.file),
-        ...matches.flatMap((m) => m.audio_tracks.map((a) => a.file)),
-        ...matches.flatMap((m) => m.subtitle_tracks.map((s) => s.file)),
-        ...unallocated.map((t) => t.file),
-      ]);
-
-      const usedFiles = new Set<string>();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const updatedEpisodes: ContentMatches[] = parsed.episodes.map((ep: any, idx: number) => {
-        if (!ep.episode || !ep.video) {
-          throw new Error(`Эпизод #${idx + 1}: поля "episode" и "video" обязательны.`);
-        }
-
-        const collectFile = (file: string, context: string) => {
-          if (!allowedFiles.has(file)) {
-            throw new Error(`Файл "${file}" (${context}) не входит в исходный список файлов.`);
-          }
-          if (usedFiles.has(file)) {
-            throw new Error(`Файл "${file}" используется более чем в одном месте.`);
-          }
-          usedFiles.add(file);
-          return { name: file, file };
-        };
-
-        const video = collectFile(ep.video, `video эпизода ${ep.episode}`);
-        const audio_tracks = (ep.audio || []).map((f: string) =>
-          collectFile(f, `audio эпизода ${ep.episode}`)
-        );
-        const subtitle_tracks = (ep.subtitles || []).map((f: string) =>
-          collectFile(f, `subtitles эпизода ${ep.episode}`)
-        );
-
+  const handleRemoveAudio = (contentIndex: number, audioIndex: number, audio: Track) => {
+    const newMatches = matches.map((m, idx) => {
+      if (idx === contentIndex) {
+        const newAudioTracks = [...m.audio_tracks];
+        newAudioTracks.splice(audioIndex, 1);
         return {
-          episode: {
-            episode_number: idx + 1,
-            season_number: 1,
-            episode_file: ep.episode,
-          },
-          video,
-          audio_tracks,
-          subtitle_tracks,
+          ...m,
+          audio_tracks: newAudioTracks,
         };
-      });
+      }
+      return m;
+    });
 
-      // 2. Всё, что осталось → в unallocated
-      const updatedUnallocated: Track[] = Array.from(allowedFiles)
-        .filter((f) => !usedFiles.has(f))
-        .map((f) => ({ name: f, file: f }));
+    setUnallocated([...unallocated, audio]);
+    setMatches(newMatches);
+  };
 
-      // 3. Обновляем state
-      setMatches(updatedEpisodes);
-      setUnallocated(updatedUnallocated);
+  const handleRemoveSubtitle = (contentIndex: number, subtitleIndex: number, subtitle: Track) => {
+    const newMatches = matches.map((m, idx) => {
+      if (idx === contentIndex) {
+        const newSubtitles = [...m.subtitle_tracks];
+        newSubtitles.splice(subtitleIndex, 1);
+        return {
+          ...m,
+          subtitle_tracks: newSubtitles,
+        };
+      }
+      return m;
+    });
 
-      setError(null);
-      setShowModal(false);
-    } catch (e: any) {
-      setError(e.message || 'Ошибка парсинга YAML');
-    }
+    setUnallocated([...unallocated, subtitle]);
+    setMatches(newMatches);
   };
 
   return (
     <div className="container-fluid py-3">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="mb-0">Confirm file matching</h4>
-        <Button variant="outline-secondary" onClick={handleEdit}>
-          <Pencil size={18} className="me-1" /> Edit
-        </Button>
-      </div>
-
       <div className="border-top border-bottom">
         {matches.map((content, index) => (
           <div key={index} className={`py-3 ${index !== 0 ? 'border-top' : ''}`}>
@@ -158,11 +106,57 @@ export const ContentMatche = ({
 
             <div className="d-flex align-items-center gap-2 mb-3 ps-2">
               <Video size={18} className="text-primary" />
-              <div className="text-break">{content.video.file}</div>
+              <div className="d-flex align-items-center gap-2 flex-grow-1">
+                <select
+                  className="form-select"
+                  value={content.video.file}
+                  onChange={(e) => {
+                    const newVideo = unallocated.find((t) => t.file === e.target.value);
+                    if (!newVideo) return;
+
+                    // Обновляем matches и unallocated за одну операцию
+                    const newMatches = matches.map((m, idx) => {
+                      if (idx === index) {
+                        return {
+                          ...m,
+                          video: newVideo,
+                        };
+                      }
+                      return m;
+                    });
+
+                    // Обновляем unallocated за одну операцию
+                    const newUnallocated = unallocated
+                      .filter((t) => t.file !== newVideo.file)
+                      .concat(content.video.file ? content.video : []);
+
+                    setUnallocated(newUnallocated);
+                    setMatches(newMatches);
+                  }}
+                >
+                  <option value={content.video.file}>{content.video.file}</option>
+                  {unallocated
+                    .filter((t) => t.type === 'video')
+                    .map((track, idx) => (
+                      <option key={idx} value={track.file}>
+                        {track.file}
+                      </option>
+                    ))}
+                </select>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  disabled={!content.video.file}
+                  onClick={() => handleRemoveVideo(index, content.video)}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </div>
             </div>
 
             <div className="accordion-custom">
-              {content.audio_tracks.length > 0 && (
+              {/* Секция аудио - показываем всегда если есть треки или доступны для добавления */}
+              {(content.audio_tracks.length > 0 || unallocated.some((t) => t.type === 'audio')) && (
                 <Accordion>
                   <Accordion.Item eventKey="0" className="border-0 mb-2">
                     <Accordion.Header>
@@ -174,16 +168,101 @@ export const ContentMatche = ({
                     <Accordion.Body className="pt-2 pb-1">
                       {content.audio_tracks.map((audio, idx) => (
                         <div key={idx} className="mb-3 ps-4">
-                          <div className="fw-semibold">{audio.name}</div>
-                          <div className="text-muted small">{audio.file}</div>
+                          {/* На маленьких экранах имя сверху */}
+                          <div className="d-block d-md-none mb-2 text-truncate text-secondary">
+                            {audio.name || 'Unnamed track'}
+                          </div>
+                          <div className="d-flex align-items-center gap-2">
+                            {/* На средних и больших экранах имя слева */}
+                            <div className="track-name text-truncate d-none d-md-block">
+                              {audio.name || 'Unnamed track'}
+                            </div>
+                            <div className="flex-grow-1">
+                              <select
+                                className="form-select"
+                                value={audio.file}
+                                onChange={(e) => {
+                                  const newAudio = unallocated.find(
+                                    (t) => t.file === e.target.value
+                                  );
+                                  if (!newAudio) return;
+
+                                  const newMatches = matches.map((m, mIdx) => {
+                                    if (mIdx === index) {
+                                      const newAudioTracks = [...m.audio_tracks];
+                                      newAudioTracks[idx] = newAudio;
+                                      return {
+                                        ...m,
+                                        audio_tracks: newAudioTracks,
+                                      };
+                                    }
+                                    return m;
+                                  });
+
+                                  // Обновляем unallocated за одну операцию
+                                  const newUnallocated = unallocated
+                                    .filter((t) => t.file !== newAudio.file)
+                                    .concat(audio);
+
+                                  setUnallocated(newUnallocated);
+                                  setMatches(newMatches);
+                                }}
+                              >
+                                <option value={audio.file}>{audio.file}</option>
+                                {unallocated
+                                  .filter((t) => t.type === 'audio')
+                                  .map((track, i) => (
+                                    <option key={i} value={track.file}>
+                                      {track.file}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleRemoveAudio(index, idx, audio)}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
                         </div>
                       ))}
+                      {/* Кнопка добавления новой аудио дорожки */}
+                      {unallocated.some((t) => t.type === 'audio') && (
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          className={`ms-4 ${content.audio_tracks.length === 0 ? 'mt-2' : ''}`}
+                          onClick={() => {
+                            const newAudio = unallocated.find((t) => t.type === 'audio');
+                            if (!newAudio) return;
+
+                            const newMatches = matches.map((m, idx) => {
+                              if (idx === index) {
+                                return {
+                                  ...m,
+                                  audio_tracks: [...m.audio_tracks, newAudio],
+                                };
+                              }
+                              return m;
+                            });
+
+                            setUnallocated(unallocated.filter((t) => t.file !== newAudio.file));
+                            setMatches(newMatches);
+                          }}
+                        >
+                          Add Audio Track
+                        </Button>
+                      )}
                     </Accordion.Body>
                   </Accordion.Item>
                 </Accordion>
               )}
 
-              {content.subtitle_tracks.length > 0 && (
+              {/* Секция субтитров - показываем всегда если есть треки или доступны для добавления */}
+              {(content.subtitle_tracks.length > 0 ||
+                unallocated.some((t) => t.type === 'subtitle')) && (
                 <Accordion>
                   <Accordion.Item eventKey="0" className="border-0">
                     <Accordion.Header>
@@ -193,12 +272,95 @@ export const ContentMatche = ({
                       </div>
                     </Accordion.Header>
                     <Accordion.Body className="pt-2 pb-1">
-                      {content.subtitle_tracks.map((sub, idx) => (
+                      {content.subtitle_tracks.map((subtitle, idx) => (
                         <div key={idx} className="mb-3 ps-4">
-                          <div className="fw-semibold">{sub.name}</div>
-                          <div className="text-muted small">{sub.file}</div>
+                          {/* На маленьких экранах имя сверху */}
+                          <div className="d-block d-md-none mb-2 text-truncate text-secondary">
+                            {subtitle.name || 'Unnamed track'}
+                          </div>
+                          <div className="d-flex align-items-center gap-2">
+                            {/* На средних и больших экранах имя слева */}
+                            <div className="track-name text-truncate d-none d-md-block">
+                              {subtitle.name || 'Unnamed track'}
+                            </div>
+                            <div className="flex-grow-1">
+                              <select
+                                className="form-select"
+                                value={subtitle.file}
+                                onChange={(e) => {
+                                  const newSubtitle = unallocated.find(
+                                    (t) => t.file === e.target.value
+                                  );
+                                  if (!newSubtitle) return;
+
+                                  const newMatches = matches.map((m, mIdx) => {
+                                    if (mIdx === index) {
+                                      const newSubtitles = [...m.subtitle_tracks];
+                                      newSubtitles[idx] = newSubtitle;
+                                      return {
+                                        ...m,
+                                        subtitle_tracks: newSubtitles,
+                                      };
+                                    }
+                                    return m;
+                                  });
+
+                                  // Обновляем unallocated за одну операцию
+                                  const newUnallocated = unallocated
+                                    .filter((t) => t.file !== newSubtitle.file)
+                                    .concat(subtitle);
+
+                                  setUnallocated(newUnallocated);
+                                  setMatches(newMatches);
+                                }}
+                              >
+                                <option value={subtitle.file}>{subtitle.file}</option>
+                                {unallocated
+                                  .filter((t) => t.type === 'subtitle')
+                                  .map((track, i) => (
+                                    <option key={i} value={track.file}>
+                                      {track.file}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleRemoveSubtitle(index, idx, subtitle)}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
                         </div>
                       ))}
+                      {/* Кнопка добавления новых субтитров */}
+                      {unallocated.some((t) => t.type === 'subtitle') && (
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          className={`ms-4 ${content.subtitle_tracks.length === 0 ? 'mt-2' : ''}`}
+                          onClick={() => {
+                            const newSubtitle = unallocated.find((t) => t.type === 'subtitle');
+                            if (!newSubtitle) return;
+
+                            const newMatches = matches.map((m, idx) => {
+                              if (idx === index) {
+                                return {
+                                  ...m,
+                                  subtitle_tracks: [...m.subtitle_tracks, newSubtitle],
+                                };
+                              }
+                              return m;
+                            });
+
+                            setUnallocated(unallocated.filter((t) => t.file !== newSubtitle.file));
+                            setMatches(newMatches);
+                          }}
+                        >
+                          Add Subtitle Track
+                        </Button>
+                      )}
                     </Accordion.Body>
                   </Accordion.Item>
                 </Accordion>
@@ -209,12 +371,69 @@ export const ContentMatche = ({
 
         {unallocated.length > 0 && (
           <div className="border-top py-3">
-            <h6>Unallocated files</h6>
-            {unallocated.map((t, idx) => (
-              <div key={idx} className="text-muted small ps-2">
-                {t.file}
-              </div>
-            ))}
+            <Accordion>
+              <Accordion.Item eventKey="0" className="border-0">
+                <Accordion.Header>
+                  <div className="d-flex align-items-center gap-2">
+                    <h6 className="mb-0">Unallocated files ({unallocated.length})</h6>
+                  </div>
+                </Accordion.Header>
+                <Accordion.Body className="pt-2 pb-1">
+                  {/* Видео файлы */}
+                  {unallocated.filter((t) => t.type === 'video').length > 0 && (
+                    <div className="mb-3">
+                      <div className="d-flex align-items-center gap-2 mb-2">
+                        <Video size={18} className="text-primary" />
+                        <span>Video files</span>
+                      </div>
+                      {unallocated
+                        .filter((t) => t.type === 'video')
+                        .map((track, idx) => (
+                          <div key={idx} className="ps-4 mb-2 d-flex align-items-center">
+                            <div className="text-break">{track.file}</div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+
+                  {/* Аудио файлы */}
+                  {unallocated.filter((t) => t.type === 'audio').length > 0 && (
+                    <div className="mb-3">
+                      <div className="d-flex align-items-center gap-2 mb-2">
+                        <Mic2 size={18} className="text-primary" />
+                        <span>Audio files</span>
+                      </div>
+                      {unallocated
+                        .filter((t) => t.type === 'audio')
+                        .map((track, idx) => (
+                          <div key={idx} className="ps-4 mb-2 d-flex align-items-center">
+                            <div className="text-break">{track.name || 'Unnamed track'}</div>
+                            <div className="text-secondary ms-2">{track.file}</div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+
+                  {/* Субтитры */}
+                  {unallocated.filter((t) => t.type === 'subtitle').length > 0 && (
+                    <div className="mb-3">
+                      <div className="d-flex align-items-center gap-2 mb-2">
+                        <Subtitles size={18} className="text-primary" />
+                        <span>Subtitle files</span>
+                      </div>
+                      {unallocated
+                        .filter((t) => t.type === 'subtitle')
+                        .map((track, idx) => (
+                          <div key={idx} className="ps-4 mb-2 d-flex align-items-center">
+                            <div className="text-break">{track.name || 'Unnamed track'}</div>
+                            <div className="text-secondary ms-2">{track.file}</div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
           </div>
         )}
       </div>
@@ -230,50 +449,6 @@ export const ContentMatche = ({
           Confirm
         </Button>
       </div>
-
-      {/* Модалка редактора */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit episodes</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="d-flex flex-row gap-3" style={{ height: '100%' }}>
-          <div className="flex-fill">
-            {error && <Alert variant="danger">{error}</Alert>}
-            <AceEditor
-              mode="yaml"
-              theme="github"
-              name="yamlEditor"
-              value={editorValue}
-              onChange={setEditorValue}
-              fontSize={18}
-              width="100%"
-              height="calc(100vh - 200px)"
-              setOptions={{ useWorker: false }}
-            />
-          </div>
-          <div className="border-start ps-3" style={{ width: '30%', overflowY: 'auto' }}>
-            <h6>Unallocated files</h6>
-            {unallocated.length === 0 ? (
-              <div className="text-muted small">No unallocated files</div>
-            ) : (
-              unallocated.map((t, idx) => (
-                <div key={idx} className="text-muted small mb-1">
-                  {t.file}
-                </div>
-              ))
-            )}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       <style>
         {`
           .accordion-custom .accordion-button {
@@ -292,6 +467,19 @@ export const ContentMatche = ({
           .accordion-custom .accordion-body {
             padding-left: 1rem;
             padding-right: 1rem;
+          }
+          
+          .track-name {
+            width: 200px;
+            min-width: 200px;
+            color: var(--bs-secondary);
+          }
+          
+          @media (max-width: 768px) {
+            .track-name {
+              width: 100%;
+              min-width: 100%;
+            }
           }
         `}
       </style>

@@ -1,13 +1,5 @@
-import { ContentMatches as ApiContentMatches, Track as ApiTrack } from '@/api/api';
+import { ContentMatches as ApiContentMatches } from '@/api/api';
 import { ContentMatches as UiContentMatches } from './ContentMatches';
-
-// Маппинг одного Track
-function mapTrack(track?: ApiTrack): { name: string; file: string } {
-  return {
-    name: track?.name || '',
-    file: track?.file?.relative_path || '',
-  };
-}
 
 // Маппинг одного ContentMatches
 function mapContentMatch(apiMatch: ApiContentMatches): UiContentMatches {
@@ -20,9 +12,18 @@ function mapContentMatch(apiMatch: ApiContentMatches): UiContentMatches {
     video: {
       file: apiMatch.video?.file?.relative_path || '',
       name: '',
+      type: 'video',
     },
-    audio_tracks: (apiMatch.audio_files || []).map(mapTrack),
-    subtitle_tracks: (apiMatch.subtitles || []).map(mapTrack),
+    audio_tracks: (apiMatch.audio_files || []).map((track) => ({
+      name: track?.name || '',
+      file: track?.file?.relative_path || '',
+      type: 'audio',
+    })),
+    subtitle_tracks: (apiMatch.subtitles || []).map((track) => ({
+      name: track?.name || '',
+      file: track?.file?.relative_path || '',
+      type: 'subtitle',
+    })),
   };
 }
 
