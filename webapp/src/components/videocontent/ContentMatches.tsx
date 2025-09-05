@@ -1,5 +1,11 @@
-import { Button, Accordion, Spinner } from 'react-bootstrap';
-import { Video, Mic2, Subtitles, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Button, Accordion, Spinner, Modal, Alert } from 'react-bootstrap';
+import { Video, Mic2, Subtitles, CheckCircle, Pencil } from 'lucide-react';
+import AceEditor from 'react-ace';
+import yaml from 'js-yaml';
+
+import 'ace-builds/src-noconflict/mode-yaml';
+import 'ace-builds/src-noconflict/theme-github';
 
 export interface Episode {
   episode_number: number;
@@ -23,16 +29,128 @@ export interface ContentMatchesProps {
   loading: boolean;
   unallocatedTracks: Track[];
   contentMatches?: ContentMatches[];
-  onConfirm: (contentMatches: ContentMatches[]) => void;
+  onConfirm: (contentMatches: ContentMatches[], unallocated: Track[]) => void;
 }
 
-export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMatchesProps) => {
+export const ContentMatche = ({
+  contentMatches = [],
+  unallocatedTracks,
+  onConfirm,
+  loading,
+}: ContentMatchesProps) => {
+  const [matches, setMatches] = useState<ContentMatches[]>([]);
+  const [unallocated, setUnallocated] = useState<Track[]>([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [editorValue, setEditorValue] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  // Инициализация из props
+  useEffect(() => {
+    setMatches(contentMatches);
+    setUnallocated(unallocatedTracks);
+  }, [contentMatches, unallocatedTracks]);
+
+  const handleEdit = () => {
+    const yamlString = yaml.dump(
+      {
+        episodes: matches.map((c) => ({
+          episode: c.episode.episode_file,
+          video: c.video.file,
+          audio: c.audio_tracks.map((a) => a.file),
+          subtitles: c.subtitle_tracks.map((s) => s.file),
+        })),
+      },
+      { lineWidth: -1 } // всегда в одну строку
+    );
+
+    setEditorValue(yamlString);
+    setError(null);
+    setShowModal(true);
+  };
+
+  const handleSave = () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const parsed = yaml.load(editorValue) as any;
+
+      if (!parsed || !Array.isArray(parsed.episodes)) {
+        throw new Error('The YAML must have an "episodes" section');
+      }
+
+      // 1. Собираем все допустимые файлы
+      const allowedFiles = new Set<string>([
+        ...matches.map((m) => m.video.file),
+        ...matches.flatMap((m) => m.audio_tracks.map((a) => a.file)),
+        ...matches.flatMap((m) => m.subtitle_tracks.map((s) => s.file)),
+        ...unallocated.map((t) => t.file),
+      ]);
+
+      const usedFiles = new Set<string>();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updatedEpisodes: ContentMatches[] = parsed.episodes.map((ep: any, idx: number) => {
+        if (!ep.episode || !ep.video) {
+          throw new Error(`Эпизод #${idx + 1}: поля "episode" и "video" обязательны.`);
+        }
+
+        const collectFile = (file: string, context: string) => {
+          if (!allowedFiles.has(file)) {
+            throw new Error(`Файл "${file}" (${context}) не входит в исходный список файлов.`);
+          }
+          if (usedFiles.has(file)) {
+            throw new Error(`Файл "${file}" используется более чем в одном месте.`);
+          }
+          usedFiles.add(file);
+          return { name: file, file };
+        };
+
+        const video = collectFile(ep.video, `video эпизода ${ep.episode}`);
+        const audio_tracks = (ep.audio || []).map((f: string) =>
+          collectFile(f, `audio эпизода ${ep.episode}`)
+        );
+        const subtitle_tracks = (ep.subtitles || []).map((f: string) =>
+          collectFile(f, `subtitles эпизода ${ep.episode}`)
+        );
+
+        return {
+          episode: {
+            episode_number: idx + 1,
+            season_number: 1,
+            episode_file: ep.episode,
+          },
+          video,
+          audio_tracks,
+          subtitle_tracks,
+        };
+      });
+
+      // 2. Всё, что осталось → в unallocated
+      const updatedUnallocated: Track[] = Array.from(allowedFiles)
+        .filter((f) => !usedFiles.has(f))
+        .map((f) => ({ name: f, file: f }));
+
+      // 3. Обновляем state
+      setMatches(updatedEpisodes);
+      setUnallocated(updatedUnallocated);
+
+      setError(null);
+      setShowModal(false);
+    } catch (e: any) {
+      setError(e.message || 'Ошибка парсинга YAML');
+    }
+  };
+
   return (
     <div className="container-fluid py-3">
-      <h4 className="mb-3">Confirm file matching</h4>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4 className="mb-0">Confirm file matching</h4>
+        <Button variant="outline-secondary" onClick={handleEdit}>
+          <Pencil size={18} className="me-1" /> Edit
+        </Button>
+      </div>
 
       <div className="border-top border-bottom">
-        {contentMatches?.map((content, index) => (
+        {matches.map((content, index) => (
           <div key={index} className={`py-3 ${index !== 0 ? 'border-top' : ''}`}>
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h6 className="mb-0">{content.episode.episode_file}</h6>
@@ -88,18 +206,73 @@ export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMat
             </div>
           </div>
         ))}
+
+        {unallocated.length > 0 && (
+          <div className="border-top py-3">
+            <h6>Unallocated files</h6>
+            {unallocated.map((t, idx) => (
+              <div key={idx} className="text-muted small ps-2">
+                {t.file}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
       <div className="d-flex justify-content-end mt-3">
         <Button
           variant="primary"
-          onClick={() => onConfirm([])}
-          disabled={!contentMatches?.length || loading}
+          onClick={() => onConfirm(matches, unallocated)}
+          disabled={!matches.length || loading}
           className="d-inline-flex align-items-center gap-3"
         >
           {loading ? <Spinner animation="border" size="sm" /> : <CheckCircle size={24} />}
           Confirm
         </Button>
       </div>
+
+      {/* Модалка редактора */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit episodes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="d-flex flex-row gap-3" style={{ height: '100%' }}>
+          <div className="flex-fill">
+            {error && <Alert variant="danger">{error}</Alert>}
+            <AceEditor
+              mode="yaml"
+              theme="github"
+              name="yamlEditor"
+              value={editorValue}
+              onChange={setEditorValue}
+              fontSize={18}
+              width="100%"
+              height="calc(100vh - 200px)"
+              setOptions={{ useWorker: false }}
+            />
+          </div>
+          <div className="border-start ps-3" style={{ width: '30%', overflowY: 'auto' }}>
+            <h6>Unallocated files</h6>
+            {unallocated.length === 0 ? (
+              <div className="text-muted small">No unallocated files</div>
+            ) : (
+              unallocated.map((t, idx) => (
+                <div key={idx} className="text-muted small mb-1">
+                  {t.file}
+                </div>
+              ))
+            )}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <style>
         {`
