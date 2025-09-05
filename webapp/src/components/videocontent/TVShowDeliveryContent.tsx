@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { tvShowDeliveryStore } from '@/stores/tvShowDeliveryStore';
 import { TorrentSearchList } from './TorrentSearchList';
 import Loading from '../Loading';
-import { ContentMatche } from './ContentMatches';
+import { ContentMatche, ContentMatches } from './ContentMatches';
 import { TorrentDownloadProgress, TorrentWaitingFiles } from './TorrentDownloadProgress';
 import { MergeVideoProgress } from './MergeVideoProgress';
 import { mapContentMatches } from './mapContentMatches';
@@ -60,13 +60,14 @@ export const TVShowDeliveryContent = observer(
     };
 
     const onTorrentSelect = async (href: string) => {
-      await tvShowDeliveryStore.selectTorrent(contentId, href);
       document.getElementById('video-content-header')?.scrollIntoView();
+      await tvShowDeliveryStore.selectTorrent(contentId, href);
     };
 
-    const onConfirmFileMatches = async () => {
-      await tvShowDeliveryStore.confirmFileMatches(contentId);
+    const onConfirmFileMatches = async (matches: ContentMatches[]) => {
       document.getElementById('video-content-header')?.scrollIntoView();
+      console.log(matches);
+      await tvShowDeliveryStore.confirmFileMatches(contentId);
     };
 
     const { loading, error, deliveryState } = tvShowDeliveryStore;
@@ -120,6 +121,7 @@ export const TVShowDeliveryContent = observer(
         return (
           <ContentMatche
             loading={loading}
+            unallocatedTracks={[]}
             contentMatches={mapContentMatches(deliveryState.data?.content_matches || [])}
             onConfirm={onConfirmFileMatches}
           />

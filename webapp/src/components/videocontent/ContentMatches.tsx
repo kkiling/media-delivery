@@ -12,21 +12,18 @@ export interface Track {
   file: string;
 }
 
-export interface MediaFiles {
-  video_file: string;
-  audio_files: Track[];
-  subtitles_files: Track[];
-}
-
 export interface ContentMatches {
   episode: Episode;
-  media_files: MediaFiles;
+  video: Track;
+  audio_tracks: Track[];
+  subtitle_tracks: Track[];
 }
 
 export interface ContentMatchesProps {
   loading: boolean;
+  unallocatedTracks: Track[];
   contentMatches?: ContentMatches[];
-  onConfirm: () => void;
+  onConfirm: (contentMatches: ContentMatches[]) => void;
 }
 
 export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMatchesProps) => {
@@ -43,21 +40,21 @@ export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMat
 
             <div className="d-flex align-items-center gap-2 mb-3 ps-2">
               <Video size={18} className="text-primary" />
-              <div className="text-break">{content.media_files.video_file}</div>
+              <div className="text-break">{content.video.file}</div>
             </div>
 
             <div className="accordion-custom">
-              {content.media_files.audio_files.length > 0 && (
+              {content.audio_tracks.length > 0 && (
                 <Accordion>
                   <Accordion.Item eventKey="0" className="border-0 mb-2">
                     <Accordion.Header>
                       <div className="d-flex align-items-center gap-2">
                         <Mic2 size={18} className="text-primary" />
-                        <span>Audio files ({content.media_files.audio_files.length})</span>
+                        <span>Audio files ({content.audio_tracks.length})</span>
                       </div>
                     </Accordion.Header>
                     <Accordion.Body className="pt-2 pb-1">
-                      {content.media_files.audio_files.map((audio, idx) => (
+                      {content.audio_tracks.map((audio, idx) => (
                         <div key={idx} className="mb-3 ps-4">
                           <div className="fw-semibold">{audio.name}</div>
                           <div className="text-muted small">{audio.file}</div>
@@ -68,17 +65,17 @@ export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMat
                 </Accordion>
               )}
 
-              {content.media_files.subtitles_files.length > 0 && (
+              {content.subtitle_tracks.length > 0 && (
                 <Accordion>
                   <Accordion.Item eventKey="0" className="border-0">
                     <Accordion.Header>
                       <div className="d-flex align-items-center gap-2">
                         <Subtitles size={18} className="text-primary" />
-                        <span>Subtitles ({content.media_files.subtitles_files.length})</span>
+                        <span>Subtitles ({content.subtitle_tracks.length})</span>
                       </div>
                     </Accordion.Header>
                     <Accordion.Body className="pt-2 pb-1">
-                      {content.media_files.subtitles_files.map((sub, idx) => (
+                      {content.subtitle_tracks.map((sub, idx) => (
                         <div key={idx} className="mb-3 ps-4">
                           <div className="fw-semibold">{sub.name}</div>
                           <div className="text-muted small">{sub.file}</div>
@@ -95,7 +92,7 @@ export const ContentMatche = ({ contentMatches, onConfirm, loading }: ContentMat
       <div className="d-flex justify-content-end mt-3">
         <Button
           variant="primary"
-          onClick={onConfirm}
+          onClick={() => onConfirm([])}
           disabled={!contentMatches?.length || loading}
           className="d-inline-flex align-items-center gap-3"
         >

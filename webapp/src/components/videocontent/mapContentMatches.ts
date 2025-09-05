@@ -17,11 +17,12 @@ function mapContentMatch(apiMatch: ApiContentMatches): UiContentMatches {
       season_number: apiMatch.episode?.season_number ?? 0,
       episode_file: apiMatch.episode?.relative_path || '',
     },
-    media_files: {
-      video_file: apiMatch.video?.file?.relative_path || '',
-      audio_files: (apiMatch.audio_files || []).map(mapTrack),
-      subtitles_files: (apiMatch.subtitles || []).map(mapTrack),
+    video: {
+      file: apiMatch.video?.file?.relative_path || '',
+      name: '',
     },
+    audio_tracks: (apiMatch.audio_files || []).map(mapTrack),
+    subtitle_tracks: (apiMatch.subtitles || []).map(mapTrack),
   };
 }
 
