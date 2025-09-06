@@ -36,7 +36,8 @@
     "test": "craco test",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,scss}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,scss}\"",
+    "generate": "npx swagger-typescript-api generate --path http://localhost:8083/api.swagger.json --output ./src/api --name api.ts"
   },
   "eslintConfig": {
     "extends": [

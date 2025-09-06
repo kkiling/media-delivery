@@ -1,13 +1,18 @@
-import { ContentID, ErrorType, MediadeliveryStatus, TVShowDeliveryStatus } from '@/api/api';
+import {
+  ContentID,
+  ErrorType,
+  MediadeliveryStatus,
+  TVShowDeliveryStatus,
+  ContentMatches as MatchContents,
+} from '@/api/api';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { tvShowDeliveryStore } from '@/stores/tvShowDeliveryStore';
 import { TorrentSearchList } from './TorrentSearchList';
 import Loading from '../Loading';
-import { ContentMatche, ContentMatches } from './ContentMatches';
 import { TorrentDownloadProgress, TorrentWaitingFiles } from './TorrentDownloadProgress';
 import { MergeVideoProgress } from './MergeVideoProgress';
-import { mapContentMatches } from './mapContentMatches';
+import { ContentMatches } from './ContentMatches';
 
 const AUTO_RELOAD_TIMEOUT = 3000 as const;
 
@@ -64,10 +69,10 @@ export const TVShowDeliveryContent = observer(
       await tvShowDeliveryStore.selectTorrent(contentId, href);
     };
 
-    const onConfirmFileMatches = async (matches: ContentMatches[]) => {
+    const onConfirmFileMatches = async (result?: MatchContents) => {
       document.getElementById('video-content-header')?.scrollIntoView();
-      console.log(matches);
-      await tvShowDeliveryStore.confirmFileMatches(contentId);
+      console.log(result);
+      // await tvShowDeliveryStore.confirmFileMatches(contentId);
     };
 
     const { loading, error, deliveryState } = tvShowDeliveryStore;
@@ -119,10 +124,9 @@ export const TVShowDeliveryContent = observer(
       case TVShowDeliveryStatus.WaitingChoseFileMatches:
         // Отображение выбора совпадений файлов
         return (
-          <ContentMatche
+          <ContentMatches
             loading={loading}
-            unallocatedTracks={[]}
-            contentMatches={mapContentMatches(deliveryState.data?.content_matches || [])}
+            contentMatches={deliveryState.data?.content_matches || {}}
             onConfirm={onConfirmFileMatches}
           />
         );
