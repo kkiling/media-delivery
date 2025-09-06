@@ -61,13 +61,6 @@ func (s *Service) GetEpisodesData(ctx context.Context, params GetEpisodesDataPar
 	}
 	return &EpisodesData{
 		TVShowCatalogPath: tvShowCatalogPath,
-		SeasonInfo: SeasonInfo{
-			TVShowName:    tvShowInfo.Result.Name,
-			FirstAirYear:  fmt.Sprintf("%d", tvShowInfo.Result.FirstAirDate.Year()),
-			SeasonName:    season.Name,
-			SeasonNumber:  season.SeasonNumber,
-			SeasonAirYear: fmt.Sprintf("%d", season.AirDate.Year()),
-		},
 		Episodes: lo.Map(seasonInfo.Result.Episodes, func(item tvshowlibrary.Episode, _ int) EpisodeInfo {
 			name := fmt.Sprintf("S%02dE%02d %s", season.SeasonNumber, item.EpisodeNumber, item.Name)
 			return EpisodeInfo{

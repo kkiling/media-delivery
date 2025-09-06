@@ -140,16 +140,16 @@ func isSubtitlesFile(filename string) bool {
 }
 
 // detectLanguage определяет язык трека - УПРОЩЕННАЯ ВЕРСИЯ
-func detectLanguage(filePath string) string {
+func detectLanguage(filePath string) *string {
 	// Преобразуем весь путь в lowercase для поиска
 	lowerPath := strings.ToLower(filePath)
 
 	for lang, pattern := range languagePatterns {
 		if pattern.MatchString(lowerPath) {
-			return lang
+			return &lang
 		}
 	}
-	return "unknown"
+	return nil
 }
 
 // MatchEpisodeFiles сопоставляет файлы с эпизодами

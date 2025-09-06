@@ -15,34 +15,34 @@ import (
 type PreparingFileMatchesParams struct {
 	TorrentFiles []FileInfo
 	Episodes     []EpisodeInfo
-	SeasonInfo   SeasonInfo
-}
-
-func toTrack(tracks []matchtvshow.Track, fileMap map[string]FileInfo) []Track {
-	return lo.Map(tracks, func(item matchtvshow.Track, _ int) Track {
-		return Track{
-			Name:     item.Name,
-			Language: item.Language,
-			File:     fileMap[item.File],
-		}
-	})
 }
 
 func episodeToString(seasonNumber uint8, episodeNumber int) string {
 	return fmt.Sprintf("%d-%d", seasonNumber, episodeNumber)
 }
 
-func mapResult(prepare []matchtvshow.Episode, torrentFiles []FileInfo, episodes []EpisodeInfo) ([]ContentMatches, error) {
+func mapResult(prepare []matchtvshow.Episode, torrentFiles []FileInfo, episodes []EpisodeInfo) (*ContentMatches, error) {
 	epMap := make(map[string]EpisodeInfo)
 	for _, episode := range episodes {
 		epMap[episodeToString(episode.SeasonNumber, episode.EpisodeNumber)] = episode
 	}
-	fileMap := make(map[string]FileInfo)
+	torrentFilesMap := make(map[string]FileInfo)
 	for _, file := range torrentFiles {
-		fileMap[file.RelativePath] = file
+		torrentFilesMap[file.RelativePath] = file
 	}
 
-	result := make([]ContentMatches, 0, len(prepare))
+	toTrack := func(tracks []matchtvshow.Track, typeTrack TrackType) []Track {
+		return lo.Map(tracks, func(item matchtvshow.Track, _ int) Track {
+			return Track{
+				Type:     typeTrack,
+				Name:     &item.Name,
+				Language: item.Language,
+				File:     torrentFilesMap[item.File],
+			}
+		})
+	}
+
+	matches := make([]ContentMatch, 0, len(prepare))
 	for _, p := range prepare {
 		episode, ok := epMap[episodeToString(p.SeasonNumber, p.EpisodeNumber)]
 		if !ok {
@@ -52,23 +52,42 @@ func mapResult(prepare []matchtvshow.Episode, torrentFiles []FileInfo, episodes 
 		episode.FileName += ext
 		episode.RelativePath += ext
 
-		content := ContentMatches{
+		content := ContentMatch{
 			Episode: episode,
-			Video: VideoFile{
-				File: fileMap[p.VideoFile],
+			Video: Track{
+				Type: TrackTypeVideo,
+				File: torrentFilesMap[p.VideoFile],
 			},
-			AudioFiles: toTrack(p.AudioFiles, fileMap),
-			Subtitles:  toTrack(p.Subtitles, fileMap),
+			AudioFiles: toTrack(p.AudioFiles, TrackTypeAudio),
+			Subtitles:  toTrack(p.Subtitles, TrackTypeSubtitle),
 		}
 
-		result = append(result, content)
+		matches = append(matches, content)
 	}
 
-	return result, nil
+	// TODO: Разобраться с неопределенными файлами
+
+	result := ContentMatches{
+		Matches:     matches,
+		Unallocated: []Track{},
+		Options: ContentMatchesOptions{
+			KeepOriginalAudio:     true,
+			KeepOriginalSubtitles: true,
+			DefaultAudioTrackName: func() *string {
+				if len(matches) > 0 && len(matches[0].AudioFiles) > 0 {
+					return matches[0].AudioFiles[0].Name
+				}
+				return nil
+			}(),
+			DefaultSubtitleTrack: nil,
+		},
+	}
+
+	return &result, nil
 }
 
 // PrepareFileMatches получение информации о файлах раздачи
-func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMatchesParams) ([]ContentMatches, error) {
+func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMatchesParams) (*ContentMatches, error) {
 	// Подготавливаем параметры для преобразования файлов
 	torrentFiles := lo.Map(params.TorrentFiles, func(item FileInfo, _ int) string {
 		return item.RelativePath
@@ -85,11 +104,12 @@ func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMa
 		return nil, fmt.Errorf("mapResult: %w", err)
 	}
 
-	sort.Slice(result, func(i, j int) bool {
-		if result[i].Episode.SeasonNumber == result[j].Episode.SeasonNumber {
-			return result[i].Episode.EpisodeNumber < result[j].Episode.EpisodeNumber
+	// Сортируем эпизоды
+	sort.Slice(result.Matches, func(i, j int) bool {
+		if result.Matches[i].Episode.SeasonNumber == result.Matches[j].Episode.SeasonNumber {
+			return result.Matches[i].Episode.EpisodeNumber < result.Matches[j].Episode.EpisodeNumber
 		}
-		return result[i].Episode.SeasonNumber < result[j].Episode.SeasonNumber
+		return result.Matches[i].Episode.SeasonNumber < result.Matches[j].Episode.SeasonNumber
 	})
 
 	return result, nil

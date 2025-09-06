@@ -46,15 +46,15 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
+	// TODO: научится удалять дефолтные аудоидорожки и субтитры
+
 	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
 	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
 	for _, track := range params.AudioTracks {
-		{
-			if track.Language != "" {
-				args = append(args, "--language", "0:"+track.Language)
-			}
+		if track.Language != nil {
+			args = append(args, "--language", "0:"+*track.Language)
 		}
 		args = append(args,
 			"--track-name", "0:"+track.Name,
@@ -65,8 +65,8 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 
 	// Добавляем субтитры
 	for _, track := range params.SubtitleTracks {
-		if track.Language != "" {
-			args = append(args, "--language", "0:"+track.Language)
+		if track.Language != nil {
+			args = append(args, "--language", "0:"+*track.Language)
 		}
 		args = append(args,
 			"--track-name", "0:"+track.Name,

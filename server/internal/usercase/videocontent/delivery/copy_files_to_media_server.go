@@ -7,7 +7,7 @@ import (
 )
 
 type CreateHardLinkCopyParams struct {
-	ContentMatches []ContentMatches
+	ContentMatches []ContentMatch
 }
 
 // CreateHardLinkCopyToMediaServer шаг копирования файлов на медиа сервер

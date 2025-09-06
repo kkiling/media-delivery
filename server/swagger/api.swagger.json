@@ -356,6 +356,10 @@
         "approve": {
           "type": "boolean",
           "title": "Пользователь подтверждает сметченные файлы"
+        },
+        "content_matches": {
+          "$ref": "#/definitions/ContentMatches",
+          "title": "Метч контента, если захотели изменить"
         }
       }
     },
@@ -403,28 +407,56 @@
         }
       }
     },
-    "ContentMatches": {
+    "ContentMatch": {
       "type": "object",
       "properties": {
         "episode": {
-          "$ref": "#/definitions/EpisodeInfo"
+          "$ref": "#/definitions/EpisodeInfo",
+          "title": "Инфа о сезоне"
         },
         "video": {
-          "$ref": "#/definitions/VideoFile"
+          "$ref": "#/definitions/Track",
+          "title": "Видеодорожка"
         },
         "audio_files": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/Track"
-          }
+          },
+          "title": "Аудиодорожки"
         },
         "subtitles": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/Track"
+          },
+          "title": "Субтитры"
+        }
+      }
+    },
+    "ContentMatches": {
+      "type": "object",
+      "properties": {
+        "matches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/ContentMatch"
           }
+        },
+        "unallocated": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Track"
+          },
+          "title": "Нераспредленные треки"
+        },
+        "options": {
+          "$ref": "#/definitions/Options",
+          "title": "Опции"
         }
       }
     },
@@ -498,18 +530,11 @@
     "EpisodeInfo": {
       "type": "object",
       "properties": {
-        "season_number": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "episode_name": {
-          "type": "string"
-        },
         "episode_number": {
           "type": "integer",
           "format": "int64"
         },
-        "file_name": {
+        "episode_name": {
           "type": "string"
         },
         "relative_path": {
@@ -526,24 +551,6 @@
       ],
       "default": "TVShowDeliveryError_Unknown",
       "title": "- TorrentSiteForbidden: Торрент трекер не доступен\n - FilesAlreadyExist: Файлы на медиасервере уже существуют"
-    },
-    "FileInfo": {
-      "type": "object",
-      "properties": {
-        "relative_path": {
-          "type": "string"
-        },
-        "full_path": {
-          "type": "string"
-        },
-        "size": {
-          "type": "string",
-          "format": "int64"
-        },
-        "extension": {
-          "type": "string"
-        }
-      }
     },
     "GetSeasonInfoResponse": {
       "type": "object",
@@ -610,15 +617,13 @@
           "type": "string"
         },
         "w185": {
-          "type": "string",
-          "title": "string w154 = 3;"
+          "type": "string"
         },
         "w342": {
           "type": "string"
         },
         "original": {
-          "type": "string",
-          "title": "string w500 = 6;\nstring w780 = 7;"
+          "type": "string"
         }
       }
     },
@@ -631,6 +636,27 @@
         },
         "is_complete": {
           "type": "boolean"
+        }
+      }
+    },
+    "Options": {
+      "type": "object",
+      "properties": {
+        "keep_original_audio": {
+          "type": "boolean",
+          "title": "Оставлять оригинальные аудиодорожки (если они есть)"
+        },
+        "keep_original_subtitles": {
+          "type": "boolean",
+          "title": "Оставлять оригинальные субтитры (если они есть)"
+        },
+        "default_audio_track_name": {
+          "type": "string",
+          "title": "Дефолтная аудиодорожка"
+        },
+        "default_subtitle_track": {
+          "type": "string",
+          "title": "Дефолтные субтитры"
         }
       }
     },
@@ -822,11 +848,7 @@
           "title": "Результат поиска торрент раздач"
         },
         "content_matches": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/ContentMatches"
-          },
+          "$ref": "#/definitions/ContentMatches",
           "title": "Результат метча файлов"
         },
         "torrent_download_status": {
@@ -1022,16 +1044,29 @@
     "Track": {
       "type": "object",
       "properties": {
-        "file": {
-          "$ref": "#/definitions/FileInfo"
+        "relative_path": {
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
         "language": {
           "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/TrackType"
         }
       }
+    },
+    "TrackType": {
+      "type": "string",
+      "enum": [
+        "TRACK_TYPE_UNKNOWN",
+        "TRACK_TYPE_VIDEO",
+        "TRACK_TYPE_AUDIO",
+        "TRACK_TYPE_SUBTITLE"
+      ],
+      "default": "TRACK_TYPE_UNKNOWN"
     },
     "VideoContent": {
       "type": "object",
@@ -1045,14 +1080,6 @@
         },
         "delivery_status": {
           "$ref": "#/definitions/DeliveryStatus"
-        }
-      }
-    },
-    "VideoFile": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "$ref": "#/definitions/FileInfo"
         }
       }
     },

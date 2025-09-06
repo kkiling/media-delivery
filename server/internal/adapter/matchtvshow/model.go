@@ -2,7 +2,7 @@ package matchtvshow
 
 type Track struct {
 	Name     string
-	Language string
+	Language *string
 	File     string
 }
 

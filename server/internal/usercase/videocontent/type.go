@@ -38,7 +38,17 @@ type TVShowDeliveryState = tvshowdeliverystate.State
 type TVShowDeliveryData = tvshowdeliverystate.TVShowDeliveryData
 type TorrentSearch = delivery.TorrentSearch
 type ContentMatches = delivery.ContentMatches
+type ContentMatch = delivery.ContentMatch
 type Track = delivery.Track
+
+type TrackType = delivery.TrackType
+
+const (
+	TrackTypeVideo    = delivery.TrackTypeVideo
+	TrackTypeAudio    = delivery.TrackTypeAudio
+	TrackTypeSubtitle = delivery.TrackTypeSubtitle
+)
+
 type FileInfo = delivery.FileInfo
 type ChoseTorrentOptions = tvshowdeliverystate.ChoseTorrentOptions
 type ChoseFileMatchesOptions = tvshowdeliverystate.ChoseFileMatchesOptions

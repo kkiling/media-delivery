@@ -200,12 +200,11 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					contentMatches, err := r.contentDelivery.PrepareFileMatches(ctx, delivery.PreparingFileMatchesParams{
 						TorrentFiles: data.TorrentFilesData.Files,
 						Episodes:     data.EpisodesData.Episodes,
-						SeasonInfo:   data.EpisodesData.SeasonInfo,
 					})
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))
 					}
-					if len(contentMatches) == 0 {
+					if contentMatches == nil || len(contentMatches.Matches) == 0 {
 						return stepContext.Empty()
 					}
 
@@ -269,7 +268,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Определение необходимости конвертации файлов
 					data := stepContext.State.Data
-					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches) {
+					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches.Matches) {
 						return stepContext.Next(StartMergeVideoFiles).WithData(data)
 					}
 					return stepContext.Next(CreateHardLinkCopy)
@@ -280,7 +279,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					// Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
 					data := stepContext.State.Data
 					if err := r.contentDelivery.CreateHardLinkCopyToMediaServer(ctx, delivery.CreateHardLinkCopyParams{
-						ContentMatches: data.ContentMatches,
+						ContentMatches: data.ContentMatches.Matches,
 					}); err != nil {
 						return stepContext.Error(fmt.Errorf("CreateHardLinkCopyToMediaServer: %w", err))
 					}
@@ -332,7 +331,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					data.TVShowCatalogInfo = &delivery.TVShowCatalog{
 						TorrentPath:              data.TorrentFilesData.ContentFullPath,
 						MediaServerPath:          data.EpisodesData.TVShowCatalogPath,
-						IsCopyFilesInMediaServer: r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches),
+						IsCopyFilesInMediaServer: r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches.Matches),
 					}
 
 					// Получение размера каталогов

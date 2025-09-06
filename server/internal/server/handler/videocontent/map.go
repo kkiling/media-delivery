@@ -150,23 +150,28 @@ func maTorrentState(state videocontent.TorrentState) desc.TorrentDownloadStatus_
 	}
 }
 
-func mapFile(file videocontent.FileInfo) *desc.FileInfo {
-	return &desc.FileInfo{
-		RelativePath: file.RelativePath,
-		FullPath:     file.FullPath,
-		Size:         file.Size,
-		Extension:    file.Extension,
-	}
-}
-
 func mapTracks(tracks []videocontent.Track) []*desc.Track {
 	return lo.Map(tracks, func(item videocontent.Track, _ int) *desc.Track {
 		return &desc.Track{
-			File:     mapFile(item.File),
-			Name:     item.Name,
-			Language: item.Language,
+			RelativePath: item.File.RelativePath,
+			Name:         item.Name,
+			Language:     item.Language,
+			Type:         mapTrackType(item.Type),
 		}
 	})
+}
+
+func mapTrackType(typeTrack videocontent.TrackType) desc.Track_TrackType {
+	switch typeTrack {
+	case videocontent.TrackTypeVideo:
+		return desc.Track_TRACK_TYPE_VIDEO
+	case videocontent.TrackTypeAudio:
+		return desc.Track_TRACK_TYPE_AUDIO
+	case videocontent.TrackTypeSubtitle:
+		return desc.Track_TRACK_TYPE_SUBTITLE
+	default:
+		return desc.Track_TRACK_TYPE_UNKNOWN
+	}
 }
 
 func mapTVShowDeliveryData(state *videocontent.TVShowDeliveryState) *desc.TVShowDeliveryData {
@@ -196,22 +201,33 @@ func mapTVShowDeliveryData(state *videocontent.TVShowDeliveryState) *desc.TVShow
 		})
 	}
 	if state.Step == videocontent.WaitingChoseFileMatches {
-		result.ContentMatches = lo.Map(state.Data.ContentMatches, func(item videocontent.ContentMatches, _ int) *desc.ContentMatches {
-			return &desc.ContentMatches{
+		cm := state.Data.ContentMatches
+		matches := lo.Map(cm.Matches, func(item videocontent.ContentMatch, _ int) *desc.ContentMatch {
+			return &desc.ContentMatch{
 				Episode: &desc.EpisodeInfo{
-					SeasonNumber:  uint32(item.Episode.SeasonNumber),
-					EpisodeName:   item.Episode.EpisodeName,
 					EpisodeNumber: uint32(item.Episode.EpisodeNumber),
-					FileName:      item.Episode.FileName,
+					EpisodeName:   item.Episode.EpisodeName,
 					RelativePath:  item.Episode.RelativePath,
 				},
-				Video: &desc.VideoFile{
-					File: mapFile(item.Video.File),
+				Video: &desc.Track{
+					RelativePath: item.Video.File.RelativePath,
+					Type:         mapTrackType(item.Video.Type),
 				},
 				AudioFiles: mapTracks(item.AudioFiles),
 				Subtitles:  mapTracks(item.Subtitles),
 			}
 		})
+
+		result.ContentMatches = &desc.ContentMatches{
+			Matches:     matches,
+			Unallocated: mapTracks(cm.Unallocated),
+			Options: &desc.ContentMatches_Options{
+				KeepOriginalAudio:     cm.Options.KeepOriginalAudio,
+				KeepOriginalSubtitles: cm.Options.KeepOriginalSubtitles,
+				DefaultAudioTrackName: cm.Options.DefaultAudioTrackName,
+				DefaultSubtitleTrack:  cm.Options.DefaultSubtitleTrack,
+			},
+		}
 	}
 
 	if state.Step == videocontent.WaitingTorrentDownloadComplete || state.Step == videocontent.WaitingTorrentFiles {

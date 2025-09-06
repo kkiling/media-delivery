@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
@@ -72,8 +71,8 @@ func (s *Service) WaitingTorrentFiles(_ context.Context, params WaitingTorrentFi
 		prepareTorrentFiles = append(prepareTorrentFiles, FileInfo{
 			RelativePath: relFile,
 			FullPath:     filepath.Join(fullPath, relFile),
-			Extension:    strings.ToLower(filepath.Ext(relFile)),
-			Size:         file.Size,
+			//Extension:    strings.ToLower(filepath.Ext(relFile)),
+			//Size:         file.Size,
 		})
 	}
 
