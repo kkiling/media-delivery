@@ -5,30 +5,20 @@ import { ContentMatch, Track, TrackType } from '@/api/api';
 
 interface ContentItemProps {
   content: ContentMatch;
-  index: number;
+  contentIndex: number;
   unallocated: Track[];
-  onRemoveVideo: (index: number, video: Track) => void;
-  onRemoveAudio: (contentIndex: number, audioIndex: number, audio: Track) => void;
-  onRemoveSubtitle: (contentIndex: number, subtitleIndex: number, subtitle: Track) => void;
-  onReplaceVideo: (index: number, newVideoPath: string) => void;
-  onReplaceAudio: (contentIndex: number, audioIndex: number, newAudioPath: string) => void;
-  onReplaceSubtitle: (contentIndex: number, subtitleIndex: number, newSubtitlePath: string) => void;
-  onAddAudio: (contentIndex: number) => void;
-  onAddSubtitle: (contentIndex: number) => void;
+  onRemoveContent: (contentIndex: number, track: Track) => void;
+  onReplaceContent: (contentIndex: number, newTrack: Track, oldTrack?: Track) => void;
+  onAddContent: (contentIndex: number, type: TrackType) => void;
 }
 
 export const ContentItem: React.FC<ContentItemProps> = ({
   content,
-  index,
+  contentIndex,
   unallocated,
-  onRemoveVideo,
-  onRemoveAudio,
-  onRemoveSubtitle,
-  onReplaceVideo,
-  onReplaceAudio,
-  onReplaceSubtitle,
-  onAddAudio,
-  onAddSubtitle,
+  onRemoveContent,
+  onReplaceContent,
+  onAddContent,
 }) => {
   const hasAvailableAudio = unallocated.some(
     (t) =>
@@ -41,6 +31,36 @@ export const ContentItem: React.FC<ContentItemProps> = ({
       t.type === TrackType.TRACK_TYPE_SUBTITLE &&
       !(content.subtitles || []).some((s) => s.name === t.name)
   );
+
+  const onSelectTrack = (e: React.ChangeEvent<HTMLSelectElement>, oldTrack?: Track) => {
+    const selectedTrack = unallocated.find((t) => t.relative_path === e.target.value);
+    if (selectedTrack) {
+      onReplaceContent(contentIndex, selectedTrack, oldTrack);
+    }
+  };
+
+  // Фильтруем только видео файлы из нераспределенных треков
+  const availableVideos = unallocated.filter((t) => t.type === TrackType.TRACK_TYPE_VIDEO);
+
+  // Фильтруем аудио треки, исключая те, что уже используются в content.audio_files,
+  // кроме текущего выбранного трека (currentAudio)
+  const availableTracks = (current: Track) => {
+    // Определяем массив треков в зависимости от типа
+    const tracks =
+      current.type === TrackType.TRACK_TYPE_AUDIO ? content.audio_files : content.subtitles;
+
+    // Собираем уникальные name всех треков, кроме текущего
+    const usedNames = new Set(
+      (tracks || []).filter((t) => t.name !== current?.name).map((t) => t.name)
+    );
+
+    // Фильтруем unallocated по типу и исключаем использованные имена
+    return unallocated.filter((t) => t.type === current.type && !usedNames.has(t.name));
+  };
+
+  // Фильтруем субтитры, исключая те, что уже используются в content.subtitles,
+  // кроме текущего выбранного трека (selectedSubtitleTrack)
+  const availableSubtitles = unallocated.filter((t) => t.type === TrackType.TRACK_TYPE_SUBTITLE);
 
   return (
     <div className="py-3 border-top">
@@ -55,26 +75,24 @@ export const ContentItem: React.FC<ContentItemProps> = ({
           <select
             className="form-select"
             value={content.video?.relative_path || ''}
-            onChange={(e) => onReplaceVideo(index, e.target.value)}
+            onChange={(e) => onSelectTrack(e, content.video)}
           >
             <option value={content.video?.relative_path || ''}>
               {content.video?.relative_path || ''}
             </option>
             {/* Фильтруем только видео файлы из unallocated */}
-            {unallocated
-              .filter((t) => t.type === TrackType.TRACK_TYPE_VIDEO)
-              .map((track, idx) => (
-                <option key={idx} value={track.relative_path}>
-                  {track.relative_path}
-                </option>
-              ))}
+            {availableVideos.map((track, idx) => (
+              <option key={idx} value={track.relative_path}>
+                {track.relative_path}
+              </option>
+            ))}
           </select>
-          {/* Кнопка удаления видео */}
+          {/* Кнопка удаления*/}
           <Button
             variant="outline-danger"
             size="sm"
             disabled={!content.video?.relative_path}
-            onClick={() => content.video && onRemoveVideo(index, content.video)}
+            onClick={() => content.video && onRemoveContent(contentIndex, content.video)}
           >
             <Trash2 size={18} />
           </Button>
@@ -106,26 +124,22 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                         <select
                           className="form-select"
                           value={audio.relative_path}
-                          onChange={(e) => onReplaceAudio(index, idx, e.target.value)}
+                          onChange={(e) => onSelectTrack(e, audio)}
                         >
                           <option value={audio.relative_path}>{audio.relative_path}</option>
-                          {unallocated
-                            .filter(
-                              (t) => t.type === TrackType.TRACK_TYPE_AUDIO && t.name !== audio.name
-                            )
-                            .map((track, i) => (
-                              <option key={i} value={track.relative_path}>
-                                {track.relative_path}
-                              </option>
-                            ))}
+                          {availableTracks(audio).map((track, idx) => (
+                            <option key={idx} value={track.relative_path}>
+                              {track.relative_path}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <Button
                         variant="outline-danger"
                         size="sm"
-                        onClick={() => onRemoveAudio(index, idx, audio)}
+                        onClick={() => onRemoveContent(contentIndex, audio)}
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={18} />
                       </Button>
                     </div>
                   </div>
@@ -135,7 +149,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                     variant="outline-primary"
                     size="sm"
                     className={`ms-4 ${!content.audio_files?.length ? 'mt-2' : ''}`}
-                    onClick={() => onAddAudio(index)}
+                    onClick={() => onAddContent(contentIndex, TrackType.TRACK_TYPE_AUDIO)}
                   >
                     Add Audio Track
                   </Button>
@@ -169,25 +183,20 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                         <select
                           className="form-select"
                           value={subtitle.relative_path}
-                          onChange={(e) => onReplaceSubtitle(index, idx, e.target.value)}
+                          onChange={(e) => onSelectTrack(e, subtitle)}
                         >
                           <option value={subtitle.relative_path}>{subtitle.relative_path}</option>
-                          {unallocated
-                            .filter(
-                              (t) =>
-                                t.type === TrackType.TRACK_TYPE_SUBTITLE && t.name !== subtitle.name
-                            )
-                            .map((track, i) => (
-                              <option key={i} value={track.relative_path}>
-                                {track.relative_path}
-                              </option>
-                            ))}
+                          {availableTracks(subtitle).map((track, idx) => (
+                            <option key={idx} value={track.relative_path}>
+                              {track.relative_path}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <Button
                         variant="outline-danger"
                         size="sm"
-                        onClick={() => onRemoveSubtitle(index, idx, subtitle)}
+                        onClick={() => onRemoveContent(contentIndex, subtitle)}
                       >
                         <Trash2 size={18} />
                       </Button>
@@ -199,7 +208,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                     variant="outline-primary"
                     size="sm"
                     className={`ms-4 ${!content.subtitles?.length ? 'mt-2' : ''}`}
-                    onClick={() => onAddSubtitle(index)}
+                    onClick={() => onAddContent(contentIndex, TrackType.TRACK_TYPE_SUBTITLE)}
                   >
                     Add Subtitle Track
                   </Button>
