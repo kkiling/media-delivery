@@ -21,9 +21,11 @@ require (
 	github.com/kkiling/goplatform v0.2.0
 	github.com/kkiling/statemachine v0.2.4
 	github.com/markthree/go-get-folder-size v0.5.5
+	github.com/mattn/go-sqlite3 v1.14.30
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/samber/lo v1.51.0
 	github.com/stretchr/testify v1.10.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/net v0.40.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250603155806-513f23925822
 	google.golang.org/grpc v1.74.2
@@ -49,7 +51,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/mattn/go-sqlite3 v1.14.30 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -65,7 +66,6 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/config v1.4.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/lint v0.0.0-20190930215403-16217165b5de // indirect
 	golang.org/x/sync v0.15.0 // indirect

@@ -90,9 +90,9 @@ enum Status {
   FailedStatus = 4;
 }
 
-enum TVShowDeliveryStatus {
+enum TVShowDeliveryStep {
   // Неизвестный статус доставки
-  TVShowDeliveryStatusUnknown = 0;
+  TVShowDeliveryStepUnknown = 0;
   // Генерация запроса к трекеру
   GenerateSearchQuery = 1;
   // Поиск раздач сезона сериала/фильма
@@ -143,9 +143,10 @@ message TorrentSearch {
 }
 
 message EpisodeInfo {
-  uint32 episode_number = 1;
-  string episode_name = 2;
-  string relative_path = 3;
+  uint32 season_number = 1;
+  uint32 episode_number = 2;
+  string full_path = 3;
+  string relative_path = 4;
 }
 
 message Track {
@@ -156,9 +157,10 @@ message Track {
     TRACK_TYPE_SUBTITLE = 3;
   }
   string relative_path = 1;
-  optional string name = 2;
-  optional string language = 3;
-  TrackType type = 4;
+  string full_path = 2;
+  optional string name = 3;
+  optional string language = 4;
+  TrackType type = 5;
 }
 
 message ContentMatch {
@@ -167,7 +169,7 @@ message ContentMatch {
   // Видеодорожка
   Track video = 2;
   // Аудиодорожки
-  repeated Track audio_files = 3;
+  repeated Track audio_tracks = 3;
   // Субтитры
   repeated Track subtitles = 4;
 }
@@ -271,7 +273,7 @@ message SearchQuery {
 
 message TVShowDeliveryState {
   TVShowDeliveryData data = 1;
-  TVShowDeliveryStatus step = 2;
+  TVShowDeliveryStep step = 2;
   Status status = 3;
   optional TVShowDeliveryError error = 4;
 }

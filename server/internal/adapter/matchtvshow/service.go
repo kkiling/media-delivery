@@ -49,6 +49,7 @@ func NewService() *Service {
 
 // extractSeasonAndEpisode извлекает номер сезона и серии из строки
 func extractSeasonAndEpisode(filename string) (season uint8, episode int, found bool) {
+	filename = strings.ToLower(filename)
 	for _, pattern := range seasonEpisodePatterns {
 		matches := pattern.FindStringSubmatch(filename)
 		if len(matches) >= 3 {
@@ -81,6 +82,7 @@ func detectSeasonFromString(filename string) uint8 {
 
 // extractTrackName извлекает название трека из пути
 func extractTrackName(filePath string) string {
+	filePath = strings.ToLower(filePath)
 	// Берем имя родительской директории как название
 	dir := filepath.Dir(filePath)
 	parentDir := filepath.Base(dir)
@@ -152,65 +154,83 @@ func detectLanguage(filePath string) *string {
 	return nil
 }
 
-// MatchEpisodeFiles сопоставляет файлы с эпизодами
-func (s *Service) MatchEpisodeFiles(torrentFiles []string) ([]Episode, error) {
-	episodesMap := make(map[string]*Episode)
+func (s *Service) toTrack(file string) Track {
+	// Определяем тип файла
+	switch {
+	case isVideoFile(file):
+		return Track{
+			File: file,
+			Type: TrackTypeVideo,
+		}
+	case isAudioFile(file):
+		return Track{
+			Name:     extractTrackName(file),
+			Language: detectLanguage(file),
+			File:     file,
+			Type:     TrackTypeAudio,
+		}
+	case isSubtitlesFile(file):
+		return Track{
+			Name:     extractTrackName(file),
+			Language: detectLanguage(file),
+			File:     file,
+			Type:     TrackTypeSubtitle,
+		}
+	}
+	return Track{
+		Type: TrackTypeUnknown,
+	}
+}
 
-	for _, file := range torrentFiles {
+// MatchEpisodeFiles сопоставляет файлы с эпизодами
+func (s *Service) MatchEpisodeFiles(torrentFiles []string) (*ContentMatches, error) {
+	episodesMap := make(map[string]*ContentMatch)
+	unallocated := make([]Track, 0)
+	for _, filename := range torrentFiles {
 		// Преобразуем в lowercase один раз в начале
-		lowerFile := strings.ToLower(file)
-		filename := filepath.Base(lowerFile)
+		track := s.toTrack(filename)
 
 		// Пытаемся определить сезон и серию
-		season, episode, found := extractSeasonAndEpisode(lowerFile) // Используем весь путь
+		season, episode, found := extractSeasonAndEpisode(filename) // Используем весь путь
 		if !found {
+			if track.Type != TrackTypeUnknown {
+				unallocated = append(unallocated, track)
+			}
 			continue
 		}
 
 		// Создаем ключ для мапы эпизодов
 		key := fmt.Sprintf("S%02dE%02d", season, episode)
-
 		if _, exists := episodesMap[key]; !exists {
-			episodesMap[key] = &Episode{
+			episodesMap[key] = &ContentMatch{
 				EpisodeNumber: episode,
 				SeasonNumber:  season,
-				AudioFiles:    []Track{},
+				AudioTracks:   []Track{},
 				Subtitles:     []Track{},
 			}
 		}
-
 		ep := episodesMap[key]
 
-		// Определяем тип файла
-		switch {
-		case isVideoFile(filename):
-			ep.VideoFile = file // Сохраняем оригинальное имя файла
-
-		case isAudioFile(filename):
-			language := detectLanguage(lowerFile) // Используем lowercase путь
-			trackName := extractTrackName(file)   // Оригинальное имя для красивого отображения
-			ep.AudioFiles = append(ep.AudioFiles, Track{
-				Name:     trackName,
-				Language: language,
-				File:     file,
-			})
-
-		case isSubtitlesFile(filename):
-			language := detectLanguage(lowerFile)
-			trackName := extractTrackName(file)
-			ep.Subtitles = append(ep.Subtitles, Track{
-				Name:     trackName,
-				Language: language,
-				File:     file,
-			})
+		switch track.Type {
+		case TrackTypeVideo:
+			ep.Video = &track
+		case TrackTypeAudio:
+			ep.AudioTracks = append(ep.AudioTracks, track)
+		case TrackTypeSubtitle:
+			ep.Subtitles = append(ep.Subtitles, track)
+		default:
+			return nil, fmt.Errorf("unknown track type: %s", track.Type)
 		}
 	}
 
 	// Конвертируем мапу в слайс
-	episodes := make([]Episode, 0, len(episodesMap))
+	episodes := make([]ContentMatch, 0, len(episodesMap))
 	for _, episode := range episodesMap {
 		episodes = append(episodes, *episode)
 	}
 
-	return episodes, nil
+	return &ContentMatches{
+		Matches:     episodes,
+		Unallocated: unallocated,
+	}, nil
 }

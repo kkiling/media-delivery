@@ -24,13 +24,13 @@ type MergeVideoStatus struct {
 func mapMkvMergeParams(content ContentMatch, options ContentMatchesOptions) mkvmerge.MergeParams {
 	mergeParams := mkvmerge.MergeParams{
 		VideoInputFile:  content.Video.File.FullPath,
-		VideoOutputFile: content.Episode.FileName,
-		AudioTracks: lo.Map(content.AudioFiles, func(item Track, index int) mkvmerge.Track {
+		VideoOutputFile: content.Episode.FullPath,
+		AudioTracks: lo.Map(content.AudioTracks, func(item Track, index int) mkvmerge.Track {
 			return mkvmerge.Track{
 				Path:     item.File.FullPath,
 				Language: item.Language,
 				Name:     lo.FromPtrOr(item.Name, "unknown"),
-				Default:  item.Name == options.DefaultAudioTrackName,
+				Default:  lo.FromPtr(item.Name) == lo.FromPtr(options.DefaultAudioTrackName),
 			}
 		}),
 		SubtitleTracks: lo.Map(content.Subtitles, func(item Track, index int) mkvmerge.Track {
@@ -38,7 +38,7 @@ func mapMkvMergeParams(content ContentMatch, options ContentMatchesOptions) mkvm
 				Path:     item.File.FullPath,
 				Language: item.Language,
 				Name:     lo.FromPtrOr(item.Name, "unknown"),
-				Default:  item.Name == options.DefaultSubtitleTrack,
+				Default:  lo.FromPtr(item.Name) == lo.FromPtr(options.DefaultSubtitleTrack),
 			}
 		}),
 		KeepOriginalAudio:     options.KeepOriginalAudio,

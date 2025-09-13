@@ -39,6 +39,7 @@ type TVShowDeliveryData = tvshowdeliverystate.TVShowDeliveryData
 type TorrentSearch = delivery.TorrentSearch
 type ContentMatches = delivery.ContentMatches
 type ContentMatch = delivery.ContentMatch
+type ContentMatchesOptions = delivery.ContentMatchesOptions
 type Track = delivery.Track
 
 type TrackType = delivery.TrackType

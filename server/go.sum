@@ -65,12 +65,6 @@ github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFF
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kkiling/goplatform v0.2.0 h1:Qd0vu8zl/ipJ/OWMTmOfqPgtIpW8KQA5yCyvFHrV4J4=
 github.com/kkiling/goplatform v0.2.0/go.mod h1:6T1qUV55MsLSIWzCBz10k3dLvs/VrE2y+nnW00Ht7r4=
-github.com/kkiling/statemachine v0.2.1 h1:GMxx53kIdSkhUNAEQM89a+AIaDq/EuHWg8cK+J1FWNQ=
-github.com/kkiling/statemachine v0.2.1/go.mod h1:gOFFvTaokc8wMhw4RchYX5gtd+CCmQEfaRod8a6H0BQ=
-github.com/kkiling/statemachine v0.2.2 h1:KM6F8Fsej2P9QQWo6WN92ejnz8s1YOAFdU8ypIwiS2w=
-github.com/kkiling/statemachine v0.2.2/go.mod h1:gOFFvTaokc8wMhw4RchYX5gtd+CCmQEfaRod8a6H0BQ=
-github.com/kkiling/statemachine v0.2.3 h1:MLlcqZbtYVBVVG7H2rRVbw4uWx/N2rpgCuOy92msu+c=
-github.com/kkiling/statemachine v0.2.3/go.mod h1:gOFFvTaokc8wMhw4RchYX5gtd+CCmQEfaRod8a6H0BQ=
 github.com/kkiling/statemachine v0.2.4 h1:LUjW5fsbc/HgA0t/HWhNRybC54AzFYYxNHkFC/4begI=
 github.com/kkiling/statemachine v0.2.4/go.mod h1:gOFFvTaokc8wMhw4RchYX5gtd+CCmQEfaRod8a6H0BQ=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=

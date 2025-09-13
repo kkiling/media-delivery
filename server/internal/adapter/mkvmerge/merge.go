@@ -46,7 +46,12 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		}
 	}
 
-	// TODO: научится удалять дефолтные аудоидорожки и субтитры
+	if !params.KeepOriginalAudio {
+		// TODO: научится удалять дефолтные аудоидорожки и субтитры
+	}
+	if !params.KeepOriginalSubtitles {
+		// TODO: научится удалять дефолтные аудоидорожки и субтитры
+	}
 
 	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
 	args = append(args, filepath.Clean(params.VideoInputFile))
@@ -59,7 +64,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path),
 		)
 	}
 
@@ -71,7 +76,7 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path),
 		)
 	}
 

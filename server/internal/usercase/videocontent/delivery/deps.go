@@ -31,7 +31,7 @@ type TorrentClient interface {
 }
 
 type PrepareTVShow interface {
-	MatchEpisodeFiles(torrentFiles []string) ([]matchtvshow.Episode, error)
+	MatchEpisodeFiles(torrentFiles []string) (*matchtvshow.ContentMatches, error)
 }
 
 type MkvMergePipeline interface {

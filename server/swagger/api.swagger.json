@@ -418,7 +418,7 @@
           "$ref": "#/definitions/Track",
           "title": "Видеодорожка"
         },
-        "audio_files": {
+        "audio_tracks": {
           "type": "array",
           "items": {
             "type": "object",
@@ -530,11 +530,15 @@
     "EpisodeInfo": {
       "type": "object",
       "properties": {
+        "season_number": {
+          "type": "integer",
+          "format": "int64"
+        },
         "episode_number": {
           "type": "integer",
           "format": "int64"
         },
-        "episode_name": {
+        "full_path": {
           "type": "string"
         },
         "relative_path": {
@@ -887,7 +891,7 @@
           "$ref": "#/definitions/TVShowDeliveryData"
         },
         "step": {
-          "$ref": "#/definitions/TVShowDeliveryStatus"
+          "$ref": "#/definitions/TVShowDeliveryStep"
         },
         "status": {
           "$ref": "#/definitions/mediadelivery.Status"
@@ -897,10 +901,10 @@
         }
       }
     },
-    "TVShowDeliveryStatus": {
+    "TVShowDeliveryStep": {
       "type": "string",
       "enum": [
-        "TVShowDeliveryStatusUnknown",
+        "TVShowDeliveryStepUnknown",
         "GenerateSearchQuery",
         "SearchTorrents",
         "WaitingUserChoseTorrent",
@@ -920,8 +924,8 @@
         "WaitingTorrentFiles",
         "GetEpisodesData"
       ],
-      "default": "TVShowDeliveryStatusUnknown",
-      "title": "- TVShowDeliveryStatusUnknown: Неизвестный статус доставки\n - GenerateSearchQuery: Генерация запроса к трекеру\n - SearchTorrents: Поиск раздач сезона сериала/фильма\n - WaitingUserChoseTorrent: Ожидание выбора раздачи пользователем\n - GetMagnetLink: Получение магнет ссылки\n - AddTorrentToTorrentClient: Добавление раздачи для скачивания торрент клиентом\n - PrepareFileMatches: Получение информации о файлах раздачи\n - WaitingChoseFileMatches: Ожидание подтверждения пользователем соответствий выбора файлов\n - WaitingTorrentDownloadComplete: Ожидание завершения окончания скачивания раздачи\n - CreateVideoContentCatalogs: Формирование каталогов и иерархии файлов\n - DeterminingNeedConvertFiles: Определение необходимости конвертации файлов\n - StartMergeVideoFiles: Запуск конвертирования файлов\n - WaitingMergeVideoFiles: Ожидание завершения конвертации файлов\n - CreateHardLinkCopy: Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)\n - GetCatalogsSize: GetCatalogsSize получение размеров каталогов сериала\n - SetMediaMetaData: Установка методаных серий сезона сериала/фильма в медиасервере\n - SendDeliveryNotification: Отправка уведомления в telegramm о успешной доставки\n - WaitingTorrentFiles: Ожидание когда появится информация о файлах в раздаче\n - GetEpisodesData: получение информации о эпизодах и каталоге сезона"
+      "default": "TVShowDeliveryStepUnknown",
+      "title": "- TVShowDeliveryStepUnknown: Неизвестный статус доставки\n - GenerateSearchQuery: Генерация запроса к трекеру\n - SearchTorrents: Поиск раздач сезона сериала/фильма\n - WaitingUserChoseTorrent: Ожидание выбора раздачи пользователем\n - GetMagnetLink: Получение магнет ссылки\n - AddTorrentToTorrentClient: Добавление раздачи для скачивания торрент клиентом\n - PrepareFileMatches: Получение информации о файлах раздачи\n - WaitingChoseFileMatches: Ожидание подтверждения пользователем соответствий выбора файлов\n - WaitingTorrentDownloadComplete: Ожидание завершения окончания скачивания раздачи\n - CreateVideoContentCatalogs: Формирование каталогов и иерархии файлов\n - DeterminingNeedConvertFiles: Определение необходимости конвертации файлов\n - StartMergeVideoFiles: Запуск конвертирования файлов\n - WaitingMergeVideoFiles: Ожидание завершения конвертации файлов\n - CreateHardLinkCopy: Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)\n - GetCatalogsSize: GetCatalogsSize получение размеров каталогов сериала\n - SetMediaMetaData: Установка методаных серий сезона сериала/фильма в медиасервере\n - SendDeliveryNotification: Отправка уведомления в telegramm о успешной доставки\n - WaitingTorrentFiles: Ожидание когда появится информация о файлах в раздаче\n - GetEpisodesData: получение информации о эпизодах и каталоге сезона"
     },
     "TVShowID": {
       "type": "object",
@@ -1045,6 +1049,9 @@
       "type": "object",
       "properties": {
         "relative_path": {
+          "type": "string"
+        },
+        "full_path": {
           "type": "string"
         },
         "name": {

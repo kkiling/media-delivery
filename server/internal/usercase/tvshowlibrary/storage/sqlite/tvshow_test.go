@@ -55,7 +55,6 @@ func TestStorage_SaveAndGetTVShow(t *testing.T) {
 			Backdrop:         testImage,
 			Genres:           []string{"Drama", "Comedy"},
 			LastAirDate:      time.Now(),
-			NextEpisodeToAir: time.Now().AddDate(0, 1, 0),
 			NumberOfEpisodes: 10,
 			NumberOfSeasons:  1,
 			OriginCountry:    []string{"US", "UK"},

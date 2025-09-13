@@ -204,7 +204,7 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("PrepareFileMatches: %w", err))
 					}
-					if contentMatches == nil || len(contentMatches.Matches) == 0 {
+					if contentMatches == nil || (len(contentMatches.Matches) == 0 && len(contentMatches.Unallocated) == 0) {
 						return stepContext.Empty()
 					}
 
@@ -227,8 +227,17 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					if !opts.Approve {
 						return stepContext.Empty()
 					}
-					// TODO: выбор пользовтелем другого сопоставления
-
+					// Если пользователь хочет измениь метч файлов
+					if opts.ContentMatches != nil {
+						data := stepContext.State.Data
+						// Проверяем валидацию что все дорожки на месте
+						if err = r.contentDelivery.ValidateContentMatch(data.ContentMatches, opts.ContentMatches); err != nil {
+							return stepContext.Error(fmt.Errorf("ValidateContentMatch: %w", ucerr.InvalidArgument))
+						}
+						// Если все ок, то обновляем данные
+						data.ContentMatches = opts.ContentMatches
+						return stepContext.Next(WaitingTorrentDownloadComplete).WithData(data)
+					}
 					return stepContext.Next(WaitingTorrentDownloadComplete)
 				},
 				OptionsType: reflect.TypeOf(ChoseFileMatchesOptions{}),

@@ -24,4 +24,5 @@ type ContentDelivery interface {
 	SetMediaMetaData(ctx context.Context, params delivery.SetMediaMetaDataParams) error
 	NeedPrepareFileMatches(contentMatches []delivery.ContentMatch) bool
 	CreateHardLinkCopyToMediaServer(ctx context.Context, params delivery.CreateHardLinkCopyParams) error
+	ValidateContentMatch(oldContentMatch *delivery.ContentMatches, newContentMatch *delivery.ContentMatches) error
 }

@@ -82,10 +82,8 @@ type EpisodeInfo struct {
 	SeasonNumber uint8
 	// Номер эпизода
 	EpisodeNumber int
-	// Наименования эпизода
-	EpisodeName string
 	// Наименование файла эпизода который будет лежать на медиасервере
-	FileName string
+	FullPath string
 	// Относительный путь относительно каталога сезона
 	RelativePath string
 }
@@ -118,10 +116,10 @@ type Track struct {
 
 // ContentMatch сопоставление видео файла с торрент файлом
 type ContentMatch struct {
-	Episode    EpisodeInfo
-	Video      Track
-	AudioFiles []Track
-	Subtitles  []Track
+	Episode     EpisodeInfo
+	Video       *Track
+	AudioTracks []Track
+	Subtitles   []Track
 }
 
 type ContentMatchesOptions struct {

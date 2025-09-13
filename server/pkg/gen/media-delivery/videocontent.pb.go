@@ -132,53 +132,53 @@ func (Status) EnumDescriptor() ([]byte, []int) {
 	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{1}
 }
 
-type TVShowDeliveryStatus int32
+type TVShowDeliveryStep int32
 
 const (
 	// Неизвестный статус доставки
-	TVShowDeliveryStatus_TVShowDeliveryStatusUnknown TVShowDeliveryStatus = 0
+	TVShowDeliveryStep_TVShowDeliveryStepUnknown TVShowDeliveryStep = 0
 	// Генерация запроса к трекеру
-	TVShowDeliveryStatus_GenerateSearchQuery TVShowDeliveryStatus = 1
+	TVShowDeliveryStep_GenerateSearchQuery TVShowDeliveryStep = 1
 	// Поиск раздач сезона сериала/фильма
-	TVShowDeliveryStatus_SearchTorrents TVShowDeliveryStatus = 2
+	TVShowDeliveryStep_SearchTorrents TVShowDeliveryStep = 2
 	// Ожидание выбора раздачи пользователем
-	TVShowDeliveryStatus_WaitingUserChoseTorrent TVShowDeliveryStatus = 3
+	TVShowDeliveryStep_WaitingUserChoseTorrent TVShowDeliveryStep = 3
 	// Получение магнет ссылки
-	TVShowDeliveryStatus_GetMagnetLink TVShowDeliveryStatus = 4
+	TVShowDeliveryStep_GetMagnetLink TVShowDeliveryStep = 4
 	// Добавление раздачи для скачивания торрент клиентом
-	TVShowDeliveryStatus_AddTorrentToTorrentClient TVShowDeliveryStatus = 5
+	TVShowDeliveryStep_AddTorrentToTorrentClient TVShowDeliveryStep = 5
 	// Получение информации о файлах раздачи
-	TVShowDeliveryStatus_PrepareFileMatches TVShowDeliveryStatus = 6
+	TVShowDeliveryStep_PrepareFileMatches TVShowDeliveryStep = 6
 	// Ожидание подтверждения пользователем соответствий выбора файлов
-	TVShowDeliveryStatus_WaitingChoseFileMatches TVShowDeliveryStatus = 7
+	TVShowDeliveryStep_WaitingChoseFileMatches TVShowDeliveryStep = 7
 	// Ожидание завершения окончания скачивания раздачи
-	TVShowDeliveryStatus_WaitingTorrentDownloadComplete TVShowDeliveryStatus = 8
+	TVShowDeliveryStep_WaitingTorrentDownloadComplete TVShowDeliveryStep = 8
 	// Формирование каталогов и иерархии файлов
-	TVShowDeliveryStatus_CreateVideoContentCatalogs TVShowDeliveryStatus = 9
+	TVShowDeliveryStep_CreateVideoContentCatalogs TVShowDeliveryStep = 9
 	// Определение необходимости конвертации файлов
-	TVShowDeliveryStatus_DeterminingNeedConvertFiles TVShowDeliveryStatus = 10
+	TVShowDeliveryStep_DeterminingNeedConvertFiles TVShowDeliveryStep = 10
 	// Запуск конвертирования файлов
-	TVShowDeliveryStatus_StartMergeVideoFiles TVShowDeliveryStatus = 11
+	TVShowDeliveryStep_StartMergeVideoFiles TVShowDeliveryStep = 11
 	// Ожидание завершения конвертации файлов
-	TVShowDeliveryStatus_WaitingMergeVideoFiles TVShowDeliveryStatus = 12
+	TVShowDeliveryStep_WaitingMergeVideoFiles TVShowDeliveryStep = 12
 	// Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
-	TVShowDeliveryStatus_CreateHardLinkCopy TVShowDeliveryStatus = 13
+	TVShowDeliveryStep_CreateHardLinkCopy TVShowDeliveryStep = 13
 	// GetCatalogsSize получение размеров каталогов сериала
-	TVShowDeliveryStatus_GetCatalogsSize TVShowDeliveryStatus = 15
+	TVShowDeliveryStep_GetCatalogsSize TVShowDeliveryStep = 15
 	// Установка методаных серий сезона сериала/фильма в медиасервере
-	TVShowDeliveryStatus_SetMediaMetaData TVShowDeliveryStatus = 16
+	TVShowDeliveryStep_SetMediaMetaData TVShowDeliveryStep = 16
 	// Отправка уведомления в telegramm о успешной доставки
-	TVShowDeliveryStatus_SendDeliveryNotification TVShowDeliveryStatus = 17
+	TVShowDeliveryStep_SendDeliveryNotification TVShowDeliveryStep = 17
 	// Ожидание когда появится информация о файлах в раздаче
-	TVShowDeliveryStatus_WaitingTorrentFiles TVShowDeliveryStatus = 18
+	TVShowDeliveryStep_WaitingTorrentFiles TVShowDeliveryStep = 18
 	// получение информации о эпизодах и каталоге сезона
-	TVShowDeliveryStatus_GetEpisodesData TVShowDeliveryStatus = 19
+	TVShowDeliveryStep_GetEpisodesData TVShowDeliveryStep = 19
 )
 
-// Enum value maps for TVShowDeliveryStatus.
+// Enum value maps for TVShowDeliveryStep.
 var (
-	TVShowDeliveryStatus_name = map[int32]string{
-		0:  "TVShowDeliveryStatusUnknown",
+	TVShowDeliveryStep_name = map[int32]string{
+		0:  "TVShowDeliveryStepUnknown",
 		1:  "GenerateSearchQuery",
 		2:  "SearchTorrents",
 		3:  "WaitingUserChoseTorrent",
@@ -198,8 +198,8 @@ var (
 		18: "WaitingTorrentFiles",
 		19: "GetEpisodesData",
 	}
-	TVShowDeliveryStatus_value = map[string]int32{
-		"TVShowDeliveryStatusUnknown":    0,
+	TVShowDeliveryStep_value = map[string]int32{
+		"TVShowDeliveryStepUnknown":      0,
 		"GenerateSearchQuery":            1,
 		"SearchTorrents":                 2,
 		"WaitingUserChoseTorrent":        3,
@@ -221,30 +221,30 @@ var (
 	}
 )
 
-func (x TVShowDeliveryStatus) Enum() *TVShowDeliveryStatus {
-	p := new(TVShowDeliveryStatus)
+func (x TVShowDeliveryStep) Enum() *TVShowDeliveryStep {
+	p := new(TVShowDeliveryStep)
 	*p = x
 	return p
 }
 
-func (x TVShowDeliveryStatus) String() string {
+func (x TVShowDeliveryStep) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (TVShowDeliveryStatus) Descriptor() protoreflect.EnumDescriptor {
+func (TVShowDeliveryStep) Descriptor() protoreflect.EnumDescriptor {
 	return file_media_delivery_videocontent_proto_enumTypes[2].Descriptor()
 }
 
-func (TVShowDeliveryStatus) Type() protoreflect.EnumType {
+func (TVShowDeliveryStep) Type() protoreflect.EnumType {
 	return &file_media_delivery_videocontent_proto_enumTypes[2]
 }
 
-func (x TVShowDeliveryStatus) Number() protoreflect.EnumNumber {
+func (x TVShowDeliveryStep) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use TVShowDeliveryStatus.Descriptor instead.
-func (TVShowDeliveryStatus) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use TVShowDeliveryStep.Descriptor instead.
+func (TVShowDeliveryStep) EnumDescriptor() ([]byte, []int) {
 	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{2}
 }
 
@@ -675,9 +675,10 @@ func (x *TorrentSearch) GetAddedDate() string {
 
 type EpisodeInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	EpisodeNumber uint32                 `protobuf:"varint,1,opt,name=episode_number,json=episodeNumber,proto3" json:"episode_number,omitempty"`
-	EpisodeName   string                 `protobuf:"bytes,2,opt,name=episode_name,json=episodeName,proto3" json:"episode_name,omitempty"`
-	RelativePath  string                 `protobuf:"bytes,3,opt,name=relative_path,json=relativePath,proto3" json:"relative_path,omitempty"`
+	SeasonNumber  uint32                 `protobuf:"varint,1,opt,name=season_number,json=seasonNumber,proto3" json:"season_number,omitempty"`
+	EpisodeNumber uint32                 `protobuf:"varint,2,opt,name=episode_number,json=episodeNumber,proto3" json:"episode_number,omitempty"`
+	FullPath      string                 `protobuf:"bytes,3,opt,name=full_path,json=fullPath,proto3" json:"full_path,omitempty"`
+	RelativePath  string                 `protobuf:"bytes,4,opt,name=relative_path,json=relativePath,proto3" json:"relative_path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -712,6 +713,13 @@ func (*EpisodeInfo) Descriptor() ([]byte, []int) {
 	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{4}
 }
 
+func (x *EpisodeInfo) GetSeasonNumber() uint32 {
+	if x != nil {
+		return x.SeasonNumber
+	}
+	return 0
+}
+
 func (x *EpisodeInfo) GetEpisodeNumber() uint32 {
 	if x != nil {
 		return x.EpisodeNumber
@@ -719,9 +727,9 @@ func (x *EpisodeInfo) GetEpisodeNumber() uint32 {
 	return 0
 }
 
-func (x *EpisodeInfo) GetEpisodeName() string {
+func (x *EpisodeInfo) GetFullPath() string {
 	if x != nil {
-		return x.EpisodeName
+		return x.FullPath
 	}
 	return ""
 }
@@ -736,9 +744,10 @@ func (x *EpisodeInfo) GetRelativePath() string {
 type Track struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	RelativePath  string                 `protobuf:"bytes,1,opt,name=relative_path,json=relativePath,proto3" json:"relative_path,omitempty"`
-	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	Language      *string                `protobuf:"bytes,3,opt,name=language,proto3,oneof" json:"language,omitempty"`
-	Type          Track_TrackType        `protobuf:"varint,4,opt,name=type,proto3,enum=mediadelivery.Track_TrackType" json:"type,omitempty"`
+	FullPath      string                 `protobuf:"bytes,2,opt,name=full_path,json=fullPath,proto3" json:"full_path,omitempty"`
+	Name          *string                `protobuf:"bytes,3,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Language      *string                `protobuf:"bytes,4,opt,name=language,proto3,oneof" json:"language,omitempty"`
+	Type          Track_TrackType        `protobuf:"varint,5,opt,name=type,proto3,enum=mediadelivery.Track_TrackType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -780,6 +789,13 @@ func (x *Track) GetRelativePath() string {
 	return ""
 }
 
+func (x *Track) GetFullPath() string {
+	if x != nil {
+		return x.FullPath
+	}
+	return ""
+}
+
 func (x *Track) GetName() string {
 	if x != nil && x.Name != nil {
 		return *x.Name
@@ -808,7 +824,7 @@ type ContentMatch struct {
 	// Видеодорожка
 	Video *Track `protobuf:"bytes,2,opt,name=video,proto3" json:"video,omitempty"`
 	// Аудиодорожки
-	AudioFiles []*Track `protobuf:"bytes,3,rep,name=audio_files,json=audioFiles,proto3" json:"audio_files,omitempty"`
+	AudioTracks []*Track `protobuf:"bytes,3,rep,name=audio_tracks,json=audioTracks,proto3" json:"audio_tracks,omitempty"`
 	// Субтитры
 	Subtitles     []*Track `protobuf:"bytes,4,rep,name=subtitles,proto3" json:"subtitles,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -859,9 +875,9 @@ func (x *ContentMatch) GetVideo() *Track {
 	return nil
 }
 
-func (x *ContentMatch) GetAudioFiles() []*Track {
+func (x *ContentMatch) GetAudioTracks() []*Track {
 	if x != nil {
-		return x.AudioFiles
+		return x.AudioTracks
 	}
 	return nil
 }
@@ -1427,7 +1443,7 @@ func (x *SearchQuery) GetQuery() string {
 type TVShowDeliveryState struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Data          *TVShowDeliveryData    `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
-	Step          TVShowDeliveryStatus   `protobuf:"varint,2,opt,name=step,proto3,enum=mediadelivery.TVShowDeliveryStatus" json:"step,omitempty"`
+	Step          TVShowDeliveryStep     `protobuf:"varint,2,opt,name=step,proto3,enum=mediadelivery.TVShowDeliveryStep" json:"step,omitempty"`
 	Status        Status                 `protobuf:"varint,3,opt,name=status,proto3,enum=mediadelivery.Status" json:"status,omitempty"`
 	Error         *TVShowDeliveryError   `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1471,11 +1487,11 @@ func (x *TVShowDeliveryState) GetData() *TVShowDeliveryData {
 	return nil
 }
 
-func (x *TVShowDeliveryState) GetStep() TVShowDeliveryStatus {
+func (x *TVShowDeliveryState) GetStep() TVShowDeliveryStep {
 	if x != nil {
 		return x.Step
 	}
-	return TVShowDeliveryStatus_TVShowDeliveryStatusUnknown
+	return TVShowDeliveryStep_TVShowDeliveryStepUnknown
 }
 
 func (x *TVShowDeliveryState) GetStatus() Status {
@@ -2068,28 +2084,29 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\aleeches\x18\x05 \x01(\x03R\aleeches\x12\x1c\n" +
 	"\tdownloads\x18\x06 \x01(\x03R\tdownloads\x12\x1d\n" +
 	"\n" +
-	"added_date\x18\a \x01(\tR\taddedDate\"|\n" +
-	"\vEpisodeInfo\x12%\n" +
-	"\x0eepisode_number\x18\x01 \x01(\rR\repisodeNumber\x12!\n" +
-	"\fepisode_name\x18\x02 \x01(\tR\vepisodeName\x12#\n" +
-	"\rrelative_path\x18\x03 \x01(\tR\frelativePath\"\x9a\x02\n" +
+	"added_date\x18\a \x01(\tR\taddedDate\"\x9b\x01\n" +
+	"\vEpisodeInfo\x12#\n" +
+	"\rseason_number\x18\x01 \x01(\rR\fseasonNumber\x12%\n" +
+	"\x0eepisode_number\x18\x02 \x01(\rR\repisodeNumber\x12\x1b\n" +
+	"\tfull_path\x18\x03 \x01(\tR\bfullPath\x12#\n" +
+	"\rrelative_path\x18\x04 \x01(\tR\frelativePath\"\xb7\x02\n" +
 	"\x05Track\x12#\n" +
-	"\rrelative_path\x18\x01 \x01(\tR\frelativePath\x12\x17\n" +
-	"\x04name\x18\x02 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1f\n" +
-	"\blanguage\x18\x03 \x01(\tH\x01R\blanguage\x88\x01\x01\x122\n" +
-	"\x04type\x18\x04 \x01(\x0e2\x1e.mediadelivery.Track.TrackTypeR\x04type\"h\n" +
+	"\rrelative_path\x18\x01 \x01(\tR\frelativePath\x12\x1b\n" +
+	"\tfull_path\x18\x02 \x01(\tR\bfullPath\x12\x17\n" +
+	"\x04name\x18\x03 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1f\n" +
+	"\blanguage\x18\x04 \x01(\tH\x01R\blanguage\x88\x01\x01\x122\n" +
+	"\x04type\x18\x05 \x01(\x0e2\x1e.mediadelivery.Track.TrackTypeR\x04type\"h\n" +
 	"\tTrackType\x12\x16\n" +
 	"\x12TRACK_TYPE_UNKNOWN\x10\x00\x12\x14\n" +
 	"\x10TRACK_TYPE_VIDEO\x10\x01\x12\x14\n" +
 	"\x10TRACK_TYPE_AUDIO\x10\x02\x12\x17\n" +
 	"\x13TRACK_TYPE_SUBTITLE\x10\x03B\a\n" +
 	"\x05_nameB\v\n" +
-	"\t_language\"\xdb\x01\n" +
+	"\t_language\"\xdd\x01\n" +
 	"\fContentMatch\x124\n" +
 	"\aepisode\x18\x01 \x01(\v2\x1a.mediadelivery.EpisodeInfoR\aepisode\x12*\n" +
-	"\x05video\x18\x02 \x01(\v2\x14.mediadelivery.TrackR\x05video\x125\n" +
-	"\vaudio_files\x18\x03 \x03(\v2\x14.mediadelivery.TrackR\n" +
-	"audioFiles\x122\n" +
+	"\x05video\x18\x02 \x01(\v2\x14.mediadelivery.TrackR\x05video\x127\n" +
+	"\faudio_tracks\x18\x03 \x03(\v2\x14.mediadelivery.TrackR\vaudioTracks\x122\n" +
 	"\tsubtitles\x18\x04 \x03(\v2\x14.mediadelivery.TrackR\tsubtitles\"\xe5\x03\n" +
 	"\x0eContentMatches\x125\n" +
 	"\amatches\x18\x01 \x03(\v2\x1b.mediadelivery.ContentMatchR\amatches\x126\n" +
@@ -2155,10 +2172,10 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\x14TorrentSiteForbidden\x10\x01\x12\x15\n" +
 	"\x11FilesAlreadyExist\x10\x02\"#\n" +
 	"\vSearchQuery\x12\x14\n" +
-	"\x05Query\x18\x01 \x01(\tR\x05Query\"\xfd\x01\n" +
+	"\x05Query\x18\x01 \x01(\tR\x05Query\"\xfb\x01\n" +
 	"\x13TVShowDeliveryState\x125\n" +
-	"\x04data\x18\x01 \x01(\v2!.mediadelivery.TVShowDeliveryDataR\x04data\x127\n" +
-	"\x04step\x18\x02 \x01(\x0e2#.mediadelivery.TVShowDeliveryStatusR\x04step\x12-\n" +
+	"\x04data\x18\x01 \x01(\v2!.mediadelivery.TVShowDeliveryDataR\x04data\x125\n" +
+	"\x04step\x18\x02 \x01(\x0e2!.mediadelivery.TVShowDeliveryStepR\x04step\x12-\n" +
 	"\x06status\x18\x03 \x01(\x0e2\x15.mediadelivery.StatusR\x06status\x12=\n" +
 	"\x05error\x18\x04 \x01(\v2\".mediadelivery.TVShowDeliveryErrorH\x00R\x05error\x88\x01\x01B\b\n" +
 	"\x06_error\"T\n" +
@@ -2204,9 +2221,9 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\tNewStatus\x10\x01\x12\x14\n" +
 	"\x10InProgressStatus\x10\x02\x12\x13\n" +
 	"\x0fCompletedStatus\x10\x03\x12\x10\n" +
-	"\fFailedStatus\x10\x04*\x92\x04\n" +
-	"\x14TVShowDeliveryStatus\x12\x1f\n" +
-	"\x1bTVShowDeliveryStatusUnknown\x10\x00\x12\x17\n" +
+	"\fFailedStatus\x10\x04*\x8e\x04\n" +
+	"\x12TVShowDeliveryStep\x12\x1d\n" +
+	"\x19TVShowDeliveryStepUnknown\x10\x00\x12\x17\n" +
 	"\x13GenerateSearchQuery\x10\x01\x12\x12\n" +
 	"\x0eSearchTorrents\x10\x02\x12\x1b\n" +
 	"\x17WaitingUserChoseTorrent\x10\x03\x12\x11\n" +
@@ -2250,7 +2267,7 @@ var file_media_delivery_videocontent_proto_msgTypes = make([]protoimpl.MessageIn
 var file_media_delivery_videocontent_proto_goTypes = []any{
 	(DeliveryStatus)(0),                     // 0: mediadelivery.DeliveryStatus
 	(Status)(0),                             // 1: mediadelivery.Status
-	(TVShowDeliveryStatus)(0),               // 2: mediadelivery.TVShowDeliveryStatus
+	(TVShowDeliveryStep)(0),                 // 2: mediadelivery.TVShowDeliveryStep
 	(Track_TrackType)(0),                    // 3: mediadelivery.Track.TrackType
 	(TorrentDownloadStatus_TorrentState)(0), // 4: mediadelivery.TorrentDownloadStatus.TorrentState
 	(TVShowDeliveryError_ErrorType)(0),      // 5: mediadelivery.TVShowDeliveryError.ErrorType
@@ -2291,7 +2308,7 @@ var file_media_delivery_videocontent_proto_depIdxs = []int32{
 	3,  // 3: mediadelivery.Track.type:type_name -> mediadelivery.Track.TrackType
 	10, // 4: mediadelivery.ContentMatch.episode:type_name -> mediadelivery.EpisodeInfo
 	11, // 5: mediadelivery.ContentMatch.video:type_name -> mediadelivery.Track
-	11, // 6: mediadelivery.ContentMatch.audio_files:type_name -> mediadelivery.Track
+	11, // 6: mediadelivery.ContentMatch.audio_tracks:type_name -> mediadelivery.Track
 	11, // 7: mediadelivery.ContentMatch.subtitles:type_name -> mediadelivery.Track
 	12, // 8: mediadelivery.ContentMatches.matches:type_name -> mediadelivery.ContentMatch
 	11, // 9: mediadelivery.ContentMatches.unallocated:type_name -> mediadelivery.Track
@@ -2307,7 +2324,7 @@ var file_media_delivery_videocontent_proto_depIdxs = []int32{
 	18, // 19: mediadelivery.TVShowDeliveryData.torrent:type_name -> mediadelivery.Torrent
 	5,  // 20: mediadelivery.TVShowDeliveryError.error_type:type_name -> mediadelivery.TVShowDeliveryError.ErrorType
 	19, // 21: mediadelivery.TVShowDeliveryState.data:type_name -> mediadelivery.TVShowDeliveryData
-	2,  // 22: mediadelivery.TVShowDeliveryState.step:type_name -> mediadelivery.TVShowDeliveryStatus
+	2,  // 22: mediadelivery.TVShowDeliveryState.step:type_name -> mediadelivery.TVShowDeliveryStep
 	1,  // 23: mediadelivery.TVShowDeliveryState.status:type_name -> mediadelivery.Status
 	20, // 24: mediadelivery.TVShowDeliveryState.error:type_name -> mediadelivery.TVShowDeliveryError
 	7,  // 25: mediadelivery.CreateVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
