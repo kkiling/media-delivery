@@ -23,7 +23,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
   const hasAvailableAudio = unallocated.some(
     (t) =>
       t.type === TrackType.TRACK_TYPE_AUDIO &&
-      !(content.audio_files || []).some((a) => a.name === t.name)
+      !(content.audio_tracks || []).some((a) => a.name === t.name)
   );
 
   const hasAvailableSubtitles = unallocated.some(
@@ -47,7 +47,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
   const availableTracks = (current: Track) => {
     // Определяем массив треков в зависимости от типа
     const tracks =
-      current.type === TrackType.TRACK_TYPE_AUDIO ? content.audio_files : content.subtitles;
+      current.type === TrackType.TRACK_TYPE_AUDIO ? content.audio_tracks : content.subtitles;
 
     // Собираем уникальные name всех треков, кроме текущего
     const usedNames = new Set(
@@ -57,10 +57,6 @@ export const ContentItem: React.FC<ContentItemProps> = ({
     // Фильтруем unallocated по типу и исключаем использованные имена
     return unallocated.filter((t) => t.type === current.type && !usedNames.has(t.name));
   };
-
-  // Фильтруем субтитры, исключая те, что уже используются в content.subtitles,
-  // кроме текущего выбранного трека (selectedSubtitleTrack)
-  const availableSubtitles = unallocated.filter((t) => t.type === TrackType.TRACK_TYPE_SUBTITLE);
 
   return (
     <div className="py-3 border-top">
@@ -101,17 +97,17 @@ export const ContentItem: React.FC<ContentItemProps> = ({
 
       <div className="accordion-custom">
         {/* Аудио секция */}
-        {((content.audio_files?.length || 0) > 0 || hasAvailableAudio) && (
+        {((content.audio_tracks?.length || 0) > 0 || hasAvailableAudio) && (
           <Accordion>
             <Accordion.Item eventKey="0" className="border-0 mb-2">
               <Accordion.Header>
                 <div className="d-flex align-items-center gap-2">
                   <Mic2 size={18} className="text-primary" />
-                  <span>Audio files ({content.audio_files?.length || 0})</span>
+                  <span>Audio files ({content.audio_tracks?.length || 0})</span>
                 </div>
               </Accordion.Header>
               <Accordion.Body className="pt-2 pb-1">
-                {content.audio_files?.map((audio, idx) => (
+                {content.audio_tracks?.map((audio, idx) => (
                   <div key={idx} className="mb-3 ps-4">
                     <div className="d-block d-md-none mb-2 text-truncate text-secondary">
                       {audio.name || 'Unnamed track'}
@@ -148,7 +144,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                   <Button
                     variant="outline-primary"
                     size="sm"
-                    className={`ms-4 ${!content.audio_files?.length ? 'mt-2' : ''}`}
+                    className={`ms-4 ${!content.audio_tracks?.length ? 'mt-2' : ''}`}
                     onClick={() => onAddContent(contentIndex, TrackType.TRACK_TYPE_AUDIO)}
                   >
                     Add Audio Track

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 import { CheckCircle } from 'lucide-react';
 import { ContentMatches as MatchContents, Options, Track, TrackType } from '@/api/api';
@@ -22,30 +22,18 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
   loading,
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [options, setOptions] = useState<Options>(contentMatches.options || {});
   const { matches, setMatches, updateMatch } = useMatchesState(contentMatches.matches || []);
   const { unallocated, addToUnallocated, removeFromUnallocated } = useTrackManagement(
     sortTracks(contentMatches.unallocated || [])
   );
 
-  // Устанавливаем первый аудио трек если не выбран
-  useEffect(() => {
-    if (matches.length > 0 && !options.default_audio_track_name) {
-      const firstAudioTrack = matches.flatMap((m) => m.audio_files || []).find((t) => t.name)?.name;
-      if (firstAudioTrack) {
-        setOptions((prev) => ({
-          ...prev,
-          default_audio_track_name: firstAudioTrack,
-        }));
-      }
-    }
-  }, [matches, options.default_audio_track_name]);
-
   // Получить уникальные имена аудио и субтитров
   const uniqueAudioNames = Array.from(
     new Set(
       matches
-        .flatMap((m) => m.audio_files || [])
+        .flatMap((m) => m.audio_tracks || [])
         .map((t) => t.name || '')
         .filter((t) => t !== '')
     )
@@ -71,7 +59,7 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
     if (track.type === TrackType.TRACK_TYPE_AUDIO) {
       updateMatch(index, (match) => ({
         ...match,
-        audio_files: (match.audio_files || []).filter(
+        audio_tracks: (match.audio_tracks || []).filter(
           (t) => t.relative_path !== track.relative_path
         ),
       }));
@@ -103,11 +91,11 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
         // Если нет, добавляем newTrack в конец массива
         return {
           ...match,
-          audio_files: oldTrack
-            ? (match.audio_files || []).map((track) =>
+          audio_tracks: oldTrack
+            ? (match.audio_tracks || []).map((track) =>
                 track.relative_path === oldTrack.relative_path ? newTrack : track
               )
-            : [...(match.audio_files || []), newTrack],
+            : [...(match.audio_tracks || []), newTrack],
         };
       } else if (newTrack.type === TrackType.TRACK_TYPE_SUBTITLE) {
         // Аналогичная логика для субтитров
@@ -127,15 +115,23 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
   };
 
   const handleAddContent = (contentIndex: number, type: TrackType) => {
+    // Определяем, какие треки уже назначены для данного эпизода по нужному типу
+    const assignedTracks =
+      type === TrackType.TRACK_TYPE_AUDIO
+        ? matches[contentIndex].audio_tracks || []
+        : matches[contentIndex].subtitles || [];
+
+    // Ищем первый неиспользованный трек нужного типа
     const newTrack = unallocated.find(
-      (t) => t.type === type && !matches[contentIndex].audio_files?.some((a) => a.name === t.name)
+      (t) => t.type === type && !assignedTracks.some((a) => a.name === t.name)
     );
+
     if (!newTrack) return;
 
     if (type === TrackType.TRACK_TYPE_AUDIO) {
       updateMatch(contentIndex, (match) => ({
         ...match,
-        audio_files: [...(match.audio_files || []), newTrack],
+        audio_tracks: [...(match.audio_tracks || []), newTrack],
       }));
     } else if (type === TrackType.TRACK_TYPE_SUBTITLE) {
       updateMatch(contentIndex, (match) => ({
@@ -148,28 +144,56 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
   };
 
   // Удаление треков по имени
-  const removeTracksByName = (type: 'audio' | 'subtitle', name: string) => {
-    const newMatches = matches.map((match) => {
-      if (type === 'audio') {
-        const removedTracks = (match.audio_files || []).filter((t) => t.name === name);
-        removedTracks.forEach(addToUnallocated);
-        return {
-          ...match,
-          audio_files: (match.audio_files || []).filter((t) => t.name !== name),
-        };
-      } else {
-        const removedTracks = (match.subtitles || []).filter((t) => t.name === name);
-        removedTracks.forEach(addToUnallocated);
-        return {
-          ...match,
-          subtitles: (match.subtitles || []).filter((t) => t.name !== name),
-        };
-      }
-    });
-    setMatches(newMatches);
+  const removeTracks = (type: TrackType[], name?: string) => {
+    // Собираем треки для перемещения в unallocated
+    const check = (track: Track) =>
+      track.type !== undefined && type.includes(track.type) && (!name || track.name === name);
+    matches
+      .flatMap((match) => [
+        ...(match.audio_tracks || []).filter(check),
+        ...(match.subtitles || []).filter(check),
+        ...(match.video ? [match.video].filter(check) : []),
+      ])
+      .forEach((track) => addToUnallocated(track));
+
+    // Обновляем состояние matches
+    const filterTrack = (track: Track) => (name ? track.name !== name : false);
+    setMatches(
+      matches.map((match) => ({
+        ...match,
+        audio_tracks: type.includes(TrackType.TRACK_TYPE_AUDIO)
+          ? match.audio_tracks?.filter(filterTrack)
+          : match.audio_tracks,
+        subtitles: type.includes(TrackType.TRACK_TYPE_SUBTITLE)
+          ? match.subtitles?.filter(filterTrack)
+          : match.subtitles,
+        video:
+          type.includes(TrackType.TRACK_TYPE_VIDEO) && (!name || match.video?.name === name)
+            ? undefined
+            : match.video,
+      }))
+    );
   };
 
-  const handleConfirmClick = () => setShowConfirmModal(true);
+  const handleConfirmClick = () => {
+    setError(null);
+
+    const invalidMatch = matches.find(
+      (match) =>
+        !match.video?.full_path &&
+        ((match.audio_tracks && match.audio_tracks.length > 0) ||
+          (match.subtitles && match.subtitles.length > 0))
+    );
+
+    if (invalidMatch) {
+      setError(
+        `Episode "${invalidMatch.episode?.relative_path}" has audio or subtitle tracks but no video assigned`
+      );
+      return;
+    }
+
+    setShowConfirmModal(true);
+  };
 
   const handleConfirmClose = () => setShowConfirmModal(false);
 
@@ -190,7 +214,7 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
           setOptions={setOptions}
           uniqueAudioNames={uniqueAudioNames}
           uniqueSubtitleNames={uniqueSubtitleNames}
-          removeTracksByName={removeTracksByName}
+          removeTracks={removeTracks}
         />
 
         <div className="border-top border-bottom">
@@ -207,6 +231,8 @@ export const ContentMatches: React.FC<ContentMatchesProps> = ({
           ))}
           <UnallocatedFiles unallocated={unallocated} />
         </div>
+
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
 
         <div className="mt-3 d-flex justify-content-end">
           <Button
