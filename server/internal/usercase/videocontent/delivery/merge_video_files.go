@@ -12,7 +12,7 @@ import (
 
 type MergeVideoParams struct {
 	IdempotencyKey string
-	ContentMatches []ContentMatches
+	ContentMatches *ContentMatches
 }
 
 type MergeVideoStatus struct {
@@ -21,36 +21,38 @@ type MergeVideoStatus struct {
 	Errors     []string
 }
 
-func mapMkvMergeParams(content ContentMatches) mkvmerge.MergeParams {
+func mapMkvMergeParams(content ContentMatch, options ContentMatchesOptions) mkvmerge.MergeParams {
 	mergeParams := mkvmerge.MergeParams{
 		VideoInputFile:  content.Video.File.FullPath,
-		VideoOutputFile: content.Episode.FileName,
-		AudioTracks: lo.Map(content.AudioFiles, func(item Track, index int) mkvmerge.Track {
+		VideoOutputFile: content.Episode.FullPath,
+		AudioTracks: lo.Map(content.AudioTracks, func(item Track, index int) mkvmerge.Track {
 			return mkvmerge.Track{
 				Path:     item.File.FullPath,
 				Language: item.Language,
-				Name:     item.Name,
-				Default:  index == 0,
+				Name:     lo.FromPtrOr(item.Name, "unknown"),
+				Default:  lo.FromPtr(item.Name) == lo.FromPtr(options.DefaultAudioTrackName),
 			}
 		}),
 		SubtitleTracks: lo.Map(content.Subtitles, func(item Track, index int) mkvmerge.Track {
 			return mkvmerge.Track{
 				Path:     item.File.FullPath,
 				Language: item.Language,
-				Name:     item.Name,
-				Default:  false,
+				Name:     lo.FromPtrOr(item.Name, "unknown"),
+				Default:  lo.FromPtr(item.Name) == lo.FromPtr(options.DefaultSubtitleTrack),
 			}
 		}),
+		KeepOriginalAudio:     options.KeepOriginalAudio,
+		KeepOriginalSubtitles: options.KeepOriginalSubtitles,
 	}
 	return mergeParams
 }
 
 // StartMergeVideo запуск обработки видеофайлов
 func (s *Service) StartMergeVideo(ctx context.Context, params MergeVideoParams) ([]uuid.UUID, error) {
-	result := make([]uuid.UUID, 0, len(params.ContentMatches))
+	result := make([]uuid.UUID, 0, len(params.ContentMatches.Matches))
 
-	for _, content := range params.ContentMatches {
-		mergeParams := mapMkvMergeParams(content)
+	for _, content := range params.ContentMatches.Matches {
+		mergeParams := mapMkvMergeParams(content, params.ContentMatches.Options)
 		idempotencyKey := fmt.Sprintf("%s-episode_%d", params.IdempotencyKey, content.Episode.EpisodeNumber)
 
 		mergeResult, err := s.mkvMerge.AddToMerge(ctx, idempotencyKey, mergeParams)

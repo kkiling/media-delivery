@@ -19,6 +19,14 @@ export enum MediadeliveryStatus {
   FailedStatus = "FailedStatus",
 }
 
+/** @default "TRACK_TYPE_UNKNOWN" */
+export enum TrackType {
+  TRACK_TYPE_UNKNOWN = "TRACK_TYPE_UNKNOWN",
+  TRACK_TYPE_VIDEO = "TRACK_TYPE_VIDEO",
+  TRACK_TYPE_AUDIO = "TRACK_TYPE_AUDIO",
+  TRACK_TYPE_SUBTITLE = "TRACK_TYPE_SUBTITLE",
+}
+
 /** @default "TORRENT_STATE_UNKNOWN" */
 export enum TorrentState {
   TORRENT_STATE_UNKNOWN = "TORRENT_STATE_UNKNOWN",
@@ -30,7 +38,7 @@ export enum TorrentState {
 }
 
 /**
- * - TVShowDeliveryStatusUnknown: Неизвестный статус доставки
+ * - TVShowDeliveryStepUnknown: Неизвестный статус доставки
  *  - GenerateSearchQuery: Генерация запроса к трекеру
  *  - SearchTorrents: Поиск раздач сезона сериала/фильма
  *  - WaitingUserChoseTorrent: Ожидание выбора раздачи пользователем
@@ -49,10 +57,10 @@ export enum TorrentState {
  *  - SendDeliveryNotification: Отправка уведомления в telegramm о успешной доставки
  *  - WaitingTorrentFiles: Ожидание когда появится информация о файлах в раздаче
  *  - GetEpisodesData: получение информации о эпизодах и каталоге сезона
- * @default "TVShowDeliveryStatusUnknown"
+ * @default "TVShowDeliveryStepUnknown"
  */
-export enum TVShowDeliveryStatus {
-  TVShowDeliveryStatusUnknown = "TVShowDeliveryStatusUnknown",
+export enum TVShowDeliveryStep {
+  TVShowDeliveryStepUnknown = "TVShowDeliveryStepUnknown",
   GenerateSearchQuery = "GenerateSearchQuery",
   SearchTorrents = "SearchTorrents",
   WaitingUserChoseTorrent = "WaitingUserChoseTorrent",
@@ -101,6 +109,8 @@ export interface ChoseFileMatchesOptionsRequest {
   content_id?: ContentID;
   /** Пользователь подтверждает сметченные файлы */
   approve?: boolean;
+  /** Метч контента, если захотели изменить */
+  content_matches?: ContentMatches;
 }
 
 export interface ChoseFileMatchesOptionsResponse {
@@ -125,11 +135,23 @@ export interface ContentID {
   tv_show?: TVShowID;
 }
 
-export interface ContentMatches {
+export interface ContentMatch {
+  /** Инфа о сезоне */
   episode?: EpisodeInfo;
-  video?: VideoFile;
-  audio_files?: Track[];
+  /** Видеодорожка */
+  video?: Track;
+  /** Аудиодорожки */
+  audio_tracks?: Track[];
+  /** Субтитры */
   subtitles?: Track[];
+}
+
+export interface ContentMatches {
+  matches?: ContentMatch[];
+  /** Нераспредленные треки */
+  unallocated?: Track[];
+  /** Опции */
+  options?: Options;
 }
 
 export interface CreateVideoContentRequest {
@@ -162,19 +184,10 @@ export interface Episode {
 export interface EpisodeInfo {
   /** @format int64 */
   season_number?: number;
-  episode_name?: string;
   /** @format int64 */
   episode_number?: number;
-  file_name?: string;
-  relative_path?: string;
-}
-
-export interface FileInfo {
-  relative_path?: string;
   full_path?: string;
-  /** @format int64 */
-  size?: string;
-  extension?: string;
+  relative_path?: string;
 }
 
 export interface GetSeasonInfoResponse {
@@ -201,13 +214,8 @@ export interface GetVideoContentResponse {
 export interface Image {
   id?: string;
   w92?: string;
-  /** string w154 = 3; */
   w185?: string;
   w342?: string;
-  /**
-   * string w500 = 6;
-   * string w780 = 7;
-   */
   original?: string;
 }
 
@@ -215,6 +223,17 @@ export interface MergeVideoStatus {
   /** @format float */
   progress?: number;
   is_complete?: boolean;
+}
+
+export interface Options {
+  /** Оставлять оригинальные аудиодорожки (если они есть) */
+  keep_original_audio?: boolean;
+  /** Оставлять оригинальные субтитры (если они есть) */
+  keep_original_subtitles?: boolean;
+  /** Дефолтная аудиодорожка */
+  default_audio_track_name?: string;
+  /** Дефолтные субтитры */
+  default_subtitle_track?: string;
 }
 
 export interface SearchQuery {
@@ -301,7 +320,7 @@ export interface TVShowDeliveryData {
   /** Результат поиска торрент раздач */
   torrent_search?: TorrentSearch[];
   /** Результат метча файлов */
-  content_matches?: ContentMatches[];
+  content_matches?: ContentMatches;
   /** статус скачивания раздачи */
   torrent_download_status?: TorrentDownloadStatus;
   /** статус сшивания файлов */
@@ -319,7 +338,7 @@ export interface TVShowDeliveryError {
 
 export interface TVShowDeliveryState {
   data?: TVShowDeliveryData;
-  step?: TVShowDeliveryStatus;
+  step?: TVShowDeliveryStep;
   status?: MediadeliveryStatus;
   error?: TVShowDeliveryError;
 }
@@ -375,9 +394,11 @@ export interface TorrentSearch {
 }
 
 export interface Track {
-  file?: FileInfo;
+  relative_path?: string;
+  full_path?: string;
   name?: string;
   language?: string;
+  type?: TrackType;
 }
 
 export interface VideoContent {
@@ -385,10 +406,6 @@ export interface VideoContent {
   /** @format date-time */
   created_at?: string;
   delivery_status?: DeliveryStatus;
-}
-
-export interface VideoFile {
-  file?: FileInfo;
 }
 
 export interface RpcStatus {

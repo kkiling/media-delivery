@@ -7,14 +7,14 @@ import (
 )
 
 type CreateHardLinkCopyParams struct {
-	ContentMatches []ContentMatches
+	ContentMatches []ContentMatch
 }
 
 // CreateHardLinkCopyToMediaServer шаг копирования файлов на медиа сервер
 func (s *Service) CreateHardLinkCopyToMediaServer(_ context.Context, params CreateHardLinkCopyParams) error {
 	for _, match := range params.ContentMatches {
 		from := match.Video.File.FullPath
-		to := match.Episode.FileName
+		to := match.Episode.FullPath
 		if from == "" || to == "" {
 			continue
 		}

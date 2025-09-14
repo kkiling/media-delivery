@@ -74,7 +74,7 @@ type TVShowDeliveryData struct {
 	// EpisodesData информация о эпизодах и путях сохранения
 	EpisodesData *delivery.EpisodesData
 	// ContentMatches Информация о метче файлов (метч видофайлов с аудиодоржками и субтитрами)
-	ContentMatches []delivery.ContentMatches
+	ContentMatches *delivery.ContentMatches
 	// TorrentDownloadStatus статус скачивания раздачи
 	TorrentDownloadStatus *delivery.TorrentDownloadStatus
 	// TVShowCatalogInfo информация о каталогах сериала

@@ -1,10 +1,10 @@
 package delivery
 
-func (s *Service) NeedPrepareFileMatches(ContentMatches []ContentMatches) bool {
+func (s *Service) NeedPrepareFileMatches(contentMatches []ContentMatch) bool {
 	needToMerge := false
-	for _, m := range ContentMatches {
+	for _, m := range contentMatches {
 		// Если есть субтитры или аудиодорожки то нужно мержить
-		if len(m.AudioFiles) > 0 || len(m.Subtitles) > 0 {
+		if len(m.AudioTracks) > 0 || len(m.Subtitles) > 0 {
 			needToMerge = true
 			break
 		}

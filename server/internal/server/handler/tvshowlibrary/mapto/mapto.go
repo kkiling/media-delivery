@@ -1,4 +1,4 @@
-package tvshowlibrary
+package mapto
 
 import (
 	"github.com/samber/lo"
@@ -8,7 +8,7 @@ import (
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
-func mapImage(res *tvshowlibrary.Image) *desc.Image {
+func Image(res *tvshowlibrary.Image) *desc.Image {
 	if res == nil {
 		return nil
 	}
@@ -24,51 +24,51 @@ func mapImage(res *tvshowlibrary.Image) *desc.Image {
 	}
 }
 
-func mapTvShowShort(res tvshowlibrary.TVShowShort) *desc.TVShowShort {
+func TVShowShort(res tvshowlibrary.TVShowShort) *desc.TVShowShort {
 	return &desc.TVShowShort{
 		Id:           res.ID,
 		Name:         res.Name,
 		OriginalName: res.OriginalName,
 		Overview:     res.Overview,
-		Poster:       mapImage(res.Poster),
+		Poster:       Image(res.Poster),
 		FirstAirDate: timestamppb.New(res.FirstAirDate),
 		VoteAverage:  float32(res.VoteAverage),
-		VoteCount:    uint32(res.VoteCount),
+		VoteCount:    res.VoteCount,
 		Popularity:   float32(res.Popularity),
 	}
 }
 
-func mapTvShowShorts(res []tvshowlibrary.TVShowShort) []*desc.TVShowShort {
+func TVShowShorts(res []tvshowlibrary.TVShowShort) []*desc.TVShowShort {
 	return lo.Map(res, func(item tvshowlibrary.TVShowShort, _ int) *desc.TVShowShort {
-		return mapTvShowShort(item)
+		return TVShowShort(item)
 	})
 }
 
-func mapSeason(res tvshowlibrary.Season) *desc.Season {
+func Season(res tvshowlibrary.Season) *desc.Season {
 	return &desc.Season{
 		Id:           res.ID,
 		AirDate:      timestamppb.New(res.AirDate),
 		EpisodeCount: res.EpisodeCount,
 		Name:         res.Name,
 		Overview:     res.Overview,
-		Poster:       mapImage(res.Poster),
+		Poster:       Image(res.Poster),
 		SeasonNumber: uint32(res.SeasonNumber),
 		VoteAverage:  float32(res.VoteAverage),
 	}
 }
 
-func mapTvShow(res *tvshowlibrary.TVShow) *desc.TVShow {
+func TVShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 	return &desc.TVShow{
 		Id:               res.ID,
 		Name:             res.Name,
 		OriginalName:     res.OriginalName,
 		Overview:         res.Overview,
-		Poster:           mapImage(res.Poster),
+		Poster:           Image(res.Poster),
 		FirstAirDate:     timestamppb.New(res.FirstAirDate),
 		VoteAverage:      float32(res.VoteAverage),
 		VoteCount:        res.VoteCount,
 		Popularity:       float32(res.Popularity),
-		Backdrop:         mapImage(res.Backdrop),
+		Backdrop:         Image(res.Backdrop),
 		Genres:           res.Genres,
 		LastAirDate:      timestamppb.New(res.LastAirDate),
 		NumberOfEpisodes: res.NumberOfEpisodes,
@@ -78,12 +78,12 @@ func mapTvShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 		Tagline:          res.Tagline,
 		Type:             res.Type,
 		Seasons: lo.Map(res.Seasons, func(item tvshowlibrary.Season, _ int) *desc.Season {
-			return mapSeason(item)
+			return Season(item)
 		}),
 	}
 }
 
-func mapEpisode(res tvshowlibrary.Episode) *desc.Episode {
+func Episode(res tvshowlibrary.Episode) *desc.Episode {
 	return &desc.Episode{
 		Id:            res.ID,
 		AirDate:       timestamppb.New(res.AirDate),
@@ -92,14 +92,14 @@ func mapEpisode(res tvshowlibrary.Episode) *desc.Episode {
 		Name:          res.Name,
 		Overview:      res.Overview,
 		Runtime:       uint32(res.Runtime),
-		Still:         mapImage(res.Still),
+		Still:         Image(res.Still),
 		VoteAverage:   float32(res.VoteAverage),
 		VoteCount:     uint32(res.VoteCount),
 	}
 }
 
-func mapEpisodes(res []tvshowlibrary.Episode) []*desc.Episode {
+func Episodes(res []tvshowlibrary.Episode) []*desc.Episode {
 	return lo.Map(res, func(item tvshowlibrary.Episode, _ int) *desc.Episode {
-		return mapEpisode(item)
+		return Episode(item)
 	})
 }

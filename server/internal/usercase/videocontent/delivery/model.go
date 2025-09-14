@@ -71,28 +71,20 @@ func (m TVShowCatalogPath) FullSeasonPath() string {
 }
 
 type EpisodesData struct {
+	// Путь каталога сериала и сезона на медиа сервере
 	TVShowCatalogPath TVShowCatalogPath
-	SeasonInfo        SeasonInfo
-	Episodes          []EpisodeInfo
+	// Информация о эпизодах
+	Episodes []EpisodeInfo
 }
 
-type SeasonInfo struct {
-	TVShowName    string
-	FirstAirYear  string
-	SeasonName    string
-	SeasonNumber  uint8
-	SeasonAirYear string
-}
 type EpisodeInfo struct {
 	// Номер сезона
 	SeasonNumber uint8
 	// Номер эпизода
 	EpisodeNumber int
-	// Наименования эпизода
-	EpisodeName string
-	// Наименование файла эпизода который будет лежать на медиасервере (без расширения файла)
-	FileName string
-	//
+	// Наименование файла эпизода который будет лежать на медиасервере
+	FullPath string
+	// Относительный путь относительно каталога сезона
 	RelativePath string
 }
 
@@ -101,28 +93,50 @@ type FileInfo struct {
 	RelativePath string
 	// Полный путь до файла в системе
 	FullPath string
-	// Размер файла в байтах
-	Size int64
-	// Расширение файла
-	Extension string
 }
 
 type VideoFile struct {
 	File FileInfo
 }
 
+type TrackType string
+
+const (
+	TrackTypeVideo    TrackType = "video"
+	TrackTypeAudio    TrackType = "audio"
+	TrackTypeSubtitle TrackType = "subtitle"
+)
+
 type Track struct {
-	Name     string
-	Language string
+	Type     TrackType
+	Name     *string
+	Language *string
 	File     FileInfo
 }
 
-// ContentMatches сопоставление видео файла с торрент файлом
+// ContentMatch сопоставление видео файла с торрент файлом
+type ContentMatch struct {
+	Episode     EpisodeInfo
+	Video       *Track
+	AudioTracks []Track
+	Subtitles   []Track
+}
+
+type ContentMatchesOptions struct {
+	// Оставлять оригинальные аудиодорожки (если они есть)
+	KeepOriginalAudio bool
+	// Оставлять оригинальные субтитры (если они есть)
+	KeepOriginalSubtitles bool
+	// Дефолтная аудиодорожка
+	DefaultAudioTrackName *string
+	// Дефолтные субтитры
+	DefaultSubtitleTrack *string
+}
+
 type ContentMatches struct {
-	Episode    EpisodeInfo
-	Video      VideoFile
-	AudioFiles []Track
-	Subtitles  []Track
+	Matches     []ContentMatch
+	Unallocated []Track
+	Options     ContentMatchesOptions
 }
 
 type TorrentState string

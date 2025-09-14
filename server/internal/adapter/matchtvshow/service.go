@@ -3,228 +3,234 @@ package matchtvshow
 import (
 	"fmt"
 	"path/filepath"
+	"regexp"
 	"strings"
-
-	"github.com/samber/lo"
-
-	"github.com/kkiling/media-delivery/internal/adapter/mkvmerge"
 )
 
 var (
-	videoExtensions     = []string{".mp4", ".mkv", ".avi", ".mp3", ".flac", ".m4a", ".ogg", ".wav"}
-	audioExtensions     = []string{".mka"}
-	subtitlesExtensions = []string{".ass"}
+	videoExtensions     = []string{".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"}
+	audioExtensions     = []string{".mka", ".mp3", ".flac", ".m4a", ".ogg", ".wav", ".ac3"}
+	subtitlesExtensions = []string{".ass", ".srt", ".ssa", ".sub", ".txt"}
+
+	// Паттерны для определения языка (только четкие указания языка)
+	languagePatterns = map[string]*regexp.Regexp{
+		"ru": regexp.MustCompile(`(rus|russian|рус)`),
+		"en": regexp.MustCompile(`(eng|english|англ)`),
+		"jp": regexp.MustCompile(`(jap|japanese|яп|япон)`),
+	}
+
+	// Паттерны для определения сезона и серии
+	seasonEpisodePatterns = []*regexp.Regexp{
+		// SXXEXX формат
+		regexp.MustCompile(`[s](\d+)[\s\-_]*[e](\d+)`),
+		// Season X Episode Y
+		regexp.MustCompile(`season[\.\s]*(\d+)[\s\-_]*episode[\.\s]*(\d+)`),
+		// Серия X из Y сезона (русский)
+		regexp.MustCompile(`серия[\.\s]*(\d+)[\s\-_]*из[\.\s]*(\d+)[\s\-_]*сезона`),
+		// Просто номер серии в конце
+		regexp.MustCompile(`[\s\-_\[\]](\d{2})[\s\.\[\]]`),
+		regexp.MustCompile(`[\s\-_\[\]](\d{2,})[^a-z0-9]`),
+	}
+
+	// Паттерны для определения сезона (вынесены в переменные)
+	seasonPatterns = []*regexp.Regexp{
+		regexp.MustCompile(`season[\.\s]*(\d+)`),
+		regexp.MustCompile(`сезон[\.\s]*(\d+)`),
+		regexp.MustCompile(`[s](\d+)`),
+	}
 )
 
-type MediaInfo interface {
-	GetMediaInfo(filePath string) (*mkvmerge.MediaInfo, error)
-}
-
 type Service struct {
-	mediaInfo MediaInfo
 }
 
-func NewService(mediaInfo MediaInfo) *Service {
-	return &Service{
-		mediaInfo: mediaInfo,
+func NewService() *Service {
+	return &Service{}
+}
+
+// extractSeasonAndEpisode извлекает номер сезона и серии из строки
+func extractSeasonAndEpisode(filename string) (season uint8, episode int, found bool) {
+	filename = strings.ToLower(filename)
+	for _, pattern := range seasonEpisodePatterns {
+		matches := pattern.FindStringSubmatch(filename)
+		if len(matches) >= 3 {
+			// Для паттернов, которые находят и сезон и серию
+			season = parseUint8(matches[1])
+			episode = int(parseUint8(matches[2]))
+			return season, episode, true
+		} else if len(matches) >= 2 {
+			// Для паттернов, которые находят только серию
+			episode = int(parseUint8(matches[1]))
+			season = detectSeasonFromString(filename)
+			return season, episode, true
+		}
 	}
+	return 0, 0, false
 }
 
-// splitPath разбивает путь в Linux на отдельные компоненты.
-// Пример:
-//
-//	"/home/user/docs/file.txt" -> ["home", "user", "docs", "file.txt"]
-//	"relative/path/" -> ["relative", "path"]
-//	"/" -> []
-func splitPath(path string) []string {
-	// Нормализуем путь (убираем дублирующиеся слеши, обработка . и ..)
-	cleanPath := filepath.Clean(path)
-
-	// Разбиваем на компоненты
-	parts := strings.Split(cleanPath, "/")
-
-	// Удаляем пустые элементы (могут появиться из-за концевого слеша)
-	var result []string
-	for _, part := range parts {
-		if part != "" {
-			result = append(result, part)
+// detectSeasonFromString пытается определить сезон из названия
+func detectSeasonFromString(filename string) uint8 {
+	for _, pattern := range seasonPatterns {
+		matches := pattern.FindStringSubmatch(filename)
+		if len(matches) >= 2 {
+			return parseUint8(matches[1])
 		}
 	}
 
+	// Если сезон явно не указан, предполагаем 1-й
+	return 1
+}
+
+// extractTrackName извлекает название трека из пути
+func extractTrackName(filePath string) string {
+	filePath = strings.ToLower(filePath)
+	// Берем имя родительской директории как название
+	dir := filepath.Dir(filePath)
+	parentDir := filepath.Base(dir)
+
+	// Если это не корневая директория, используем её имя
+	if parentDir != "." && parentDir != "/" {
+		return parentDir
+	}
+
+	// Иначе берем имя файла без расширения
+	filename := filepath.Base(filePath)
+	return strings.TrimSuffix(filename, filepath.Ext(filename))
+}
+
+// parseUint8 преобразует строку в uint8
+func parseUint8(s string) uint8 {
+	var result uint8
+	for _, char := range s {
+		if char >= '0' && char <= '9' {
+			result = result*10 + uint8(char-'0')
+		}
+	}
 	return result
 }
 
-// processFile на основе торрент файлов получаем спиос кафйлов нужных расшерений
-func processFiles(
-	files []string,
-	allowedExtensions []string,
-) ([]string, error) {
-
-	// Создаем map для быстрой проверки расширений
-	extMap := make(map[string]bool)
-	for _, ext := range allowedExtensions {
-		extMap[strings.ToLower(ext)] = true
-	}
-
-	var result []string
-	for _, file := range files {
-		ext := strings.ToLower(filepath.Ext(file))
-		// Проверяем расширение файла
-		if !extMap[ext] {
-			continue
+// isVideoFile проверяет, является ли файл видео
+func isVideoFile(filename string) bool {
+	ext := filepath.Ext(filename)
+	for _, videoExt := range videoExtensions {
+		if ext == videoExt {
+			return true
 		}
-		// Добавляем в результат
-		result = append(result, file)
 	}
-
-	return result, nil
+	return false
 }
 
-func processVideoFiles(torrentFiles []string) ([]string, error) {
-	prepareVideoFiles, err := processFiles(torrentFiles, videoExtensions)
-	if err != nil {
-		return nil, fmt.Errorf("processFiles: %w", err)
-	}
-
-	result := make([]string, 0)
-	for _, file := range prepareVideoFiles {
-		// Исходим из того что файлы видео файлов серий всегда лежат в корне
-		splitRelativePath := splitPath(file)
-		if len(splitRelativePath) > 1 {
-			continue
+// isAudioFile проверяет, является ли файл аудио
+func isAudioFile(filename string) bool {
+	ext := filepath.Ext(filename)
+	for _, audioExt := range audioExtensions {
+		if ext == audioExt {
+			return true
 		}
-
-		result = append(result, file)
 	}
-
-	return result, nil
+	return false
 }
 
-func (s *Service) tryGetLanguage(path string) string {
-	array := strings.Split(strings.ToLower(path), " ")
-	if lo.Contains(array, "rus") || lo.Contains(array, "ru") {
-		return "ru"
+// isSubtitlesFile проверяет, является ли файл субтитрами
+func isSubtitlesFile(filename string) bool {
+	ext := filepath.Ext(filename)
+	for _, subExt := range subtitlesExtensions {
+		if ext == subExt {
+			return true
+		}
 	}
-	if lo.Contains(array, "en") || lo.Contains(array, "eng") {
-		return "en"
-	}
-	return ""
+	return false
 }
 
-func (s *Service) processMetaFiles(torrentFiles []string, extensions []string) (map[string][]PrepareTrack, error) {
-	prepareVideoFiles, err := processFiles(torrentFiles, extensions)
-	if err != nil {
-		return nil, fmt.Errorf("processFiles: %w", err)
-	}
-	// Группируем по озвучке
-	result := make(map[string][]PrepareTrack)
-	for _, file := range prepareVideoFiles {
-		// Исходим из того что озвучка/субтитры лежит в каком то каталоге
-		// Название этого каталога и берем за название озвучки/субтитры
-		splitRelativePath := splitPath(file)
-		if len(splitRelativePath) < 2 {
-			continue
+// detectLanguage определяет язык трека - УПРОЩЕННАЯ ВЕРСИЯ
+func detectLanguage(filePath string) *string {
+	// Преобразуем весь путь в lowercase для поиска
+	lowerPath := strings.ToLower(filePath)
+
+	for lang, pattern := range languagePatterns {
+		if pattern.MatchString(lowerPath) {
+			return &lang
 		}
+	}
+	return nil
+}
 
-		// Пробуем достать информацию из файла
-		// TODO: а это не получится сделать, так как файл только скачивается...
-		/*info, err := s.mediaInfo.GetMediaInfo(file.FullPath)
-		if err != nil {
-			return nil, fmt.Errorf("mediaInfo.GetMediaInfo: %w", err)
-		}*/
-
-		// Берем название из каталога
-		name := splitRelativePath[len(splitRelativePath)-2]
-		language := s.tryGetLanguage(splitRelativePath[0])
-		/*if len(info.AudioTracks) == 1 && info.AudioTracks[0].TrackName != "" {
-			// Пробуем достать из инфы аудиодорожки
-			name = info.AudioTracks[0].TrackName
-			language = info.AudioTracks[0].Language
-		}*/
-
-		/*if len(info.Subtitles) == 1 && info.Subtitles[0].TrackName != "" {
-			// Пробуем достать из инфы субтитров
-			name = info.Subtitles[0].TrackName
-			language = info.AudioTracks[0].Language
-		}*/
-
-		result[name] = append(result[name], PrepareTrack{
-			Name:     name,
-			Language: language,
+func (s *Service) toTrack(file string) Track {
+	// Определяем тип файла
+	switch {
+	case isVideoFile(file):
+		return Track{
+			File: file,
+			Type: TrackTypeVideo,
+		}
+	case isAudioFile(file):
+		return Track{
+			Name:     extractTrackName(file),
+			Language: detectLanguage(file),
 			File:     file,
-		})
+			Type:     TrackTypeAudio,
+		}
+	case isSubtitlesFile(file):
+		return Track{
+			Name:     extractTrackName(file),
+			Language: detectLanguage(file),
+			File:     file,
+			Type:     TrackTypeSubtitle,
+		}
 	}
-
-	return result, nil
+	return Track{
+		Type: TrackTypeUnknown,
+	}
 }
 
-func (s *Service) PrepareTvShowSeason(params *PrepareTvShowPrams) (*PrepareTVShowSeason, error) {
-	//input, err := json.Marshal(params)
-	//if err != nil {
-	//	return nil, fmt.Errorf("json.Marshal: %w", err)
-	//}
-	//err = os.WriteFile("input.json", input, 0644)
-	//if err != nil {
-	//	return nil, fmt.Errorf("os.WriteFile: %w", err)
-	//}
+// MatchEpisodeFiles сопоставляет файлы с эпизодами
+func (s *Service) MatchEpisodeFiles(torrentFiles []string) (*ContentMatches, error) {
+	episodesMap := make(map[string]*ContentMatch)
+	unallocated := make([]Track, 0)
+	for _, filename := range torrentFiles {
+		// Преобразуем в lowercase один раз в начале
+		track := s.toTrack(filename)
 
-	result := PrepareTVShowSeason{}
-
-	// Получаем список видео файлов эпизодов
-	prepareVideoFiles, err := processVideoFiles(params.TorrentFiles)
-	if err != nil {
-		return nil, fmt.Errorf("processFiles: %w", err)
-	}
-
-	// Получаем аудиодорожки
-	audioFilesMap, err := s.processMetaFiles(params.TorrentFiles, audioExtensions)
-	if err != nil {
-		return nil, fmt.Errorf("processFiles audio files: %w", err)
-	}
-
-	// Получаем субтитры
-	subtitlesFilesMap, err := s.processMetaFiles(params.TorrentFiles, subtitlesExtensions)
-	if err != nil {
-		return nil, fmt.Errorf("processFiles subtitles files: %w", err)
-	}
-
-	for index, episode := range params.Episodes {
-		prepareEpisode := PrepareEpisode{
-			Episode: episode,
+		// Пытаемся определить сезон и серию
+		season, episode, found := extractSeasonAndEpisode(filename) // Используем весь путь
+		if !found {
+			if track.Type != TrackTypeUnknown {
+				unallocated = append(unallocated, track)
+			}
+			continue
 		}
 
-		// Пока сопостовляем видео файл с серией просто по порядку
-		if index < len(prepareVideoFiles) {
-			prepareEpisode.VideoFile = &PrepareVideo{
-				File: prepareVideoFiles[index],
+		// Создаем ключ для мапы эпизодов
+		key := fmt.Sprintf("S%02dE%02d", season, episode)
+		if _, exists := episodesMap[key]; !exists {
+			episodesMap[key] = &ContentMatch{
+				EpisodeNumber: episode,
+				SeasonNumber:  season,
+				AudioTracks:   []Track{},
+				Subtitles:     []Track{},
 			}
 		}
+		ep := episodesMap[key]
 
-		for _, audioFiles := range audioFilesMap {
-			if index >= len(audioFiles) {
-				continue
-			}
-			prepareEpisode.AudioFiles = append(prepareEpisode.AudioFiles, audioFiles[index])
+		switch track.Type {
+		case TrackTypeVideo:
+			ep.Video = &track
+		case TrackTypeAudio:
+			ep.AudioTracks = append(ep.AudioTracks, track)
+		case TrackTypeSubtitle:
+			ep.Subtitles = append(ep.Subtitles, track)
+		default:
+			return nil, fmt.Errorf("unknown track type: %s", track.Type)
 		}
-
-		for _, subtitleFiles := range subtitlesFilesMap {
-			if index >= len(subtitleFiles) {
-				continue
-			}
-			prepareEpisode.Subtitles = append(prepareEpisode.Subtitles, subtitleFiles[index])
-		}
-
-		result.Episodes = append(result.Episodes, prepareEpisode)
 	}
 
-	//output, err := json.Marshal(result)
-	//if err != nil {
-	//	return nil, fmt.Errorf("json.Marshal: %w", err)
-	//}
-	//err = os.WriteFile("output.json", output, 0644)
-	//if err != nil {
-	//	return nil, fmt.Errorf("os.WriteFile: %w", err)
-	//}
+	// Конвертируем мапу в слайс
+	episodes := make([]ContentMatch, 0, len(episodesMap))
+	for _, episode := range episodesMap {
+		episodes = append(episodes, *episode)
+	}
 
-	return &result, nil
+	return &ContentMatches{
+		Matches:     episodes,
+		Unallocated: unallocated,
+	}, nil
 }

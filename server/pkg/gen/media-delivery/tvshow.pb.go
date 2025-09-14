@@ -26,15 +26,12 @@ const (
 )
 
 type Image struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	W92   string                 `protobuf:"bytes,2,opt,name=w92,proto3" json:"w92,omitempty"`
-	// string w154 = 3;
-	W185 string `protobuf:"bytes,4,opt,name=w185,proto3" json:"w185,omitempty"`
-	W342 string `protobuf:"bytes,5,opt,name=w342,proto3" json:"w342,omitempty"`
-	// string w500 = 6;
-	// string w780 = 7;
-	Original      string `protobuf:"bytes,8,opt,name=original,proto3" json:"original,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	W92           string                 `protobuf:"bytes,2,opt,name=w92,proto3" json:"w92,omitempty"`
+	W185          string                 `protobuf:"bytes,4,opt,name=w185,proto3" json:"w185,omitempty"`
+	W342          string                 `protobuf:"bytes,5,opt,name=w342,proto3" json:"w342,omitempty"`
+	Original      string                 `protobuf:"bytes,8,opt,name=original,proto3" json:"original,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

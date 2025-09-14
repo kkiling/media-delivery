@@ -3,7 +3,8 @@ package videocontent
 import (
 	"context"
 
-	"github.com/samber/lo"
+	"github.com/kkiling/media-delivery/internal/server/handler/videocontent/mapfrom"
+	"github.com/kkiling/media-delivery/internal/server/handler/videocontent/mapto"
 
 	"github.com/kkiling/media-delivery/internal/server/handler"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
@@ -11,7 +12,7 @@ import (
 )
 
 func (h *Handler) CreateVideoContent(ctx context.Context, request *desc.CreateVideoContentRequest) (*desc.CreateVideoContentResponse, error) {
-	contentID := mapContentIDReq(request.ContentId)
+	contentID := mapfrom.ContentID(request.ContentId)
 
 	result, err := h.videoContent.CreateVideoContent(ctx, videocontent.CreateVideoContentParams{
 		ContentID: contentID,
@@ -22,12 +23,12 @@ func (h *Handler) CreateVideoContent(ctx context.Context, request *desc.CreateVi
 	}
 
 	return &desc.CreateVideoContentResponse{
-		Result: mapVideoContent(*result),
+		Result: mapto.VideoContent(*result),
 	}, nil
 }
 
 func (h *Handler) GetVideoContent(ctx context.Context, request *desc.GetVideoContentRequest) (*desc.GetVideoContentResponse, error) {
-	contentID := mapContentIDReq(request.ContentId)
+	contentID := mapfrom.ContentID(request.ContentId)
 
 	items, err := h.videoContent.GetVideoContent(ctx, contentID)
 	if err != nil {
@@ -35,14 +36,12 @@ func (h *Handler) GetVideoContent(ctx context.Context, request *desc.GetVideoCon
 	}
 
 	return &desc.GetVideoContentResponse{
-		Items: lo.Map(items, func(it videocontent.VideoContent, _ int) *desc.VideoContent {
-			return mapVideoContent(it)
-		}),
+		Items: mapto.VideoContents(items),
 	}, nil
 }
 
 func (h *Handler) GetTVShowDeliveryData(ctx context.Context, request *desc.GetTVShowDeliveryDataRequest) (*desc.GetTVShowDeliveryDataResponse, error) {
-	contentID := mapContentIDReq(request.ContentId)
+	contentID := mapfrom.ContentID(request.ContentId)
 
 	state, err := h.videoContent.GetTVShowDeliveryData(ctx, contentID)
 	if err != nil {
@@ -50,12 +49,12 @@ func (h *Handler) GetTVShowDeliveryData(ctx context.Context, request *desc.GetTV
 	}
 
 	return &desc.GetTVShowDeliveryDataResponse{
-		Result: mapTVShowDeliveryState(state),
+		Result: mapto.TVShowDeliveryState(state),
 	}, nil
 }
 
 func (h *Handler) ChoseTorrentOptions(ctx context.Context, request *desc.ChoseTorrentOptionsRequest) (*desc.ChoseTorrentOptionsResponse, error) {
-	contentID := mapContentIDReq(request.ContentId)
+	contentID := mapfrom.ContentID(request.ContentId)
 
 	state, err := h.videoContent.ChoseTorrentOptions(ctx, contentID, videocontent.ChoseTorrentOptions{
 		Href:           request.Href,
@@ -66,21 +65,22 @@ func (h *Handler) ChoseTorrentOptions(ctx context.Context, request *desc.ChoseTo
 	}
 
 	return &desc.ChoseTorrentOptionsResponse{
-		Result: mapTVShowDeliveryState(state),
+		Result: mapto.TVShowDeliveryState(state),
 	}, nil
 }
 
 func (h *Handler) ChoseFileMatchesOptions(ctx context.Context, request *desc.ChoseFileMatchesOptionsRequest) (*desc.ChoseFileMatchesOptionsResponse, error) {
-	contentID := mapContentIDReq(request.ContentId)
+	contentID := mapfrom.ContentID(request.ContentId)
 
 	state, err := h.videoContent.ChoseFileMatchesOptions(ctx, contentID, videocontent.ChoseFileMatchesOptions{
-		Approve: request.Approve,
+		Approve:        request.Approve,
+		ContentMatches: mapfrom.ContentMatches(request.ContentMatches),
 	})
 	if err != nil {
 		return nil, handler.HandleError(err, "videoContent.ChoseTorrentOptions")
 	}
 
 	return &desc.ChoseFileMatchesOptionsResponse{
-		Result: mapTVShowDeliveryState(state),
+		Result: mapto.TVShowDeliveryState(state),
 	}, nil
 }

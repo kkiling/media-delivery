@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { Api, TVShowDeliveryState, ContentID } from '@/api/api';
+import { Api, TVShowDeliveryState, ContentID, ContentMatches } from '@/api/api';
 
 export class TVShowDeliveryStore {
   deliveryState: TVShowDeliveryState | null = null;
@@ -71,7 +71,7 @@ export class TVShowDeliveryStore {
     }
   };
 
-  confirmFileMatches = async (contentId: ContentID) => {
+  confirmFileMatches = async (contentId: ContentID, result?: ContentMatches) => {
     this.setLoading(true);
     this.setError(null);
 
@@ -88,6 +88,7 @@ export class TVShowDeliveryStore {
       const response = await api.v1.videoContentServiceChoseFileMatchesOptions({
         content_id: contentId,
         approve: true,
+        content_matches: result,
       });
 
       this.setDeliveryState(response.data.result || null);

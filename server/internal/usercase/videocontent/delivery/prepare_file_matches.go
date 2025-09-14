@@ -3,6 +3,7 @@ package delivery
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/samber/lo"
 
@@ -12,99 +13,143 @@ import (
 type PreparingFileMatchesParams struct {
 	TorrentFiles []FileInfo
 	Episodes     []EpisodeInfo
-	SeasonInfo   SeasonInfo
 }
 
-func mapContentMatchesFromPrepareTVShowSeason(
-	torrentFiles []FileInfo,
-	episodes []EpisodeInfo,
-	prepareResult *matchtvshow.PrepareTVShowSeason,
-) ([]ContentMatches, error) {
-	epMap := make(map[int]EpisodeInfo)
+func episodeToString(seasonNumber uint8, episodeNumber int) string {
+	return fmt.Sprintf("%d-%d", seasonNumber, episodeNumber)
+}
+
+func sortResult(result *ContentMatches) {
+
+	sort.Slice(result.Matches, func(i, j int) bool {
+		if result.Matches[i].Episode.SeasonNumber == result.Matches[j].Episode.SeasonNumber {
+			return result.Matches[i].Episode.EpisodeNumber < result.Matches[j].Episode.EpisodeNumber
+		}
+		return result.Matches[i].Episode.SeasonNumber < result.Matches[j].Episode.SeasonNumber
+	})
+
+	// Сортируем нераспределенные файлы
+	// Определяем порядок сортировки по типам
+	var trackTypeOrder = map[TrackType]int{
+		TrackTypeVideo:    0,
+		TrackTypeAudio:    1,
+		TrackTypeSubtitle: 2,
+	}
+	sort.Slice(result.Unallocated, func(i, j int) bool {
+		a := result.Unallocated[i]
+		b := result.Unallocated[j]
+
+		// Сначала сортируем по типу
+		aOrder := trackTypeOrder[a.Type]
+		bOrder := trackTypeOrder[b.Type]
+
+		if aOrder != bOrder {
+			return aOrder < bOrder
+		}
+
+		// Если типы одинаковые, сортируем по имени
+		if a.Name != nil && b.Name != nil && *a.Name != *b.Name {
+			return *a.Name < *b.Name
+		}
+
+		// Если имена одинаковые или отсутствуют, сортируем по относительному пути
+		return a.File.RelativePath < b.File.RelativePath
+	})
+}
+
+func mapResult(prepare *matchtvshow.ContentMatches, torrentFiles []FileInfo, episodes []EpisodeInfo) (*ContentMatches, error) {
+	matchesMap := make(map[string]*ContentMatch)
+	unallocated := make([]Track, 0)
+	matches := make([]ContentMatch, 0)
+
 	for _, episode := range episodes {
-		epMap[episode.EpisodeNumber] = episode
+		key := episodeToString(episode.SeasonNumber, episode.EpisodeNumber)
+		matchesMap[key] = &ContentMatch{
+			Episode: episode,
+		}
 	}
 
-	fileMap := make(map[string]FileInfo)
+	torrentFilesMap := make(map[string]FileInfo)
 	for _, file := range torrentFiles {
-		fileMap[file.RelativePath] = file
+		torrentFilesMap[file.RelativePath] = file
 	}
 
-	toTrack := func(tracks []matchtvshow.PrepareTrack) []Track {
-		return lo.Map(tracks, func(item matchtvshow.PrepareTrack, _ int) Track {
-			return Track{
-				Name:     item.Name,
-				Language: item.Language,
-				File:     fileMap[item.File],
-			}
+	toTrack := func(item matchtvshow.Track) Track {
+		file := torrentFilesMap[item.File]
+		return Track{
+			Type:     TrackType(item.Type),
+			Name:     &item.Name,
+			Language: item.Language,
+			File:     file,
+		}
+	}
+	toTracks := func(tracks []matchtvshow.Track) []Track {
+		return lo.Map(tracks, func(item matchtvshow.Track, _ int) Track {
+			return toTrack(item)
 		})
 	}
 
-	result := make([]ContentMatches, 0, len(prepareResult.Episodes))
-	for _, prepareEpisode := range prepareResult.Episodes {
-		episode := epMap[prepareEpisode.Episode.EpisodeNumber]
-
-		var videoFile FileInfo
-		if prepareEpisode.VideoFile != nil {
-			videoFile = fileMap[prepareEpisode.VideoFile.File]
-			episode.FileName += videoFile.Extension
-			episode.RelativePath += videoFile.Extension
+	for _, prepareMatch := range prepare.Matches {
+		key := episodeToString(prepareMatch.SeasonNumber, prepareMatch.EpisodeNumber)
+		match, ok := matchesMap[key]
+		if !ok {
+			// Если не нашел то добавляем треки в нераспределенные
+			if prepareMatch.Video != nil {
+				unallocated = append(unallocated, toTrack(*prepareMatch.Video))
+			}
+			unallocated = append(unallocated, toTracks(prepareMatch.AudioTracks)...)
+			unallocated = append(unallocated, toTracks(prepareMatch.Subtitles)...)
+			continue
 		}
-
-		content := ContentMatches{
-			Episode: episode,
-			Video: VideoFile{
-				File: videoFile,
-			},
-			AudioFiles: toTrack(prepareEpisode.AudioFiles),
-			Subtitles:  toTrack(prepareEpisode.Subtitles),
+		if prepareMatch.Video != nil {
+			match.Video = lo.ToPtr(toTrack(*prepareMatch.Video))
 		}
+		match.AudioTracks = toTracks(prepareMatch.AudioTracks)
+		match.Subtitles = toTracks(prepareMatch.Subtitles)
+	}
+	unallocated = append(unallocated, toTracks(prepare.Unallocated)...)
 
-		result = append(result, content)
+	// Сортируем эпизоды
+	for _, track := range matchesMap {
+		matches = append(matches, *track)
 	}
 
-	return result, nil
-}
-
-func mapToPrepareTvShowPrams(torrentFiles []FileInfo, seasonInfo SeasonInfo, episodes []EpisodeInfo) (*matchtvshow.PrepareTvShowPrams, error) {
-	return &matchtvshow.PrepareTvShowPrams{
-		SeasonInfo: matchtvshow.TVShowSeasonInfo{
-			TVShowName:    seasonInfo.TVShowName,
-			FirstAirYear:  seasonInfo.FirstAirYear,
-			SeasonName:    seasonInfo.SeasonName,
-			SeasonNumber:  seasonInfo.SeasonNumber,
-			SeasonAirYear: seasonInfo.SeasonAirYear,
+	result := ContentMatches{
+		Matches:     matches,
+		Unallocated: unallocated,
+		Options: ContentMatchesOptions{
+			KeepOriginalAudio:     true,
+			KeepOriginalSubtitles: true,
+			DefaultAudioTrackName: func() *string {
+				if len(matches) > 0 && len(matches[0].AudioTracks) > 0 {
+					return matches[0].AudioTracks[0].Name
+				}
+				return nil
+			}(),
+			DefaultSubtitleTrack: nil,
 		},
-		Episodes: lo.Map(episodes, func(episode EpisodeInfo, _ int) matchtvshow.EpisodeInfo {
-			return matchtvshow.EpisodeInfo{
-				EpisodeNumber: episode.EpisodeNumber,
-				EpisodeName:   episode.EpisodeName,
-			}
-		}),
-		TorrentFiles: lo.Map(torrentFiles, func(item FileInfo, _ int) string {
-			return item.RelativePath
-		}),
-	}, nil
+	}
+	sortResult(&result)
+
+	return &result, nil
 }
 
 // PrepareFileMatches получение информации о файлах раздачи
-func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMatchesParams) ([]ContentMatches, error) {
+func (s *Service) PrepareFileMatches(ctx context.Context, params PreparingFileMatchesParams) (*ContentMatches, error) {
 	// Подготавливаем параметры для преобразования файлов
-	prepareParams, err := mapToPrepareTvShowPrams(params.TorrentFiles, params.SeasonInfo, params.Episodes)
+	torrentFiles := lo.Map(params.TorrentFiles, func(item FileInfo, _ int) string {
+		return item.RelativePath
+	})
 
+	prepare, err := s.prepareTVShow.MatchEpisodeFiles(torrentFiles)
 	if err != nil {
-		return nil, fmt.Errorf("mapToPrepareTvShowPrams: %w", err)
-	}
-
-	prepareResult, err := s.prepareTVShow.PrepareTvShowSeason(prepareParams)
-	if err != nil {
-		return nil, fmt.Errorf("prepareTVShow.PrepareTvShowSeason: %w", err)
+		return nil, fmt.Errorf("prepareTVShow.MatchEpisodeFiles: %w", err)
 	}
 
 	// Получаем инфу о метчах
-	result, err := mapContentMatchesFromPrepareTVShowSeason(params.TorrentFiles, params.Episodes, prepareResult)
+	result, err := mapResult(prepare, params.TorrentFiles, params.Episodes)
 	if err != nil {
-		return nil, fmt.Errorf("mapContentMatchesFromPrepareTVShowSeason: %w", err)
+		return nil, fmt.Errorf("mapResult: %w", err)
 	}
 
 	return result, nil

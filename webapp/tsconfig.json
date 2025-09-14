@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2017", // или хотя бы "es2015"
+    "downlevelIteration": true, // чтобы корректно работали Set/Map
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -25,7 +22,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

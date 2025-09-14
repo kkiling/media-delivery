@@ -7,7 +7,11 @@ bin-deps:
 	go install github.com/golang/mock/mockgen@v1.6.0
 	go install github.com/pav5000/smartimports/cmd/smartimports@v0.2.0
 	go install github.com/pressly/goose/v3/cmd/goose@latest
+	go install github.com/matm/gocov-html/cmd/gocov-html@latest
+	go install github.com/axw/gocov/gocov@latest
 	go install tool
+
+
 
 .PHONY: mocks
 mocks:
@@ -18,6 +22,13 @@ mocks:
 test:
 	@echo "\n --- 🧪 Run project tests --- \n"
 	go test ./...
+
+coverage:
+	go test -coverprofile=coverage.out ./...
+	gocov convert coverage.out | gocov-html > coverage.html
+	open coverage.html 2>/dev/null || xdg-open coverage.html 2>/dev/null || echo "Open coverage.html manually"
+	@echo "🖲️ Coverage summary:"
+	@go tool cover -func=coverage.out | grep total | awk '{printf "\033[32m✅ Total coverage: %s\033[0m\n", $$3}'
 
 .PHONY: format
 format:

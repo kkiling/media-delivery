@@ -1,12 +1,18 @@
-import { ContentID, ErrorType, MediadeliveryStatus, TVShowDeliveryStatus } from '@/api/api';
+import {
+  ContentID,
+  ErrorType,
+  MediadeliveryStatus,
+  TVShowDeliveryStep,
+  ContentMatches as MatchContents,
+} from '@/api/api';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { tvShowDeliveryStore } from '@/stores/tvShowDeliveryStore';
 import { TorrentSearchList } from './TorrentSearchList';
 import Loading from '../Loading';
-import { ContentMatche } from './ContentMatches';
 import { TorrentDownloadProgress, TorrentWaitingFiles } from './TorrentDownloadProgress';
 import { MergeVideoProgress } from './MergeVideoProgress';
+import { ContentMatches } from './ContentMatches';
 
 const AUTO_RELOAD_TIMEOUT = 3000 as const;
 
@@ -25,8 +31,8 @@ export const TVShowDeliveryContent = observer(
       let interval: NodeJS.Timeout | null = null;
 
       const nonPollingStates = [
-        TVShowDeliveryStatus.WaitingChoseFileMatches,
-        TVShowDeliveryStatus.WaitingUserChoseTorrent,
+        TVShowDeliveryStep.WaitingChoseFileMatches,
+        TVShowDeliveryStep.WaitingUserChoseTorrent,
       ];
 
       if (
@@ -59,13 +65,13 @@ export const TVShowDeliveryContent = observer(
     };
 
     const onTorrentSelect = async (href: string) => {
-      await tvShowDeliveryStore.selectTorrent(contentId, href);
       document.getElementById('video-content-header')?.scrollIntoView();
+      await tvShowDeliveryStore.selectTorrent(contentId, href);
     };
 
-    const onConfirmFileMatches = async () => {
-      await tvShowDeliveryStore.confirmFileMatches(contentId);
+    const onConfirmFileMatches = async (result?: MatchContents) => {
       document.getElementById('video-content-header')?.scrollIntoView();
+      await tvShowDeliveryStore.confirmFileMatches(contentId, result);
     };
 
     const { loading, error, deliveryState } = tvShowDeliveryStore;
@@ -92,11 +98,11 @@ export const TVShowDeliveryContent = observer(
     }
 
     switch (deliveryState.step) {
-      case TVShowDeliveryStatus.GenerateSearchQuery:
-      case TVShowDeliveryStatus.SearchTorrents:
+      case TVShowDeliveryStep.GenerateSearchQuery:
+      case TVShowDeliveryStep.SearchTorrents:
         // Поиск раздач
         return <Loading text="Search torrents" />;
-      case TVShowDeliveryStatus.WaitingUserChoseTorrent:
+      case TVShowDeliveryStep.WaitingUserChoseTorrent:
         // Отображение списка найденных торрентов
         return (
           <TorrentSearchList
@@ -106,39 +112,39 @@ export const TVShowDeliveryContent = observer(
             onSelect={onTorrentSelect}
           />
         );
-      case TVShowDeliveryStatus.GetMagnetLink:
-      case TVShowDeliveryStatus.AddTorrentToTorrentClient:
-      case TVShowDeliveryStatus.PrepareFileMatches:
+      case TVShowDeliveryStep.GetMagnetLink:
+      case TVShowDeliveryStep.AddTorrentToTorrentClient:
+      case TVShowDeliveryStep.PrepareFileMatches:
         // Ожидание получения списка файлов
         return <Loading text="Waiting torrent files" />;
-      case TVShowDeliveryStatus.WaitingTorrentFiles:
+      case TVShowDeliveryStep.WaitingTorrentFiles:
         // Ожидание получения списка файлов
         return <TorrentWaitingFiles status={deliveryState.data?.torrent_download_status} />;
-      case TVShowDeliveryStatus.WaitingChoseFileMatches:
+      case TVShowDeliveryStep.WaitingChoseFileMatches:
         // Отображение выбора совпадений файлов
         return (
-          <ContentMatche
+          <ContentMatches
             loading={loading}
-            contentMatches={deliveryState.data?.content_matches}
+            contentMatches={deliveryState.data?.content_matches || {}}
             onConfirm={onConfirmFileMatches}
           />
         );
-      case TVShowDeliveryStatus.CreateVideoContentCatalogs:
-      case TVShowDeliveryStatus.DeterminingNeedConvertFiles:
-      case TVShowDeliveryStatus.StartMergeVideoFiles:
+      case TVShowDeliveryStep.CreateVideoContentCatalogs:
+      case TVShowDeliveryStep.DeterminingNeedConvertFiles:
+      case TVShowDeliveryStep.StartMergeVideoFiles:
         // Обрабатываем файлы
         return <Loading text="Prepare files" />;
-      case TVShowDeliveryStatus.CreateHardLinkCopy:
-      case TVShowDeliveryStatus.GetCatalogsSize:
-      case TVShowDeliveryStatus.SetMediaMetaData:
-      case TVShowDeliveryStatus.SendDeliveryNotification:
-      case TVShowDeliveryStatus.GetEpisodesData:
-      case TVShowDeliveryStatus.TVShowDeliveryStatusUnknown:
+      case TVShowDeliveryStep.CreateHardLinkCopy:
+      case TVShowDeliveryStep.GetCatalogsSize:
+      case TVShowDeliveryStep.SetMediaMetaData:
+      case TVShowDeliveryStep.SendDeliveryNotification:
+      case TVShowDeliveryStep.GetEpisodesData:
+      case TVShowDeliveryStep.TVShowDeliveryStepUnknown:
         // Последние приготовления
         return <Loading text="There's just a little bit left" />;
-      case TVShowDeliveryStatus.WaitingTorrentDownloadComplete:
+      case TVShowDeliveryStep.WaitingTorrentDownloadComplete:
         return <TorrentDownloadProgress status={deliveryState.data?.torrent_download_status} />;
-      case TVShowDeliveryStatus.WaitingMergeVideoFiles:
+      case TVShowDeliveryStep.WaitingMergeVideoFiles:
         return <MergeVideoProgress status={deliveryState.data?.merge_video_status} />;
       default:
         return <Loading text="Unknown status" />;

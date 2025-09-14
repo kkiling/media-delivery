@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kkiling/media-delivery/internal/server/handler"
+	"github.com/kkiling/media-delivery/internal/server/handler/tvshowlibrary/mapto"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
@@ -18,7 +19,7 @@ func (h *Handler) SearchTVShow(ctx context.Context, request *desc.SearchTVShowRe
 	}
 
 	return &desc.SearchTVShowResponse{
-		Items: mapTvShowShorts(result.Items),
+		Items: mapto.TVShowShorts(result.Items),
 	}, nil
 }
 
@@ -31,7 +32,7 @@ func (h *Handler) GetTVShowInfo(ctx context.Context, request *desc.GetTVShowInfo
 		return nil, handler.HandleError(err, "tvShowLibrary.GetTVShowInfo")
 	}
 
-	return &desc.GetTVShowInfoResponse{Result: mapTvShow(result.Result)}, nil
+	return &desc.GetTVShowInfoResponse{Result: mapto.TVShow(result.Result)}, nil
 }
 
 func (h *Handler) GetSeasonInfo(ctx context.Context, request *desc.GetSeasonInfoRequest) (*desc.GetSeasonInfoResponse, error) {
@@ -45,8 +46,8 @@ func (h *Handler) GetSeasonInfo(ctx context.Context, request *desc.GetSeasonInfo
 	}
 
 	return &desc.GetSeasonInfoResponse{
-		Season:   mapSeason(res.Result.Season),
-		Episodes: mapEpisodes(res.Result.Episodes),
+		Season:   mapto.Season(res.Result.Season),
+		Episodes: mapto.Episodes(res.Result.Episodes),
 	}, nil
 }
 
@@ -58,6 +59,6 @@ func (h *Handler) GetTVShowsFromLibrary(ctx context.Context, request *desc.GetTV
 	}
 
 	return &desc.GetTVShowsFromLibraryResponse{
-		Items: mapTvShowShorts(result.Items),
+		Items: mapto.TVShowShorts(result.Items),
 	}, nil
 }

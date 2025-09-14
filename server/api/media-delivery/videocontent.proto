@@ -90,9 +90,9 @@ enum Status {
   FailedStatus = 4;
 }
 
-enum TVShowDeliveryStatus {
+enum TVShowDeliveryStep {
   // Неизвестный статус доставки
-  TVShowDeliveryStatusUnknown = 0;
+  TVShowDeliveryStepUnknown = 0;
   // Генерация запроса к трекеру
   GenerateSearchQuery = 1;
   // Поиск раздач сезона сериала/фильма
@@ -142,36 +142,54 @@ message TorrentSearch {
   string added_date = 7;
 }
 
-message FileInfo {
-  string relative_path = 1;
-  string full_path = 2;
-  int64  size = 3;
-  string extension = 4;
-}
-
 message EpisodeInfo {
   uint32 season_number = 1;
-  string episode_name = 2;
-  uint32 episode_number = 3;
-  string file_name = 4;
-  string relative_path = 5;
-}
-
-message VideoFile {
-  FileInfo file = 1;
+  uint32 episode_number = 2;
+  string full_path = 3;
+  string relative_path = 4;
 }
 
 message Track {
-  FileInfo file = 1;
-  string name = 2;
-  string language = 3;
+  enum TrackType {
+    TRACK_TYPE_UNKNOWN = 0;
+    TRACK_TYPE_VIDEO = 1;
+    TRACK_TYPE_AUDIO = 2;
+    TRACK_TYPE_SUBTITLE = 3;
+  }
+  string relative_path = 1;
+  string full_path = 2;
+  optional string name = 3;
+  optional string language = 4;
+  TrackType type = 5;
+}
+
+message ContentMatch {
+  // Инфа о сезоне
+  EpisodeInfo episode = 1;
+  // Видеодорожка
+  Track video = 2;
+  // Аудиодорожки
+  repeated Track audio_tracks = 3;
+  // Субтитры
+  repeated Track subtitles = 4;
 }
 
 message ContentMatches {
-  EpisodeInfo episode = 1;
-  VideoFile video = 2;
-  repeated Track audio_files = 3;
-  repeated Track subtitles = 4;
+  message Options {
+    // Оставлять оригинальные аудиодорожки (если они есть)
+    bool keep_original_audio = 1;
+    // Оставлять оригинальные субтитры (если они есть)
+    bool keep_original_subtitles = 2;
+    // Дефолтная аудиодорожка
+    optional string default_audio_track_name = 3;
+    // Дефолтные субтитры
+    optional string default_subtitle_track = 4;
+  }
+  repeated ContentMatch matches = 1;
+  // Нераспредленные треки
+  repeated Track unallocated  = 2;
+  // Опции
+  Options options = 3;
 }
 
 message TorrentDownloadStatus {
@@ -226,7 +244,7 @@ message TVShowDeliveryData {
   // Результат поиска торрент раздач
   repeated TorrentSearch torrent_search = 2;
   // Результат метча файлов
-  repeated ContentMatches content_matches = 3;
+  optional ContentMatches content_matches = 3;
   // статус скачивания раздачи
   optional TorrentDownloadStatus torrent_download_status = 4;
   // статус сшивания файлов
@@ -255,7 +273,7 @@ message SearchQuery {
 
 message TVShowDeliveryState {
   TVShowDeliveryData data = 1;
-  TVShowDeliveryStatus step = 2;
+  TVShowDeliveryStep step = 2;
   Status status = 3;
   optional TVShowDeliveryError error = 4;
 }
@@ -300,6 +318,8 @@ message ChoseFileMatchesOptionsRequest {
   ContentID content_id = 1;
   // Пользователь подтверждает сметченные файлы
   bool approve = 2;
+  // Метч контента, если захотели изменить
+  optional ContentMatches content_matches = 3;
 }
 
 message ChoseFileMatchesOptionsResponse {

@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 
@@ -32,46 +33,38 @@ func (s *Merge) Merge(ctx context.Context, params MergeParams, outputChan chan<-
 		return fmt.Errorf("input video file does not exist: %s", params.VideoInputFile)
 	}
 
-	// Проверка аудиодорожек
-	for _, track := range params.AudioTracks {
-		if _, err = os.Stat(track.Path); os.IsNotExist(err) {
-			return fmt.Errorf("audio track file does not exist: %s", track.Path)
+	tracks := make([]Track, 0)
+	tracks = append(tracks, params.AudioTracks...)
+	tracks = append(tracks, params.SubtitleTracks...)
+	sort.Slice(tracks, func(i, j int) bool {
+		if tracks[i].Default && !tracks[j].Default {
+			return true
 		}
-	}
-
-	// Проверка субтитров
-	for _, track := range params.SubtitleTracks {
-		if _, err = os.Stat(track.Path); os.IsNotExist(err) {
-			return fmt.Errorf("subtitle file does not exist: %s", track.Path)
-		}
-	}
+		return false
+	})
 
 	args := []string{"-o", filepath.Clean(params.VideoOutputFile)}
+	if !params.KeepOriginalAudio {
+		args = append(args, "--no-audio")
+	}
+	if !params.KeepOriginalSubtitles {
+		args = append(args, "--no-subtitles")
+	}
+	args = append(args, "--default-track", "1:no")
 	args = append(args, filepath.Clean(params.VideoInputFile))
 
 	// Добавляем аудиодорожки
-	for _, track := range params.AudioTracks {
-		{
-			if track.Language != "" {
-				args = append(args, "--language", "0:"+track.Language)
-			}
+	for _, track := range tracks {
+		if _, err = os.Stat(track.Path); os.IsNotExist(err) {
+			return fmt.Errorf("audio track file does not exist: %s", track.Path)
+		}
+		if track.Language != nil {
+			args = append(args, "--language", "0:"+*track.Language)
 		}
 		args = append(args,
 			"--track-name", "0:"+track.Name,
 			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
-		)
-	}
-
-	// Добавляем субтитры
-	for _, track := range params.SubtitleTracks {
-		if track.Language != "" {
-			args = append(args, "--language", "0:"+track.Language)
-		}
-		args = append(args,
-			"--track-name", "0:"+track.Name,
-			"--default-track", fmt.Sprintf("0:%s", lo.Ternary(track.Default, "yes", "no")),
-			filepath.Clean(track.Path), // Путь к файлу идет ПОСЛЕ флагов!
+			filepath.Clean(track.Path),
 		)
 	}
 

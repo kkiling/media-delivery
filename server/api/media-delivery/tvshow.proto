@@ -47,11 +47,8 @@ service TVShowLibraryService {
 message Image {
   string id = 1;
   string w92 = 2;
-  //string w154 = 3;
   string w185 = 4;
   string w342 = 5;
-  //string w500 = 6;
-  //string w780 = 7;
   string original = 8;
 }
 
