@@ -182,5 +182,7 @@ cython_debug/
 # Исключить файл .testenv
 .testenv
 config.yml
+coverage.html
+coverage.out
 
 vendor.protogen
