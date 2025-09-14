@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 	"github.com/kkiling/statemachine"
@@ -277,10 +279,17 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// Определение необходимости конвертации файлов
 					data := stepContext.State.Data
+					// Для файлов эпизодов назначаем расширения файлов
+					for _, match := range data.ContentMatches.Matches {
+						ext := strings.ToLower(filepath.Ext(match.Video.File.FullPath))
+						match.Episode.FullPath += ext
+						match.Episode.RelativePath += ext
+					}
+
 					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches.Matches) {
 						return stepContext.Next(StartMergeVideoFiles).WithData(data)
 					}
-					return stepContext.Next(CreateHardLinkCopy)
+					return stepContext.Next(CreateHardLinkCopy).WithData(data)
 				},
 			},
 			CreateHardLinkCopy: {
