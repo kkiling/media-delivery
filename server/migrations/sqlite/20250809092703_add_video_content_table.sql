@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS video_content (
+CREATE TABLE video_content (
     -- Идентификатор записи (uuid.UUID как строка)
     id TEXT PRIMARY KEY NOT NULL,
     -- Дата создания 
@@ -12,14 +12,10 @@ CREATE TABLE IF NOT EXISTS video_content (
     -- Номер сезона сериала
     season_number INTEGER,
     -- Статус доставки
-    delivery_status TEXT NOT NULL,
+    delivery_status INTEGER NOT NULL,
     -- Массив состояний State в JSON:
     -- [{ "state_id": "<uuid>", "type": "<value>" }, ...]
     states_json TEXT,
-    -- Ограничения
-    CONSTRAINT delivery_status_chk CHECK (
-        delivery_status IN ('failed', 'in_progress', 'delivered' , 'updating' , 'deleting' , 'deleted')
-    ),
     -- Ровно один вариант ContentID: либо movie, либо tvshow+season
     CONSTRAINT content_choice_chk CHECK (
         (movie_id IS NOT NULL AND tvshow_id IS NULL AND season_number IS NULL)
@@ -31,5 +27,5 @@ CREATE TABLE IF NOT EXISTS video_content (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS video_content;
+DROP TABLE video_content;
 -- +goose StatementEnd

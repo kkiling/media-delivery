@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/common"
 )
 
 type AddTorrentParams struct {

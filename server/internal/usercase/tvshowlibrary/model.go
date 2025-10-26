@@ -3,13 +3,10 @@ package tvshowlibrary
 import "time"
 
 type Image struct {
-	ID  string
-	W92 string
-	//W154     string
-	W185 string
-	W342 string
-	//W500     string
-	//W780     string
+	ID       string
+	W92      string
+	W185     string
+	W342     string
 	Original string
 }
 
