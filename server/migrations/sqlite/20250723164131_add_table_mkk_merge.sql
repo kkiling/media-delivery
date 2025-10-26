@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 -- Таблица для хранения результатов слияния
-CREATE TABLE IF NOT EXISTS mkv_merge (
+CREATE TABLE mkv_merge (
     id UUID PRIMARY KEY,
     idempotency_key TEXT NOT NULL,  -- uuid.UUID
     params JSONB NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS mkv_merge (
 CREATE UNIQUE INDEX idx_mkv_merge_idempotency_key ON mkv_merge(idempotency_key);
 
 -- Таблица для логов процесса слияния
-CREATE TABLE IF NOT EXISTS mkv_merge_logs (
+CREATE TABLE  mkv_merge_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     merge_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL,

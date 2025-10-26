@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )

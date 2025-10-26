@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
+	"github.com/kkiling/media-delivery/internal/common"
 )
 
 type SetMediaMetaDataParams struct {

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/samber/lo"
 
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 )
 
 type GenerateSearchQueryParams struct {

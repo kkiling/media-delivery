@@ -5,6 +5,7 @@ import (
 
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase/sqlitebase"
+	"github.com/kkiling/media-delivery/internal/usercase/labels"
 	"github.com/kkiling/statemachine"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
@@ -15,6 +16,7 @@ import (
 	"github.com/kkiling/media-delivery/internal/adapter/rutracker"
 	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
 	"github.com/kkiling/media-delivery/internal/config"
+	labelsSqlite "github.com/kkiling/media-delivery/internal/usercase/labels/storage/sqlite"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 	tvShowLibrarySqlite "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/sqlite"
 	contentDelivery "github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
@@ -34,23 +36,26 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 	logger := log.NewLogger(log.Level(cfg.Server.LogLevel))
 
 	// Storage
-	tvShowLibraryStorage, err := tvShowLibrarySqlite.NewStorage(sqlitebase.Config{
+	sqlBaseCfg := sqlitebase.Config{
 		DSN: cfg.Sqlite.SqliteDsn,
-	}, logger)
+	}
+
+	tvShowLibraryStorage, err := tvShowLibrarySqlite.NewStorage(sqlBaseCfg, logger)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
 	}
 
-	stateStorage, err := statemachine.NewSqliteStorage(statemachine.SqliteConfig{
-		DSN: cfg.Sqlite.SqliteDsn,
-	}, logger)
+	stateStorage, err := statemachine.NewSqliteStorage(sqlBaseCfg, logger)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
 	}
 
-	contentStorage, err := contentSqlite.NewStorage(sqlitebase.Config{
-		DSN: cfg.Sqlite.SqliteDsn,
-	}, logger)
+	contentStorage, err := contentSqlite.NewStorage(sqlBaseCfg, logger)
+	if err != nil {
+		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
+	}
+
+	labelsStorage, err := labelsSqlite.NewStorage(sqlBaseCfg, logger)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
 	}
@@ -108,6 +113,8 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 
 	prepareTVShowService := prepareTVShow.NewService()
 
+	labelsService := labels.NewService(labelsStorage)
+
 	// UserCase
 	tvShowLibrary := tvshowlibrary.NewService(tvShowLibraryStorage, themoviedbApi)
 
@@ -126,7 +133,13 @@ func NewContainer(cfg *config.AppConfig) (*Container, error) {
 	)
 	tvShowDeliveryStateMachine := tvshowdeliverystate.NewState(deliveryService, stateStorage)
 
-	deliveryContent := contentDelivery.NewService(logger, contentStorage, tvShowLibrary, tvShowDeliveryStateMachine)
+	deliveryContent := contentDelivery.NewService(
+		logger,
+		contentStorage,
+		tvShowLibrary,
+		tvShowDeliveryStateMachine,
+		labelsService,
+	)
 
 	return &Container{
 		logger:           logger,

@@ -4,26 +4,25 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
-
+	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 )
 
-type DeliveryStatus string
+type DeliveryStatus int
 
 const (
 	// DeliveryStatusFailed доставка была зафейлена
-	DeliveryStatusFailed DeliveryStatus = "failed"
+	DeliveryStatusFailed DeliveryStatus = iota
 	// DeliveryStatusInProgress - В процессе доставки файлов
-	DeliveryStatusInProgress DeliveryStatus = "in_progress"
+	DeliveryStatusInProgress DeliveryStatus = iota
 	// DeliveryStatusDelivered - Файлы доставлены
-	DeliveryStatusDelivered DeliveryStatus = "delivered"
+	DeliveryStatusDelivered DeliveryStatus = iota
 	// DeliveryStatusUpdating - Обновление раздачи
-	DeliveryStatusUpdating DeliveryStatus = "updating"
+	DeliveryStatusUpdating DeliveryStatus = iota
 	// DeliveryStatusDeleting - В процессе удаления файлов в диска
-	DeliveryStatusDeleting DeliveryStatus = "deleting"
+	DeliveryStatusDeleting DeliveryStatus = iota
 	// DeliveryStatusDeleted - Файлы удалены
-	DeliveryStatusDeleted DeliveryStatus = "deleted"
+	DeliveryStatusDeleted DeliveryStatus = iota
 )
 
 type TorrentInfo struct {

@@ -10,8 +10,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase/sqlitebase"
+	"github.com/kkiling/media-delivery/internal/common"
 
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
 )
 
@@ -84,12 +84,11 @@ func (s *Storage) getVideoContents(rows *sql.Rows) ([]content.VideoContent, erro
 	var results []content.VideoContent
 	for rows.Next() {
 		var (
-			vc                content.VideoContent
-			movieID           sql.NullInt64
-			tvshowID          sql.NullInt64
-			seasonNumber      sql.NullInt16
-			deliveryStatusStr string
-			statesJSON        sql.NullString
+			vc           content.VideoContent
+			movieID      sql.NullInt64
+			tvshowID     sql.NullInt64
+			seasonNumber sql.NullInt16
+			statesJSON   sql.NullString
 		)
 
 		err := rows.Scan(
@@ -98,7 +97,7 @@ func (s *Storage) getVideoContents(rows *sql.Rows) ([]content.VideoContent, erro
 			&movieID,
 			&tvshowID,
 			&seasonNumber,
-			&deliveryStatusStr,
+			&vc.DeliveryStatus,
 			&statesJSON,
 		)
 		if err != nil {
@@ -121,9 +120,6 @@ func (s *Storage) getVideoContents(rows *sql.Rows) ([]content.VideoContent, erro
 		}
 		vc.ContentID = cid
 
-		// DeliveryStatus
-		vc.DeliveryStatus = content.DeliveryStatus(deliveryStatusStr)
-
 		// unmarshal states
 		if statesJSON.Valid && statesJSON.String != "" {
 			if err := json.Unmarshal([]byte(statesJSON.String), &vc.State); err != nil {
@@ -142,7 +138,6 @@ func (s *Storage) getVideoContents(rows *sql.Rows) ([]content.VideoContent, erro
 }
 
 func (s *Storage) GetVideoContents(ctx context.Context, contentID common.ContentID) ([]content.VideoContent, error) {
-
 	next := s.base.Next(ctx)
 	var rows *sql.Rows
 	var err error

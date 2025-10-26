@@ -9,9 +9,8 @@ bin-deps:
 	go install github.com/pressly/goose/v3/cmd/goose@latest
 	go install github.com/matm/gocov-html/cmd/gocov-html@latest
 	go install github.com/axw/gocov/gocov@latest
+	go install github.com/ofabry/go-callvis@latest
 	go install tool
-
-
 
 .PHONY: mocks
 mocks:
@@ -65,3 +64,8 @@ run:
 
 build-docker:
 	docker build -f build/Dockerfile -t media-delivery-server:latest .
+
+# Граф проекта
+.PHONY: callvis
+callvis:
+	go-callvis -focus=main -http=:7878 ./cmd
