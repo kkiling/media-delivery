@@ -89,7 +89,7 @@ func (s *Pipeline) startTimer(ctx context.Context) error {
 	}
 }
 
-func (s *Pipeline) getProgress(content string) *float64 {
+func (s *Pipeline) getProgress(content string) *float32 {
 	// Регулярное выражение для поиска прогресса в формате "Progress: XX%"
 	re := regexp.MustCompile(`Progress:\s*(\d+)%`)
 
@@ -113,7 +113,7 @@ func (s *Pipeline) getProgress(content string) *float64 {
 	}
 
 	// Конвертируем в float64 и делим на 100 для получения значения 0-1
-	progress := float64(progressInt) / 100.0
+	progress := float32(progressInt) / 100.0
 	return &progress
 }
 

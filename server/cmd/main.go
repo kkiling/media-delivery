@@ -35,16 +35,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	cn, err := container.NewContainer(cfg)
+	cn, err := container.NewContainer(ctx, cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	logger := cn.GetLogger()
-
-	if err := sqliteMigrate(logger, cfg.Sqlite.SqliteDsn); err != nil {
-		logger.Fatal(err)
-	}
 
 	go func() {
 		err = cn.MkvMergePipeline().StartMergePipeline(ctx)

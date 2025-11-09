@@ -7,15 +7,16 @@
 package api
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -226,12 +227,12 @@ type TVShow struct {
 	NumberOfEpisodes uint32                 `protobuf:"varint,14,opt,name=number_of_episodes,json=numberOfEpisodes,proto3" json:"number_of_episodes,omitempty"`
 	NumberOfSeasons  uint32                 `protobuf:"varint,15,opt,name=number_of_seasons,json=numberOfSeasons,proto3" json:"number_of_seasons,omitempty"`
 	OriginCountry    []string               `protobuf:"bytes,16,rep,name=origin_country,json=originCountry,proto3" json:"origin_country,omitempty"`
-	Status           string                 `protobuf:"bytes,17,opt,name=status,proto3" json:"status,omitempty"`
-	Tagline          string                 `protobuf:"bytes,18,opt,name=tagline,proto3" json:"tagline,omitempty"`
-	Type             string                 `protobuf:"bytes,19,opt,name=type,proto3" json:"type,omitempty"`
-	Seasons          []*Season              `protobuf:"bytes,20,rep,name=seasons,proto3" json:"seasons,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// string status = 17;
+	Tagline string `protobuf:"bytes,18,opt,name=tagline,proto3" json:"tagline,omitempty"`
+	// string type = 19;
+	Seasons       []*Season `protobuf:"bytes,20,rep,name=seasons,proto3" json:"seasons,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *TVShow) Reset() {
@@ -369,23 +370,9 @@ func (x *TVShow) GetOriginCountry() []string {
 	return nil
 }
 
-func (x *TVShow) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
 func (x *TVShow) GetTagline() string {
 	if x != nil {
 		return x.Tagline
-	}
-	return ""
-}
-
-func (x *TVShow) GetType() string {
-	if x != nil {
-		return x.Type
 	}
 	return ""
 }
@@ -399,7 +386,6 @@ func (x *TVShow) GetSeasons() []*Season {
 
 type Season struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	AirDate       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=air_date,json=airDate,proto3" json:"air_date,omitempty"`
 	EpisodeCount  uint32                 `protobuf:"varint,3,opt,name=episode_count,json=episodeCount,proto3" json:"episode_count,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
@@ -439,13 +425,6 @@ func (x *Season) ProtoReflect() protoreflect.Message {
 // Deprecated: Use Season.ProtoReflect.Descriptor instead.
 func (*Season) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *Season) GetId() uint64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
 }
 
 func (x *Season) GetAirDate() *timestamppb.Timestamp {
@@ -499,16 +478,15 @@ func (x *Season) GetVoteAverage() float32 {
 
 type Episode struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	AirDate       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=air_date,json=airDate,proto3" json:"air_date,omitempty"`
 	EpisodeNumber uint32                 `protobuf:"varint,3,opt,name=episode_number,json=episodeNumber,proto3" json:"episode_number,omitempty"`
-	EpisodeType   string                 `protobuf:"bytes,4,opt,name=episode_type,json=episodeType,proto3" json:"episode_type,omitempty"`
-	Name          string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	Overview      string                 `protobuf:"bytes,6,opt,name=overview,proto3" json:"overview,omitempty"`
-	Runtime       uint32                 `protobuf:"varint,7,opt,name=runtime,proto3" json:"runtime,omitempty"`
-	Still         *Image                 `protobuf:"bytes,8,opt,name=still,proto3,oneof" json:"still,omitempty"`
-	VoteAverage   float32                `protobuf:"fixed32,9,opt,name=vote_average,json=voteAverage,proto3" json:"vote_average,omitempty"`
-	VoteCount     uint32                 `protobuf:"varint,10,opt,name=vote_count,json=voteCount,proto3" json:"vote_count,omitempty"`
+	// string episode_type = 4;
+	Name          string  `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Overview      string  `protobuf:"bytes,6,opt,name=overview,proto3" json:"overview,omitempty"`
+	Runtime       uint32  `protobuf:"varint,7,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	Still         *Image  `protobuf:"bytes,8,opt,name=still,proto3,oneof" json:"still,omitempty"`
+	VoteAverage   float32 `protobuf:"fixed32,9,opt,name=vote_average,json=voteAverage,proto3" json:"vote_average,omitempty"`
+	VoteCount     uint32  `protobuf:"varint,10,opt,name=vote_count,json=voteCount,proto3" json:"vote_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -543,13 +521,6 @@ func (*Episode) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tvshow_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *Episode) GetId() uint64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
 func (x *Episode) GetAirDate() *timestamppb.Timestamp {
 	if x != nil {
 		return x.AirDate
@@ -562,13 +533,6 @@ func (x *Episode) GetEpisodeNumber() uint32 {
 		return x.EpisodeNumber
 	}
 	return 0
-}
-
-func (x *Episode) GetEpisodeType() string {
-	if x != nil {
-		return x.EpisodeType
-	}
-	return ""
 }
 
 func (x *Episode) GetName() string {
@@ -997,7 +961,7 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"popularity\x18\t \x01(\x02R\n" +
 	"popularityB\t\n" +
-	"\a_poster\"\xec\x05\n" +
+	"\a_poster\"\xc0\x05\n" +
 	"\x06TVShow\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
@@ -1017,15 +981,12 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\rlast_air_date\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vlastAirDate\x12,\n" +
 	"\x12number_of_episodes\x18\x0e \x01(\rR\x10numberOfEpisodes\x12*\n" +
 	"\x11number_of_seasons\x18\x0f \x01(\rR\x0fnumberOfSeasons\x12%\n" +
-	"\x0eorigin_country\x18\x10 \x03(\tR\roriginCountry\x12\x16\n" +
-	"\x06status\x18\x11 \x01(\tR\x06status\x12\x18\n" +
-	"\atagline\x18\x12 \x01(\tR\atagline\x12\x12\n" +
-	"\x04type\x18\x13 \x01(\tR\x04type\x12/\n" +
+	"\x0eorigin_country\x18\x10 \x03(\tR\roriginCountry\x12\x18\n" +
+	"\atagline\x18\x12 \x01(\tR\atagline\x12/\n" +
 	"\aseasons\x18\x14 \x03(\v2\x15.mediadelivery.SeasonR\aseasonsB\t\n" +
 	"\a_posterB\v\n" +
-	"\t_backdrop\"\xb3\x02\n" +
-	"\x06Season\x12\x17\n" +
-	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
+	"\t_backdrop\"\x9a\x02\n" +
+	"\x06Season\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12#\n" +
 	"\repisode_count\x18\x03 \x01(\rR\fepisodeCount\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
@@ -1033,12 +994,10 @@ const file_media_delivery_tvshow_proto_rawDesc = "" +
 	"\x06poster\x18\x06 \x01(\v2\x14.mediadelivery.ImageH\x00R\x06poster\x88\x01\x01\x12#\n" +
 	"\rseason_number\x18\a \x01(\rR\fseasonNumber\x12!\n" +
 	"\fvote_average\x18\b \x01(\x02R\vvoteAverageB\t\n" +
-	"\a_poster\"\xea\x02\n" +
-	"\aEpisode\x12\x17\n" +
-	"\x02id\x18\x01 \x01(\x04B\a\x92A\x04\x9a\x02\x01\x03R\x02id\x125\n" +
+	"\a_poster\"\xae\x02\n" +
+	"\aEpisode\x125\n" +
 	"\bair_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aairDate\x12%\n" +
-	"\x0eepisode_number\x18\x03 \x01(\rR\repisodeNumber\x12!\n" +
-	"\fepisode_type\x18\x04 \x01(\tR\vepisodeType\x12\x12\n" +
+	"\x0eepisode_number\x18\x03 \x01(\rR\repisodeNumber\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12\x1a\n" +
 	"\boverview\x18\x06 \x01(\tR\boverview\x12\x18\n" +
 	"\aruntime\x18\a \x01(\rR\aruntime\x12/\n" +

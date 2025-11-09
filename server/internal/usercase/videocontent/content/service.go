@@ -8,11 +8,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase"
+	"github.com/samber/lo"
+
 	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
-	"github.com/samber/lo"
 )
 
 type Service struct {
@@ -37,8 +38,8 @@ func NewService(
 		tvShowLibrary:       tvShowLibrary,
 		tvShowDeliveryState: tvShowDeliveryState,
 		labels:              labels,
-		clock:               &realClock{},
-		uuidGenerator:       &uuidGenerator{},
+		clock:               &common.RealClock{},
+		uuidGenerator:       &common.UUIDGenerator{},
 		logger:              logger.Named("content"),
 	}
 }

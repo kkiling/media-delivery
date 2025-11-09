@@ -15,12 +15,12 @@ const (
 // Image contains URLs for different image sizes
 type Image struct {
 	ID       string
-	W92      string
-	W154     string
-	W185     string
-	W342     string
-	W500     string
-	W780     string
+	W92      *string
+	W154     *string
+	W185     *string
+	W342     *string
+	W500     *string
+	W780     *string
 	Original string
 }
 
@@ -60,9 +60,9 @@ type TVShowShort struct {
 	Overview     string
 	Poster       *Image
 	FirstAirDate time.Time
-	VoteAverage  float64
+	VoteAverage  float32
 	VoteCount    uint32
-	Popularity   float64
+	Popularity   float32
 }
 
 // TVShow contains detailed TV show information
@@ -75,9 +75,9 @@ type TVShow struct {
 	NumberOfSeasons  uint32
 	OriginCountry    []string
 	Seasons          []Season
-	Status           string
+	Status           *string
 	Tagline          string
-	Type             string
+	Type             *string
 }
 
 // Season contains TV show season information
@@ -89,7 +89,7 @@ type Season struct {
 	Overview     string
 	Poster       *Image
 	SeasonNumber uint8
-	VoteAverage  float64
+	VoteAverage  float32
 }
 
 type SeasonWithEpisodes struct {
@@ -105,17 +105,17 @@ type Episode struct {
 	// Номер эпизода в сезоне
 	EpisodeNumber int
 	// Какой то тип сезона (standart)
-	EpisodeType string
+	EpisodeType *string
 	// Наименование эпизода
 	Name string
 	// Описание эпизода
 	Overview string
 	// Продолжительность эпизода (секунды)
-	Runtime int
+	Runtime uint32
 	// Превью эпизода
 	Still *Image
 	// Средний рейтинг эпизода
-	VoteAverage float64
+	VoteAverage float32
 	// Количество оценок
-	VoteCount int
+	VoteCount uint32
 }

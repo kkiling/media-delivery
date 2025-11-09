@@ -47,7 +47,7 @@ func (api *API) GetTV(_ context.Context, tvID uint64, language Language) (*TVSho
 		OriginCountry    []string `json:"origin_country"`
 		OriginalName     string   `json:"original_name"`
 		Overview         string   `json:"overview"`
-		Popularity       float64  `json:"popularity"`
+		Popularity       float32  `json:"popularity"`
 		Poster           string   `json:"poster_path"`
 		Seasons          []struct {
 			AirDate      string  `json:"air_date"`
@@ -57,12 +57,12 @@ func (api *API) GetTV(_ context.Context, tvID uint64, language Language) (*TVSho
 			Overview     string  `json:"overview"`
 			Poster       string  `json:"poster_path"`
 			SeasonNumber uint8   `json:"season_number"`
-			VoteAverage  float64 `json:"vote_average"`
+			VoteAverage  float32 `json:"vote_average"`
 		} `json:"seasons"`
-		Status      string  `json:"status"`
+		Status      *string `json:"status,omitempty"`
 		Tagline     string  `json:"tagline"`
-		Type        string  `json:"type"`
-		VoteAverage float64 `json:"vote_average"`
+		Type        *string `json:"type,omitempty"`
+		VoteAverage float32 `json:"vote_average"`
 		VoteCount   uint32  `json:"vote_count"`
 	}
 

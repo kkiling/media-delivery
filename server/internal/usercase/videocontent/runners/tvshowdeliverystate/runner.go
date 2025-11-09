@@ -8,11 +8,11 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/kkiling/media-delivery/internal/adapter/apierr"
-	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
+	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
@@ -373,7 +373,6 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 			SetMediaMetaData: {
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					data := stepContext.State.Data
-					// Установка группы файлам
 					err := r.contentDelivery.SetMediaMetaData(ctx, delivery.SetMediaMetaDataParams{
 						TVShowPath: data.TVShowCatalogInfo.MediaServerPath.TVShowPath,
 						TVShowID:   *stepContext.State.MetaData.ContentID.TVShow,

@@ -84,16 +84,13 @@ message TVShow {
   uint32 number_of_episodes = 14;
   uint32 number_of_seasons = 15;
   repeated string origin_country = 16;
-  string status = 17;
+ // string status = 17;
   string tagline = 18;
-  string type = 19;
+  //string type = 19;
   repeated Season seasons = 20;
 }
 
 message Season {
-  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    type: INTEGER
-  }];
   google.protobuf.Timestamp air_date = 2;
   uint32 episode_count = 3;
   string name = 4;
@@ -104,12 +101,9 @@ message Season {
 }
 
 message Episode {
-  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    type: INTEGER
-  }];
   google.protobuf.Timestamp air_date = 2;
   uint32 episode_number = 3;
-  string episode_type = 4;
+  // string episode_type = 4;
   string name = 5;
   string overview = 6;
   uint32 runtime = 7;

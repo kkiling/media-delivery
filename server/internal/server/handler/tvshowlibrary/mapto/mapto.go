@@ -14,10 +14,10 @@ func Image(res *tvshowlibrary.Image) *desc.Image {
 	}
 	return &desc.Image{
 		Id:  res.ID,
-		W92: res.W92,
+		W92: *res.W92,
 		//W154:     res.W154,
-		W185: res.W185,
-		W342: res.W342,
+		W185: *res.W185,
+		W342: *res.W342,
 		//W500:     res.W500,
 		//W780:     res.W780,
 		Original: res.Original,
@@ -32,9 +32,9 @@ func TVShowShort(res tvshowlibrary.TVShowShort) *desc.TVShowShort {
 		Overview:     res.Overview,
 		Poster:       Image(res.Poster),
 		FirstAirDate: timestamppb.New(res.FirstAirDate),
-		VoteAverage:  float32(res.VoteAverage),
+		VoteAverage:  res.VoteAverage,
 		VoteCount:    res.VoteCount,
-		Popularity:   float32(res.Popularity),
+		Popularity:   res.Popularity,
 	}
 }
 
@@ -46,14 +46,14 @@ func TVShowShorts(res []tvshowlibrary.TVShowShort) []*desc.TVShowShort {
 
 func Season(res tvshowlibrary.Season) *desc.Season {
 	return &desc.Season{
-		Id:           res.ID,
+		// Id:           res.ID,
 		AirDate:      timestamppb.New(res.AirDate),
 		EpisodeCount: res.EpisodeCount,
 		Name:         res.Name,
 		Overview:     res.Overview,
 		Poster:       Image(res.Poster),
 		SeasonNumber: uint32(res.SeasonNumber),
-		VoteAverage:  float32(res.VoteAverage),
+		VoteAverage:  res.VoteAverage,
 	}
 }
 
@@ -65,18 +65,18 @@ func TVShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 		Overview:         res.Overview,
 		Poster:           Image(res.Poster),
 		FirstAirDate:     timestamppb.New(res.FirstAirDate),
-		VoteAverage:      float32(res.VoteAverage),
+		VoteAverage:      res.VoteAverage,
 		VoteCount:        res.VoteCount,
-		Popularity:       float32(res.Popularity),
+		Popularity:       res.Popularity,
 		Backdrop:         Image(res.Backdrop),
 		Genres:           res.Genres,
 		LastAirDate:      timestamppb.New(res.LastAirDate),
 		NumberOfEpisodes: res.NumberOfEpisodes,
 		NumberOfSeasons:  res.NumberOfSeasons,
 		OriginCountry:    res.OriginCountry,
-		Status:           res.Status,
-		Tagline:          res.Tagline,
-		Type:             res.Type,
+		//Status:           res.Status,
+		Tagline: res.Tagline,
+		//Type:             res.Type,
 		Seasons: lo.Map(res.Seasons, func(item tvshowlibrary.Season, _ int) *desc.Season {
 			return Season(item)
 		}),
@@ -85,16 +85,16 @@ func TVShow(res *tvshowlibrary.TVShow) *desc.TVShow {
 
 func Episode(res tvshowlibrary.Episode) *desc.Episode {
 	return &desc.Episode{
-		Id:            res.ID,
+		//Id:            res.ID,
 		AirDate:       timestamppb.New(res.AirDate),
 		EpisodeNumber: uint32(res.EpisodeNumber),
-		EpisodeType:   res.EpisodeType,
-		Name:          res.Name,
-		Overview:      res.Overview,
-		Runtime:       uint32(res.Runtime),
-		Still:         Image(res.Still),
-		VoteAverage:   float32(res.VoteAverage),
-		VoteCount:     uint32(res.VoteCount),
+		//EpisodeType:   res.EpisodeType,
+		Name:        res.Name,
+		Overview:    res.Overview,
+		Runtime:     uint32(res.Runtime),
+		Still:       Image(res.Still),
+		VoteAverage: res.VoteAverage,
+		VoteCount:   uint32(res.VoteCount),
 	}
 }
 

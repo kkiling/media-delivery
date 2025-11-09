@@ -3,7 +3,16 @@ package themoviedb
 import (
 	"fmt"
 	"time"
+
+	"github.com/samber/lo"
 )
+
+func mapImg(path, prefix string, urlImg string) *string {
+	if urlImg == "" {
+		return nil
+	}
+	return lo.ToPtr(fmt.Sprintf("%s/%s%s", urlImg, prefix, path))
+}
 
 func (api *API) getImage(path string) *Image {
 	if path == "" {
@@ -12,13 +21,13 @@ func (api *API) getImage(path string) *Image {
 	urlImg := api.baseImgUrl.String()
 	return &Image{
 		ID:       path,
-		W92:      fmt.Sprintf("%s/w92%s", urlImg, path),
-		W154:     fmt.Sprintf("%s/w154%s", urlImg, path),
-		W185:     fmt.Sprintf("%s/w185%s", urlImg, path),
-		W342:     fmt.Sprintf("%s/w342%s", urlImg, path),
-		W500:     fmt.Sprintf("%s/w500%s", urlImg, path),
-		W780:     fmt.Sprintf("%s/w780%s", urlImg, path),
-		Original: fmt.Sprintf("%s/original%s", urlImg, path),
+		W92:      mapImg(path, "w92", urlImg),
+		W154:     mapImg(path, "w154", urlImg),
+		W185:     mapImg(path, "w185", urlImg),
+		W342:     mapImg(path, "w342", urlImg),
+		W500:     mapImg(path, "w500", urlImg),
+		W780:     mapImg(path, "w780", urlImg),
+		Original: *mapImg(path, "original", urlImg),
 	}
 }
 

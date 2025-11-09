@@ -3,11 +3,12 @@ package mapto
 import (
 	"strings"
 
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
-	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
+	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 func ContentID(id *videocontent.ContentID) *desc.ContentID {

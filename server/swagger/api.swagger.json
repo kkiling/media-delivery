@@ -489,10 +489,6 @@
     "Episode": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "integer",
-          "format": "uint64"
-        },
         "air_date": {
           "type": "string",
           "format": "date-time"
@@ -501,11 +497,9 @@
           "type": "integer",
           "format": "int64"
         },
-        "episode_type": {
-          "type": "string"
-        },
         "name": {
-          "type": "string"
+          "type": "string",
+          "title": "string episode_type = 4;"
         },
         "overview": {
           "type": "string"
@@ -687,10 +681,6 @@
     "Season": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "integer",
-          "format": "uint64"
-        },
         "air_date": {
           "type": "string",
           "format": "date-time"
@@ -780,21 +770,17 @@
             "type": "string"
           }
         },
-        "status": {
-          "type": "string"
-        },
         "tagline": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
+          "type": "string",
+          "title": "string status = 17;"
         },
         "seasons": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/Season"
-          }
+          },
+          "title": "string type = 19;"
         }
       }
     },

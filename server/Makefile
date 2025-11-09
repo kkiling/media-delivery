@@ -1,5 +1,8 @@
-TEST_DB_NAME:=./media-delivery.db
-TEST_DB_PATH := $(CURDIR)/$(notdir ${TEST_DB_NAME})
+TEST_DB_NAME:=media_delivery_test
+TEST_DB_USERNAME:=root
+TEST_DB_PASSWORD:=root
+DB_HOST:=localhost
+DB_PORT:=5432
 GOPATH_BIN := $(GOPATH)/bin
 
 .PHONY: bin-deps
@@ -10,6 +13,7 @@ bin-deps:
 	go install github.com/matm/gocov-html/cmd/gocov-html@latest
 	go install github.com/axw/gocov/gocov@latest
 	go install github.com/ofabry/go-callvis@latest
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 	go install tool
 
 .PHONY: mocks
@@ -36,17 +40,29 @@ format:
 
 .PHONY: test-db
 test-db:
-	@echo "\n --- 🖲️ Migrate test sqlite database --- \n"
-	rm -f ${TEST_DB_PATH}
-	rm -f "${TEST_DB_PATH}-shm"
-	rm -f "${TEST_DB_PATH}-wal"
-	@echo "\n --- 🖲️ statemachine sqlite migrations --- \n"
-	goose  -dir=./migrations/sqlite/state sqlite3 ${TEST_DB_PATH} up
-	@echo "\n --- 🖲️ media-delivery sqlite migrations --- \n"
-	goose -dir=./migrations/sqlite sqlite3 ${TEST_DB_PATH} up
+	@echo "\n --- 🖲️ Migrate test postgresql database --- \n"
+	@echo "\n --- 🖲️ Dropping and creating test database --- \n"
+	# Удаляем и создаем базу данных используя правильные учетные данные
+	psql postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres -c "DROP DATABASE IF EXISTS ${TEST_DB_NAME};"
+	psql postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres -c "CREATE DATABASE ${TEST_DB_NAME};"
+	@echo "\n --- 🖲️ Applying  postgresql migrations --- \n"
+	# Накатываем миграции на тестовую базу
+	goose -dir=./migrations/postgresql/state postgres "postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${TEST_DB_NAME}?sslmode=disable" up
+	goose -dir=./migrations/postgresql postgres "postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${TEST_DB_NAME}?sslmode=disable" up
+
 	@echo "\n --- 🖲️ Creating .testenv file --- \n"
-	rm -f ./testenv
-	echo "SQLITE_DSN=${TEST_DB_PATH}" > ./.testenv
+	rm -f ./.testenv
+	# Создаем файл с строкой подключения для PostgreSQL
+	echo "POSTGRES_CONN_STRING=postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${TEST_DB_NAME}?sslmode=disable" > ./.testenv
+
+	@echo "\n --- ✅ Test database setup completed --- \n"
+
+.PHONY: schema
+schema:
+	pg_dump "postgresql://${TEST_DB_USERNAME}:${TEST_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${TEST_DB_NAME}?sslmode=disable" --no-owner --no-privileges --no-tablespaces --no-security-labels --no-comments -s >  schema.sql
+	sed -i '/^\\restrict/d' schema.sql
+	sed -i '/^\\unrestrict/d' schema.sql
+	sqlc generate
 
 clear-cache:
 	buf registry cc

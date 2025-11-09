@@ -3,7 +3,8 @@ package content
 import (
 	"context"
 	"fmt"
-	"time"
+
+	"github.com/samber/lo"
 
 	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
@@ -11,11 +12,10 @@ import (
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
-	"github.com/samber/lo"
 )
 
 func (s *Service) createDelivery(ctx context.Context, params CreateVideoContentParams) (*VideoContent, error) {
-	now := time.Now()
+	now := s.clock.Now()
 
 	delivery := tvshowdeliverystate.CreateOptions{
 		TVShowID: *params.ContentID.TVShow,
@@ -65,14 +65,12 @@ func (s *Service) createDelivery(ctx context.Context, params CreateVideoContentP
 		if err = s.tvShowLibrary.AddTVShowInLibrary(ctx, tvShow); err != nil {
 			return nil, fmt.Errorf("tvShowLibrary.AddTVShowInLibrary: %w", err)
 		}
-
 		// Добавили лейбл что сериал в библиотеке
 		if err = s.labels.AddLabel(ctx, labelContentInLibrary); err != nil {
 			return nil, fmt.Errorf("labels.AddLabel: %w", err)
 		}
-
 		// Создали сущность видео контента
-		if err = s.storage.CreateVideoContent(ctx, &videoContent); err != nil {
+		if err = s.storage.SaveVideoContent(ctx, &videoContent); err != nil {
 			return nil, fmt.Errorf("storage.SaveVideoContent: %w", err)
 		}
 		// Добавили лейбл что у сериал создан видео контент

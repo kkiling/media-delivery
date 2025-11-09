@@ -46,9 +46,9 @@ func (api *API) searchTV(params SearchQuery) (*TVShowSearchResponse, error) {
 			Overview     string  `json:"overview"`
 			Poster       string  `json:"poster_path"`
 			FirstAirDate string  `json:"first_air_date"`
-			VoteAverage  float64 `json:"vote_average"`
+			VoteAverage  float32 `json:"vote_average"`
 			VoteCount    uint32  `json:"vote_count"`
-			Popularity   float64 `json:"popularity"`
+			Popularity   float32 `json:"popularity"`
 		} `json:"results"`
 	}
 

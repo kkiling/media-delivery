@@ -18,7 +18,7 @@ const (
 	// EmbyName конфиг Emby api
 	EmbyName = "emby"
 	// SqliteName конфиг sqlite
-	SqliteName = "sqlite"
+	PostgresqlName = "postgresql"
 	// DeliveryName конфиг sqlite
 	DeliveryName = "delivery"
 )
@@ -30,7 +30,7 @@ type AppConfig struct {
 	Rutracker      RutrackerConfig   `yaml:"rutracker"`
 	QBittorrent    QBittorrentConfig `yaml:"qbittorrent"`
 	Emby           EmbyConfig        `yaml:"emby"`
-	Sqlite         SqliteConfig      `yaml:"sqlite"`
+	Postgresql     PostgresqlConfig  `yaml:"postgresql"`
 	DeliveryConfig DeliveryConfig    `yaml:"delivery"`
 }
 
@@ -62,8 +62,8 @@ type EmbyConfig struct {
 	ApiUrl string `yaml:"api_url"`
 }
 
-type SqliteConfig struct {
-	SqliteDsn string `yaml:"sqlite_dsn"`
+type PostgresqlConfig struct {
+	ConnString string `yaml:"conn_string"`
 }
 
 type ServerConfig struct {
@@ -119,7 +119,7 @@ func NewEnvConfig(cfgProvider config.Provider) (*AppConfig, error) {
 		return nil, err
 	}
 
-	sqliteConfg, err := loadCfg[SqliteConfig](SqliteName, cfgProvider)
+	postgresqlConfg, err := loadCfg[PostgresqlConfig](PostgresqlName, cfgProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func NewEnvConfig(cfgProvider config.Provider) (*AppConfig, error) {
 		Rutracker:      *rutrackerConfig,
 		QBittorrent:    *qBittorrentConfig,
 		Emby:           *embyConfig,
-		Sqlite:         *sqliteConfg,
+		Postgresql:     *postgresqlConfg,
 		DeliveryConfig: *deliveryConfig,
 	}, nil
 }

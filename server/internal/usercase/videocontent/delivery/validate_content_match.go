@@ -16,9 +16,14 @@ func (s *Service) ValidateContentMatch(oldContentMatch, newContentMatch *Content
 		return err
 	}
 
+	/* 		TODO: Сомнительно, кажется не нужно
+
+	// Проверяем что у видео есть хотя бы одна аудиодорожка
+	// Если в принципе есть аудиодорожки
 	if !hasVideoWithAudio(newContentMatch) {
 		return fmt.Errorf("no video with audio tracks")
 	}
+	*/
 
 	if err := validateTracksConsistency(oldContentMatch, newContentMatch); err != nil {
 		return err

@@ -32,6 +32,7 @@ func (s *Service) WaitingTorrentFiles(_ context.Context, params WaitingTorrentFi
 			return nil, fmt.Errorf("torrentClient.ResumeTorrent: %w", err)
 		}
 	case
+		qbittorrent.TorrentStateQueuedUP,
 		qbittorrent.TorrentStateDownloading,
 		qbittorrent.TorrentStateUploading,
 		qbittorrent.TorrentStatePausedUP,

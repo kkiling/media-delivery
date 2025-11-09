@@ -24,8 +24,8 @@ emby:
   api_key: ""
   api_url: ""
 
-sqlite:
-  sqlite_dsn: ""
+postgresql:
+  conn_string: "postgresql://root:root@localhost:5432/media_delivery_test?sslmode=disable"
 
 delivery:
   base_path: "/nfs"

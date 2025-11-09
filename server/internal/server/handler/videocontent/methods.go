@@ -3,10 +3,9 @@ package videocontent
 import (
 	"context"
 
+	"github.com/kkiling/media-delivery/internal/server/handler"
 	"github.com/kkiling/media-delivery/internal/server/handler/videocontent/mapfrom"
 	"github.com/kkiling/media-delivery/internal/server/handler/videocontent/mapto"
-
-	"github.com/kkiling/media-delivery/internal/server/handler"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )

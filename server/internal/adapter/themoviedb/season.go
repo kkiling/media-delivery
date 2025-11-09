@@ -11,7 +11,7 @@ import (
 	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
-func (api *API) GetSeasonInfo(_ context.Context, tvID uint64, seasonNumber uint8, language Language) (*SeasonWithEpisodes, error) {
+func (api *API) GetSeason(_ context.Context, tvID uint64, seasonNumber uint8, language Language) (*SeasonWithEpisodes, error) {
 	queryParams := url.Values{}
 	queryParams.Add("api_key", api.apiKey)
 	queryParams.Add("language", string(language))
@@ -39,18 +39,18 @@ func (api *API) GetSeasonInfo(_ context.Context, tvID uint64, seasonNumber uint8
 		Overview     string  `json:"overview"`
 		Poster       string  `json:"poster_path"`
 		SeasonNumber uint8   `json:"season_number"`
-		VoteAverage  float64 `json:"vote_average"`
+		VoteAverage  float32 `json:"vote_average"`
 		Episodes     []struct {
 			AirDate       string  `json:"air_date"`
 			EpisodeNumber int     `json:"episode_number"`
-			EpisodeType   string  `json:"episode_type"`
+			EpisodeType   *string `json:"episode_type,omitempty"`
 			ID            uint64  `json:"id"`
 			Name          string  `json:"name"`
 			Overview      string  `json:"overview"`
-			Runtime       int     `json:"runtime"`
+			Runtime       uint32  `json:"runtime"`
 			Still         string  `json:"still_path"`
-			VoteAverage   float64 `json:"vote_average"`
-			VoteCount     int     `json:"vote_count"`
+			VoteAverage   float32 `json:"vote_average"`
+			VoteCount     uint32  `json:"vote_count"`
 		} `json:"episodes"`
 	}
 
