@@ -16,7 +16,7 @@ type MergeVideoParams struct {
 }
 
 type MergeVideoStatus struct {
-	Progress   float64 // 0 до 1
+	Progress   float32 // 0 до 1
 	IsComplete bool
 	Errors     []string
 }
@@ -67,7 +67,7 @@ func (s *Service) StartMergeVideo(ctx context.Context, params MergeVideoParams) 
 func (s *Service) GetMergeVideoStatus(ctx context.Context, mergeIDs []uuid.UUID) (*MergeVideoStatus, error) {
 	var status MergeVideoStatus
 
-	delta := 1.0 / float64(len(mergeIDs))
+	delta := 1.0 / float32(len(mergeIDs))
 	status.Progress = 0.0
 	status.IsComplete = true
 

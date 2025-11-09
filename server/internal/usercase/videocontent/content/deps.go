@@ -5,18 +5,18 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/labels"
-
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
 type Storage interface {
-	CreateVideoContent(ctx context.Context, videoContent *VideoContent) error
+	SaveVideoContent(ctx context.Context, videoContent *VideoContent) error
 	GetVideoContents(ctx context.Context, contentID common.ContentID) ([]VideoContent, error)
 	UpdateVideoContent(ctx context.Context, id uuid.UUID, videoContent *UpdateVideoContent) error
-	GetVideoContentsByStatus(ctx context.Context, status DeliveryStatus, limit int) ([]VideoContent, error)
+	GetVideoContentsByDeliveryStatus(ctx context.Context, delivery DeliveryStatus, limit int) ([]VideoContent, error)
 }
 
 type TVShowLibrary interface {
@@ -43,16 +43,4 @@ type UUIDGenerator interface {
 // Clock интерфейс для работы со временем (реальный или мок)
 type Clock interface {
 	Now() time.Time
-}
-
-type uuidGenerator struct{}
-
-func (uuidGenerator) New() uuid.UUID {
-	return uuid.New()
-}
-
-type realClock struct{}
-
-func (realClock) Now() time.Time {
-	return time.Now()
 }

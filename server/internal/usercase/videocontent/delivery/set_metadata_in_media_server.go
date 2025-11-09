@@ -21,7 +21,7 @@ func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataP
 		return fmt.Errorf("failed to get relative path: %w", err)
 	}
 
-	if err := s.embyApi.Refresh(); err != nil {
+	if err = s.embyApi.Refresh(); err != nil {
 		return fmt.Errorf("failed to refresh emby api: %w", err)
 	}
 
@@ -29,13 +29,19 @@ func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataP
 	if err != nil {
 		return fmt.Errorf("embyApi.GetCatalogInfo: %w", err)
 	}
+
 	if info == nil {
 		return fmt.Errorf("catalogInfo: info is nil")
+	}
+	if info.TheMovieDbID == params.TVShowID.ID {
+		// Сериал уже правильно идентифицирован
+		return nil
 	}
 
 	if !info.IsFolder {
 		return fmt.Errorf("catalogInfo: info is not folder")
 	}
+
 	if info.Type != emby.SeriesTypeCatalog {
 		return fmt.Errorf("catalogInfo: type is not series")
 	}
@@ -48,6 +54,18 @@ func (s *Service) SetMediaMetaData(ctx context.Context, params SetMediaMetaDataP
 	err = s.embyApi.RemoteSearchApply(info.ID, params.TVShowID.ID)
 	if err != nil {
 		return fmt.Errorf("embyApi.RemoteSearchApply: %w", err)
+	}
+
+	// Запрашиваем еще раз инфу о каталоге и сравниваем TheMovieDbId что бы удостоверитсья что мы установили метадату
+	info, err = s.embyApi.GetCatalogInfo("/" + tvShowPath)
+	if err != nil {
+		return fmt.Errorf("embyApi.GetCatalogInfo: %w", err)
+	}
+	if info == nil {
+		return fmt.Errorf("catalogInfo: info is nil")
+	}
+	if info.TheMovieDbID != params.TVShowID.ID {
+		return fmt.Errorf("TheMovieDbID does not match")
 	}
 
 	return nil

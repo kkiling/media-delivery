@@ -7,76 +7,116 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
+	"github.com/google/uuid"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
+
+	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
-func (s *Service) completeTVShowDelivery(ctx context.Context, content VideoContent) error {
+const (
+	completeTimeSec      = 3
+	getVideoContentLimit = 10
+)
+
+func (s *Service) completeState(ctx context.Context, stateID uuid.UUID) (*tvshowdeliverystate.State, error) {
+	// Добиваем стейт
+	newState, executeErr, err := s.tvShowDeliveryState.Complete(ctx, stateID)
+
+	getActualState := false
+	if err != nil {
+		switch {
+		// Можем попасть в такую ситуацию, что стейт ожидал опцию на входе добивания
+		// А мы начали добивать без ожидаемой опции, не считаем это ошибкой
+		case errors.Is(err, statemachine.ErrOptionsIsUndefined):
+			getActualState = true
+		// Пока добивали, оказалось что стейт уже в терминальном статусе
+		// Заменяем стейт на стейт из базы
+		case errors.Is(err, statemachine.ErrInTerminalStatus):
+			getActualState = true
+		default:
+			return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+		}
+
+		if errors.Is(err, statemachine.ErrOptionsIsUndefined) {
+			return nil, nil
+		}
+		if errors.Is(err, statemachine.ErrInTerminalStatus) {
+
+		} else {
+			return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+		}
+	}
+
+	// Ошибка в логике выполнения выпуска
+	if executeErr != nil {
+		s.logger.Errorf("executeError: %v", executeErr)
+		return nil, fmt.Errorf("tvShowDeliveryState.Complete executeError: %w", executeErr)
+	}
+
+	if getActualState {
+		// Подтягиваем актуальный стейт из базы
+		newState, err = s.tvShowDeliveryState.GetStateByID(ctx, stateID)
+		if err != nil {
+			return nil, fmt.Errorf("tvShowDeliveryState.GetStateByID: %w", err)
+		}
+	}
+
+	if newState.Status == statemachine.CompletedStatus {
+		s.logger.Debugf("state is completed")
+	} else if newState.Status == statemachine.FailedStatus {
+		s.logger.Debugf("state is failed")
+	} else {
+		s.logger.Debugf("state step: %s", newState.Step)
+	}
+
+	return newState, nil
+}
+
+func (s *Service) completeInProgressTVShowDelivery(ctx context.Context, content VideoContent) error {
 	stateInfo, find := lo.Find(content.State, func(item State) bool {
 		return item.Type == runners.TVShowDelivery
 	})
 	if !find {
+		// Не должно быть такой ситуации что видео контент в статусе InProgress а мы не нашли стейт доставки
+		s.logger.Warn("can't find TVShowDelivery state for tvShow: %d (season %d)",
+			content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
 		return ucerr.NotFound
 	}
-	s.logger.Debugf("start complete content: %d (season %d) - status %s",
+	s.logger.Debugf("start complete content: %d (season %d) - status %d",
 		content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber, content.DeliveryStatus)
 
-	if content.DeliveryStatus == DeliveryStatusInProgress {
-		// Добиваем стейт
-		newState, executeErr, err := s.tvShowDeliveryState.Complete(ctx, stateInfo.StateID)
-		if err != nil && !errors.Is(err, statemachine.ErrOptionsIsUndefined) {
-			if errors.Is(err, statemachine.ErrInTerminalStatus) {
-				newState, err = s.tvShowDeliveryState.GetStateByID(ctx, stateInfo.StateID)
-				if err != nil {
-					return fmt.Errorf("tvShowDeliveryState.GetStateByID: %w", err)
-				}
-			} else {
-				return fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
-			}
-		}
-		if executeErr != nil {
-			s.logger.Errorf("executeError: %v", executeErr)
-			return executeErr
-		}
-
-		if newState.Status == statemachine.CompletedStatus {
-			s.logger.Debugf("state is completed")
-		} else if newState.Status == statemachine.FailedStatus {
-			s.logger.Debugf("state is failed")
-		} else {
-			s.logger.Debugf("state step: %s", newState.Step)
-		}
-
-		needUpdate := false
-		updateVideoContent := UpdateVideoContent{
-			DeliveryStatus: content.DeliveryStatus,
-		}
-		if newState.Status == statemachine.CompletedStatus {
-			needUpdate = true
-			updateVideoContent.DeliveryStatus = DeliveryStatusDelivered
-		} else if newState.Status == statemachine.FailedStatus {
-			needUpdate = true
-			updateVideoContent.DeliveryStatus = DeliveryStatusFailed
-		}
-
-		if needUpdate {
-			s.logger.Debugf("update video content: %d (season %d)", content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
-			err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent)
-			if err != nil {
-				return fmt.Errorf("storage.UpdateVideoContent: %w", err)
-			}
-		}
+	deliveryState, err := s.completeState(ctx, stateInfo.StateID)
+	if err != nil {
+		return fmt.Errorf("completeState: %w", err)
+	}
+	if deliveryState == nil {
+		return ucerr.NotFound
 	}
 
-	//Трекаем обновление статуса в процессе доставки in_progress до доставлено delivered на основе стейта
-	//	in_progress -> delivered
-	//Трекаем по аналогии
-	//	updating -> delivered
-	//Трекаем по анлогии на основании стейта
-	//	deleting -> deleted
+	needUpdate := false
+	updateVideoContent := UpdateVideoContent{
+		DeliveryStatus: content.DeliveryStatus,
+	}
+	if deliveryState.Status == statemachine.CompletedStatus {
+		needUpdate = true
+		updateVideoContent.DeliveryStatus = DeliveryStatusDelivered
+	} else if deliveryState.Status == statemachine.FailedStatus {
+		needUpdate = true
+		updateVideoContent.DeliveryStatus = DeliveryStatusFailed
+	}
+
+	if needUpdate {
+		// Обновляем VideoContent статус
+		s.logger.Debugf("update video content: %d (season %d)", content.ContentID.TVShow.ID, content.ContentID.TVShow.SeasonNumber)
+		err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent)
+		if err != nil {
+			return fmt.Errorf("storage.UpdateVideoContent: %w", err)
+		}
+	}
 
 	return nil
 }
@@ -91,16 +131,18 @@ func (s *Service) completeTVShowDeliveries(ctx context.Context) error {
 		}
 	}()
 
-	contents, err := s.storage.GetVideoContentsByStatus(ctx, DeliveryStatusInProgress, 10)
+	// Получаем контент в статусе InProgress
+	contents, err := s.storage.GetVideoContentsByDeliveryStatus(ctx, DeliveryStatusInProgress, getVideoContentLimit)
 	if err != nil {
 		return fmt.Errorf("storage.GetVideoContents: %w", err)
 	}
 	for _, content := range contents {
-		err = s.completeTVShowDelivery(ctx, content)
+		err = s.completeInProgressTVShowDelivery(ctx, content)
 		if err != nil {
 			return fmt.Errorf("completeTVShowDelivery: %w", err)
 		}
 	}
+
 	return nil
 }
 
@@ -111,7 +153,7 @@ func (s *Service) Complete(ctx context.Context) error {
 	scheduler.SetMaxConcurrentJobs(1, gocron.WaitMode)
 
 	// Запускаем задачу каждые 3 секунды
-	_, err := scheduler.Every(3).Seconds().Do(func() {
+	_, err := scheduler.Every(completeTimeSec).Seconds().Do(func() {
 		select {
 		case <-ctx.Done(): // Если контекст отменён, выходим
 			return

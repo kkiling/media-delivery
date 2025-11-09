@@ -1,10 +1,11 @@
 package mapfrom
 
 import (
+	"github.com/samber/lo"
+
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
-	"github.com/samber/lo"
 )
 
 func ContentID(id *desc.ContentID) videocontent.ContentID {

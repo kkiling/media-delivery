@@ -44,7 +44,6 @@ func mapTVShowShorts(items []themoviedb.TVShowShort) []TVShowShort {
 
 func mapSeason(season themoviedb.Season) *Season {
 	return &Season{
-		ID:           season.ID,
 		AirDate:      season.AirDate,
 		EpisodeCount: season.EpisodeCount,
 		Name:         season.Name,
@@ -75,7 +74,6 @@ func mapTVShow(response *themoviedb.TVShow) *TVShow {
 func mapEpisodes(response []themoviedb.Episode) []Episode {
 	return lo.Map(response, func(item themoviedb.Episode, index int) Episode {
 		return Episode{
-			ID:            item.ID,
 			AirDate:       item.AirDate,
 			EpisodeNumber: item.EpisodeNumber,
 			EpisodeType:   item.EpisodeType,

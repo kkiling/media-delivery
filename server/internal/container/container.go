@@ -1,26 +1,27 @@
 package container
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kkiling/goplatform/log"
-	"github.com/kkiling/goplatform/storagebase/sqlitebase"
-	"github.com/kkiling/media-delivery/internal/usercase/labels"
+	"github.com/kkiling/goplatform/storagebase/postgrebase"
 	"github.com/kkiling/statemachine"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
 	prepareTVShow "github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
 	"github.com/kkiling/media-delivery/internal/adapter/mkvmerge"
-	mkvsqlite "github.com/kkiling/media-delivery/internal/adapter/mkvmerge/storage/sqlite"
+	mkvPostgresql "github.com/kkiling/media-delivery/internal/adapter/mkvmerge/storage/postgresql"
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
 	"github.com/kkiling/media-delivery/internal/adapter/rutracker"
 	"github.com/kkiling/media-delivery/internal/adapter/themoviedb"
 	"github.com/kkiling/media-delivery/internal/config"
-	labelsSqlite "github.com/kkiling/media-delivery/internal/usercase/labels/storage/sqlite"
+	"github.com/kkiling/media-delivery/internal/usercase/labels"
+	labelsPostgreSql "github.com/kkiling/media-delivery/internal/usercase/labels/storage/postgresql"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
-	tvShowLibrarySqlite "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/sqlite"
+	tvShowLibraryPostgreSql "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/postgresql"
 	contentDelivery "github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
-	contentSqlite "github.com/kkiling/media-delivery/internal/usercase/videocontent/content/storage/sqlite"
+	contentPostgreSql "github.com/kkiling/media-delivery/internal/usercase/videocontent/content/storage/postgresql"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
@@ -32,40 +33,24 @@ type Container struct {
 	mkvMergePipeline *mkvmerge.Pipeline
 }
 
-func NewContainer(cfg *config.AppConfig) (*Container, error) {
+func NewContainer(ctx context.Context, cfg *config.AppConfig) (*Container, error) {
 	logger := log.NewLogger(log.Level(cfg.Server.LogLevel))
 
+	// *** *** ***
 	// Storage
-	sqlBaseCfg := sqlitebase.Config{
-		DSN: cfg.Sqlite.SqliteDsn,
-	}
-
-	tvShowLibraryStorage, err := tvShowLibrarySqlite.NewStorage(sqlBaseCfg, logger)
+	pgPool, err := postgrebase.NewPgConn(ctx, postgrebase.Config{
+		ConnString: cfg.Postgresql.ConnString,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
 	}
 
-	stateStorage, err := statemachine.NewSqliteStorage(sqlBaseCfg, logger)
-	if err != nil {
-		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
-	}
-
-	contentStorage, err := contentSqlite.NewStorage(sqlBaseCfg, logger)
-	if err != nil {
-		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
-	}
-
-	labelsStorage, err := labelsSqlite.NewStorage(sqlBaseCfg, logger)
-	if err != nil {
-		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
-	}
-
-	mkvPipelineStorage, err := mkvsqlite.NewStorage(sqlitebase.Config{
-		DSN: cfg.Sqlite.SqliteDsn,
-	}, logger)
-	if err != nil {
-		return nil, fmt.Errorf("sqlite.NewStorage: %w", err)
-	}
+	stateStorage := statemachine.NewStorage(pgPool)
+	tvShowLibraryStorage := tvShowLibraryPostgreSql.NewStorage(pgPool)
+	contentStorage := contentPostgreSql.NewStorage(pgPool)
+	mkvPipelineStorage := mkvPostgresql.NewStorage(pgPool)
+	labelsStorage := labelsPostgreSql.NewStorage(pgPool)
+	// *** *** ***
 
 	// Adapter
 	themoviedbApi, err := themoviedb.NewApi(

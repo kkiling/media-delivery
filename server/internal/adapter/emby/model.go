@@ -9,9 +9,10 @@ const (
 )
 
 type CatalogInfo struct {
-	Path     string
-	Name     string
-	ID       uint64
-	IsFolder bool
-	Type     TypeCatalog
+	Path         string
+	Name         string
+	ID           uint64
+	IsFolder     bool
+	Type         TypeCatalog
+	TheMovieDbID uint64
 }

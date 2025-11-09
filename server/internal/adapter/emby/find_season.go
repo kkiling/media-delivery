@@ -17,7 +17,7 @@ func (api *API) GetCatalogInfo(path string) (*CatalogInfo, error) {
 	queryParams.Add("api_key", api.apiKey)
 	queryParams.Add("Recursive", "true")
 	queryParams.Add("Path", path)
-	queryParams.Add("Fields", "Path")
+	queryParams.Add("Fields", "Path,ProviderIds")
 
 	getUrl := fmt.Sprintf("%s/emby/Items?%s", api.baseAPIUrl.String(), queryParams.Encode())
 	resp, err := api.httpClient.Get(getUrl)
@@ -37,15 +37,18 @@ func (api *API) GetCatalogInfo(path string) (*CatalogInfo, error) {
 
 	var result struct {
 		Items []struct {
-			Path     string `json:"Path"`
-			Name     string `json:"Name"`
-			ID       string `json:"Id"`
-			IsFolder bool   `json:"IsFolder"`
-			Type     string `json:"Type"`
+			Path        string `json:"Path"`
+			Name        string `json:"Name"`
+			ID          string `json:"Id"`
+			IsFolder    bool   `json:"IsFolder"`
+			Type        string `json:"Type"`
+			ProviderIds struct {
+				Tmdb string `json:"Tmdb"`
+			} `json:"ProviderIds"`
 		}
 	}
 
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err = json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
@@ -56,15 +59,25 @@ func (api *API) GetCatalogInfo(path string) (*CatalogInfo, error) {
 		return nil, fmt.Errorf("multiple items found")
 	}
 
-	id, err := strconv.ParseUint(result.Items[0].ID, 10, 64)
+	item := result.Items[0]
+	id, err := strconv.ParseUint(item.ID, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse item id: %w", err)
 	}
+
+	var theMovieDbID uint64
+	if item.ProviderIds.Tmdb != "" {
+		theMovieDbID, err = strconv.ParseUint(item.ProviderIds.Tmdb, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse item theMovieDbID: %w", err)
+		}
+	}
+
 	return &CatalogInfo{
-		Path:     result.Items[0].Path,
-		Name:     result.Items[0].Name,
+		Path:     item.Path,
+		Name:     item.Name,
 		ID:       id,
-		IsFolder: result.Items[0].IsFolder,
+		IsFolder: item.IsFolder,
 		Type: func(t string) TypeCatalog {
 			switch t {
 			case "Series":
@@ -74,6 +87,7 @@ func (api *API) GetCatalogInfo(path string) (*CatalogInfo, error) {
 			default:
 				return UnknownTypeCatalog
 			}
-		}(result.Items[0].Type),
+		}(item.Type),
+		TheMovieDbID: theMovieDbID,
 	}, nil
 }

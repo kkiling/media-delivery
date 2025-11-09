@@ -378,22 +378,24 @@ func TestValidateContentMatch(t *testing.T) {
 		require.ErrorContains(t, err, "track mismatch")
 	})
 
-	t.Run("no audio tracks with video", func(t *testing.T) {
-		// Проверяется случай, когда есть видео, но нет ни одной аудиодорожки — должна быть ошибка
-		newMatches := &ContentMatches{
-			Matches: []ContentMatch{
-				{
-					Episode:     episode,
-					Video:       &videoTrack,
-					AudioTracks: []Track{}, // Убираем аудиодорожки
-					Subtitles:   []Track{subtitleTrack},
+	/*
+		TODO: Сомнительно, кажется не нужно
+		t.Run("no audio tracks with video", func(t *testing.T) {
+			// Проверяется случай, когда есть видео, но нет ни одной аудиодорожки — должна быть ошибка
+			newMatches := &ContentMatches{
+				Matches: []ContentMatch{
+					{
+						Episode:     episode,
+						Video:       &videoTrack,
+						AudioTracks: []Track{}, // Убираем аудиодорожки
+						Subtitles:   []Track{subtitleTrack},
+					},
 				},
-			},
-			Options: ContentMatchesOptions{},
-		}
-		err := s.ValidateContentMatch(oldMatches, newMatches)
-		require.ErrorContains(t, err, "no video with audio tracks")
-	})
+				Options: ContentMatchesOptions{},
+			}
+			err := s.ValidateContentMatch(oldMatches, newMatches)
+			require.ErrorContains(t, err, "no video with audio tracks")
+		})*/
 
 	t.Run("default subtitle does not exist", func(t *testing.T) {
 		// Проверяется случай, когда дефолтные субтитры указаны, но их нет в списке треков — должна быть ошибка

@@ -22,13 +22,14 @@ type MergeLogs struct {
 }
 
 type MergeResult struct {
-	ID          uuid.UUID
-	Params      MergeParams
-	Status      Status
-	Error       *string
-	CreatedAt   time.Time
-	CompletedAt *time.Time
-	Progress    *float64
+	ID             uuid.UUID
+	IdempotencyKey string
+	Params         MergeParams
+	Status         Status
+	Error          *string
+	CreatedAt      time.Time
+	CompletedAt    *time.Time
+	Progress       *float32
 }
 
 type CreateMergeResult struct {

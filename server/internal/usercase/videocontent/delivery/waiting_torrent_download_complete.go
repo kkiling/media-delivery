@@ -31,7 +31,8 @@ func (s *Service) WaitingTorrentDownloadComplete(_ context.Context, params Waiti
 		}
 	case qbittorrent.TorrentStateUploading,
 		qbittorrent.TorrentStatePausedUP,
-		qbittorrent.TorrentStateStalledUP:
+		qbittorrent.TorrentStateStalledUP,
+		qbittorrent.TorrentStateQueuedUP:
 		return &TorrentDownloadStatus{
 			State:      mapTorrentState(torrentInfo.State),
 			Progress:   torrentInfo.Progress,
