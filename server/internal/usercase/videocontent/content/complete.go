@@ -8,13 +8,13 @@ import (
 
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
 const (
@@ -77,7 +77,7 @@ func (s *Service) completeState(ctx context.Context, stateID uuid.UUID) (*tvshow
 }
 
 func (s *Service) completeInProgressTVShowDelivery(ctx context.Context, content VideoContent) error {
-	stateInfo, find := lo.Find(content.State, func(item State) bool {
+	stateInfo, find := lo.Find(content.States, func(item State) bool {
 		return item.Type == runners.TVShowDelivery
 	})
 	if !find {
@@ -100,6 +100,7 @@ func (s *Service) completeInProgressTVShowDelivery(ctx context.Context, content 
 	needUpdate := false
 	updateVideoContent := UpdateVideoContent{
 		DeliveryStatus: content.DeliveryStatus,
+		States:         content.States,
 	}
 	if deliveryState.Status == statemachine.CompletedStatus {
 		needUpdate = true

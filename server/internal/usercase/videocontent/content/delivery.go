@@ -17,7 +17,7 @@ import (
 func (s *Service) createDelivery(ctx context.Context, params CreateVideoContentParams) (*VideoContent, error) {
 	now := s.clock.Now()
 
-	delivery := tvshowdeliverystate.CreateOptions{
+	deliveryOptions := tvshowdeliverystate.CreateOptions{
 		TVShowID: *params.ContentID.TVShow,
 	}
 
@@ -51,12 +51,12 @@ func (s *Service) createDelivery(ctx context.Context, params CreateVideoContentP
 	// TODO: !!! !!! !!! подумать как обернуть в одну транзакцию
 	{
 		// Создали стейт доставки видео контента
-		state, err := s.tvShowDeliveryState.Create(ctx, delivery)
+		state, err := s.tvShowDeliveryState.Create(ctx, deliveryOptions)
 		if err != nil {
 			return nil, fmt.Errorf("tvShowDeliveryState.Create: %w", err)
 		}
 
-		videoContent.State = append(videoContent.State, State{
+		videoContent.States = append(videoContent.States, State{
 			StateID: state.ID,
 			Type:    runners.TVShowDelivery,
 		})
@@ -139,4 +139,65 @@ func (s *Service) CreateVideoContent(ctx context.Context, params CreateVideoCont
 
 	// Создаем видео контент с доставкой
 	return s.createDelivery(ctx, params)
+}
+
+func (s *Service) GetTVShowDeliveryData(ctx context.Context, contentID common.ContentID) (*tvshowdeliverystate.State, error) {
+	if err := contentID.Validate(); err != nil {
+		return nil, err
+	}
+
+	stateID, err := s.getStateID(ctx, contentID, runners.TVShowDelivery)
+	if err != nil {
+		return nil, fmt.Errorf("getStateID: %w", err)
+	}
+
+	result, err := s.tvShowDeliveryState.GetStateByID(ctx, stateID)
+	if err != nil {
+		return nil, fmt.Errorf("s.GetStateByID: %w", err)
+	}
+
+	return result, nil
+}
+
+func (s *Service) ChoseTorrentOptions(ctx context.Context,
+	contentID common.ContentID,
+	opts tvshowdeliverystate.ChoseTorrentOptions,
+) (*tvshowdeliverystate.State, error) {
+	if err := contentID.Validate(); err != nil {
+		return nil, err
+	}
+	stateID, err := s.getStateID(ctx, contentID, runners.TVShowDelivery)
+	if err != nil {
+		return nil, fmt.Errorf("getStateID: %w", err)
+	}
+	newState, executeErr, err := s.tvShowDeliveryState.Complete(ctx, stateID, opts)
+	if err != nil {
+		return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+	}
+	if executeErr != nil {
+		s.logger.Errorf("tvShowDeliveryState.Complete: %v", executeErr)
+	}
+	return newState, nil
+}
+
+func (s *Service) ChoseFileMatchesOptions(ctx context.Context,
+	contentID common.ContentID,
+	opts tvshowdeliverystate.ChoseFileMatchesOptions,
+) (*tvshowdeliverystate.State, error) {
+	if err := contentID.Validate(); err != nil {
+		return nil, err
+	}
+
+	stateID, err := s.getStateID(ctx, contentID, runners.TVShowDelivery)
+	if err != nil {
+		return nil, fmt.Errorf("getStateID: %w", err)
+	}
+	newState, executeErr, err := s.tvShowDeliveryState.Complete(ctx, stateID, opts)
+	if err != nil {
+		return nil, fmt.Errorf("tvShowDeliveryState.Complete: %w", err)
+	}
+	if executeErr != nil {
+		s.logger.Errorf("tvShowDeliveryState.Complete: %v", executeErr)
+	}
+	return newState, nil
 }

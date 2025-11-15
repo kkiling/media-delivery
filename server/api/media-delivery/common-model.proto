@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package mediadelivery;
+
+option go_package = "github.com/kkiling/media-delivery/api";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+message TVShowID  {
+  uint64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
+  uint32 season_number = 2;
+}
+
+message ContentID {
+  optional uint64 movie_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    type: INTEGER
+  }];
+  optional TVShowID tv_show = 2;
+}
+
+enum StateStatus {
+  StatusUnknown = 0;
+  NewStatus = 1;
+  InProgressStatus = 2;
+  CompletedStatus = 3;
+  FailedStatus = 4;
+}

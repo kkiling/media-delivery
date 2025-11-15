@@ -1,6 +1,8 @@
 package tvshowdeliverystate
 
-import "github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+import (
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
+)
 
 type ChoseTorrentOptions struct {
 	// Пользователь выбрал конкретный торрента файл
@@ -13,5 +15,5 @@ type ChoseFileMatchesOptions struct {
 	// Пользователь подтверждает сметченные файлы
 	Approve bool
 	// Метч контента если указан
-	ContentMatches *delivery.ContentMatches
+	ContentMatches *tvshowdelivery.ContentMatches
 }

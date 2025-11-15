@@ -31,9 +31,9 @@ func (s *Storage) SaveVideoContent(ctx context.Context, videoContent *content.Vi
 		saveParams.SeasonNumber = lo.ToPtr(int32(videoContent.ContentID.TVShow.SeasonNumber))
 	}
 
-	states, err := json.Marshal(videoContent.State)
+	states, err := json.Marshal(videoContent.States)
 	if err != nil {
-		return fmt.Errorf("failed to marshal State: %w", err)
+		return fmt.Errorf("failed to marshal States: %w", err)
 	}
 	saveParams.States = states
 
@@ -60,14 +60,14 @@ func (s *Storage) GetVideoContents(ctx context.Context, contentID common.Content
 		for _, item := range res {
 			var state []content.State
 			if err = json.Unmarshal(item.States, &state); err != nil {
-				return nil, fmt.Errorf("failed to unmarshal State: %w", err)
+				return nil, fmt.Errorf("failed to unmarshal States: %w", err)
 			}
 			results = append(results, content.VideoContent{
 				ID:             item.ID,
 				ContentID:      contentID,
 				CreatedAt:      item.CreatedAt,
 				DeliveryStatus: content.DeliveryStatus(item.DeliveryStatus),
-				State:          state,
+				States:         state,
 			})
 		}
 
@@ -85,14 +85,14 @@ func (s *Storage) GetVideoContents(ctx context.Context, contentID common.Content
 		for _, item := range res {
 			var state []content.State
 			if err = json.Unmarshal(item.States, &state); err != nil {
-				return nil, fmt.Errorf("failed to unmarshal State: %w", err)
+				return nil, fmt.Errorf("failed to unmarshal States: %w", err)
 			}
 			results = append(results, content.VideoContent{
 				ID:             item.ID,
 				ContentID:      contentID,
 				CreatedAt:      item.CreatedAt,
 				DeliveryStatus: content.DeliveryStatus(item.DeliveryStatus),
-				State:          state,
+				States:         state,
 			})
 		}
 		return results, nil
@@ -104,9 +104,15 @@ func (s *Storage) GetVideoContents(ctx context.Context, contentID common.Content
 func (s *Storage) UpdateVideoContent(ctx context.Context, id uuid.UUID, videoContent *content.UpdateVideoContent) error {
 	queries := s.getQueries(ctx)
 
-	_, err := queries.UpdateVideoContent(ctx, db.UpdateVideoContentParams{
+	stateData, err := json.Marshal(videoContent.States)
+	if err != nil {
+		return fmt.Errorf("failed to marshal States: %w", err)
+	}
+
+	_, err = queries.UpdateVideoContent(ctx, db.UpdateVideoContentParams{
 		DeliveryStatus: int(videoContent.DeliveryStatus),
 		ID:             id,
+		States:         stateData,
 	})
 
 	if err != nil {
@@ -131,7 +137,7 @@ func (s *Storage) GetVideoContentsByDeliveryStatus(ctx context.Context, delivery
 	for _, item := range res {
 		var state []content.State
 		if err = json.Unmarshal(item.States, &state); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal State: %w", err)
+			return nil, fmt.Errorf("failed to unmarshal States: %w", err)
 		}
 
 		var contentID common.ContentID
@@ -151,7 +157,7 @@ func (s *Storage) GetVideoContentsByDeliveryStatus(ctx context.Context, delivery
 			ContentID:      contentID,
 			CreatedAt:      item.CreatedAt,
 			DeliveryStatus: content.DeliveryStatus(item.DeliveryStatus),
-			State:          state,
+			States:         state,
 		})
 	}
 

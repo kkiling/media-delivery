@@ -6,6 +6,9 @@ import (
 
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase/postgrebase"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelete"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	"github.com/kkiling/statemachine"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
@@ -22,7 +25,6 @@ import (
 	tvShowLibraryPostgreSql "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/postgresql"
 	contentDelivery "github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
 	contentPostgreSql "github.com/kkiling/media-delivery/internal/usercase/videocontent/content/storage/postgresql"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
@@ -103,8 +105,8 @@ func NewContainer(ctx context.Context, cfg *config.AppConfig) (*Container, error
 	// UserCase
 	tvShowLibrary := tvshowlibrary.NewService(tvShowLibraryStorage, themoviedbApi)
 
-	deliveryService := delivery.NewService(
-		delivery.Config{
+	tvShowDeliveryService := tvshowdelivery.NewService(
+		tvshowdelivery.Config{
 			BasePath:                   cfg.DeliveryConfig.BasePath,
 			TVShowTorrentSavePath:      cfg.DeliveryConfig.TVShowTorrentSavePath,
 			TVShowMediaSaveTvShowsPath: cfg.DeliveryConfig.TVShowMediaSaveTvShowsPath,
@@ -116,13 +118,25 @@ func NewContainer(ctx context.Context, cfg *config.AppConfig) (*Container, error
 		prepareTVShowService,
 		mkvPipeline,
 	)
-	tvShowDeliveryStateMachine := tvshowdeliverystate.NewState(deliveryService, stateStorage)
+	tvShowDeleteService := tvshowdelete.NewService(
+		tvshowdelete.Config{
+			BasePath:                   cfg.DeliveryConfig.BasePath,
+			TVShowTorrentSavePath:      cfg.DeliveryConfig.TVShowTorrentSavePath,
+			TVShowMediaSaveTvShowsPath: cfg.DeliveryConfig.TVShowMediaSaveTvShowsPath,
+		},
+		qBittorrentApi,
+		embyApi,
+	)
+
+	tvShowDeliveryStateMachine := tvshowdeliverystate.NewState(tvShowDeliveryService, stateStorage)
+	tvShowDeleteStateMachine := tvshowdeletestate.NewState(tvShowDeleteService, stateStorage)
 
 	deliveryContent := contentDelivery.NewService(
 		logger,
 		contentStorage,
 		tvShowLibrary,
 		tvShowDeliveryStateMachine,
+		tvShowDeleteStateMachine,
 		labelsService,
 	)
 

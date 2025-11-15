@@ -1,10 +1,10 @@
 package mapfrom
 
 import (
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	"github.com/samber/lo"
 
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
@@ -48,7 +48,7 @@ func ContentMatches(match *desc.ContentMatches) *videocontent.ContentMatches {
 			Type:     trackType,
 			Name:     item.Name,
 			Language: item.Language,
-			File: delivery.FileInfo{
+			File: tvshowdelivery.FileInfo{
 				RelativePath: item.RelativePath,
 				FullPath:     item.FullPath,
 			},
@@ -64,7 +64,7 @@ func ContentMatches(match *desc.ContentMatches) *videocontent.ContentMatches {
 	return &videocontent.ContentMatches{
 		Matches: lo.Map(match.Matches, func(item *desc.ContentMatch, index int) videocontent.ContentMatch {
 			return videocontent.ContentMatch{
-				Episode: delivery.EpisodeInfo{
+				Episode: tvshowdelivery.EpisodeInfo{
 					SeasonNumber:  uint8(item.Episode.SeasonNumber),
 					EpisodeNumber: int(item.Episode.EpisodeNumber),
 					FullPath:      item.Episode.FullPath,
@@ -81,7 +81,7 @@ func ContentMatches(match *desc.ContentMatches) *videocontent.ContentMatches {
 			}
 		}),
 		Unallocated: toTracks(match.Unallocated),
-		Options: delivery.ContentMatchesOptions{
+		Options: tvshowdelivery.ContentMatchesOptions{
 			KeepOriginalAudio:     match.Options.KeepOriginalAudio,
 			KeepOriginalSubtitles: match.Options.KeepOriginalSubtitles,
 			DefaultAudioTrackName: match.Options.DefaultAudioTrackName,

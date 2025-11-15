@@ -1,4 +1,4 @@
-package delivery
+package tvshowdelivery
 
 func (s *Service) NeedPrepareFileMatches(contentMatches []ContentMatch) bool {
 	needToMerge := false

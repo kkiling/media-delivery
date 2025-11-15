@@ -46,7 +46,7 @@ type VideoContent struct {
 	// Статус
 	DeliveryStatus DeliveryStatus
 	// Стейты привязанные к текущему контенту
-	State []State
+	States []State
 }
 
 // State Таблица выпусков связанных с TVShowContent
@@ -58,4 +58,6 @@ type State struct {
 type UpdateVideoContent struct {
 	// Статус
 	DeliveryStatus DeliveryStatus
+	// Стейты привязанные к текущему контенту
+	States []State
 }

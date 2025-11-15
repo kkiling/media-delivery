@@ -212,18 +212,18 @@ func torrentState(state videocontent.TorrentState) desc.TorrentDownloadStatus_To
 	}
 }
 
-func status(status statemachine.Status) desc.Status {
+func status(status statemachine.Status) desc.StateStatus {
 	switch status {
 	case statemachine.NewStatus:
-		return desc.Status_NewStatus
+		return desc.StateStatus_NewStatus
 	case statemachine.InProgressStatus:
-		return desc.Status_InProgressStatus
+		return desc.StateStatus_InProgressStatus
 	case statemachine.CompletedStatus:
-		return desc.Status_CompletedStatus
+		return desc.StateStatus_CompletedStatus
 	case statemachine.FailedStatus:
-		return desc.Status_FailedStatus
+		return desc.StateStatus_FailedStatus
 	default:
-		return desc.Status_StatusUnknown
+		return desc.StateStatus_StatusUnknown
 	}
 }
 

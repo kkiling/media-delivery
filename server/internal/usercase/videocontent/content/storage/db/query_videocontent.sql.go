@@ -159,7 +159,7 @@ func (q *Queries) SaveVideoContent(ctx context.Context, arg SaveVideoContentPara
 
 const updateVideoContent = `-- name: UpdateVideoContent :one
 UPDATE video_content
-SET delivery_status=$1
+SET delivery_status=$1, states=$3
 WHERE id=$2
 RETURNING id
 `
@@ -167,10 +167,11 @@ RETURNING id
 type UpdateVideoContentParams struct {
 	DeliveryStatus int
 	ID             uuid.UUID
+	States         []byte
 }
 
 func (q *Queries) UpdateVideoContent(ctx context.Context, arg UpdateVideoContentParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, updateVideoContent, arg.DeliveryStatus, arg.ID)
+	row := q.db.QueryRow(ctx, updateVideoContent, arg.DeliveryStatus, arg.ID, arg.States)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

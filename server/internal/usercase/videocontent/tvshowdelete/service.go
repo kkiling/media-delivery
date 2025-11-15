@@ -1,4 +1,4 @@
-package delivery
+package tvshowdelete
 
 type Config struct {
 	// BasePath Базовый путь от которого расположены все файлы торрента или медиа сервера
@@ -12,30 +12,18 @@ type Config struct {
 
 type Service struct {
 	config        Config
-	tvShowLibrary TVShowLibrary
-	torrentSite   TorrentSite
 	torrentClient TorrentClient
 	embyApi       EmbyApi
-	prepareTVShow PrepareTVShow
-	mkvMerge      MkvMergePipeline
 }
 
 func NewService(
 	config Config,
-	tvShowLibrary TVShowLibrary,
-	torrentSite TorrentSite,
 	torrentClient TorrentClient,
 	embyApi EmbyApi,
-	prepareTVShow PrepareTVShow,
-	mkvMerge MkvMergePipeline,
 ) *Service {
 	return &Service{
 		config:        config,
-		tvShowLibrary: tvShowLibrary,
-		torrentSite:   torrentSite,
 		torrentClient: torrentClient,
 		embyApi:       embyApi,
-		prepareTVShow: prepareTVShow,
-		mkvMerge:      mkvMerge,
 	}
 }

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package mediadelivery;
+
+option go_package = "github.com/kkiling/media-delivery/api";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+enum DeliveryStatus {
+  DeliveryStatusUnknown = 0;
+  DeliveryStatusFailed = 1;
+  DeliveryStatusInProgress = 2;
+  DeliveryStatusDelivered = 3;
+}
+
+message VideoContent {
+  string id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  DeliveryStatus delivery_status = 3;
+}

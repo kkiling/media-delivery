@@ -16,6 +16,6 @@ WHERE delivery_status=$1 ORDER BY created_at DESC limit $2;
 
 -- name: UpdateVideoContent :one
 UPDATE video_content
-SET delivery_status=$1
+SET delivery_status=$1, states=$3
 WHERE id=$2
 RETURNING id;

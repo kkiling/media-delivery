@@ -24,7 +24,7 @@
   "paths": {
     "/v1/content": {
       "get": {
-        "summary": "Получение доставок для кино/тв сериала",
+        "summary": "Получение видео контента для кино/тв сериала",
         "operationId": "VideoContentService_GetVideoContent",
         "responses": {
           "200": {
@@ -36,7 +36,51 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id.movie_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.season_number",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "VideoContentService"
+        ]
+      },
+      "delete": {
+        "summary": "Удаление файлов видеоконтента",
+        "operationId": "VideoContentService_DeleteVideoContentFiles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteVideoContentFilesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -68,7 +112,7 @@
         ]
       },
       "post": {
-        "summary": "Создание файловой раздачи",
+        "summary": "Создание видео контента",
         "operationId": "VideoContentService_CreateVideoContent",
         "responses": {
           "200": {
@@ -80,7 +124,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -113,7 +157,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -146,7 +190,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -167,7 +211,7 @@
     },
     "/v1/tvshow/delivery/data": {
       "get": {
-        "summary": "Получение данных стейта доставки",
+        "summary": "Получение данных стейта доставки видеоконтента",
         "operationId": "VideoContentService_GetTVShowDeliveryData",
         "responses": {
           "200": {
@@ -179,7 +223,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -225,7 +269,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -257,7 +301,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -296,7 +340,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -319,7 +363,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpc.Status"
+              "$ref": "#/definitions/Status"
             }
           }
         },
@@ -476,6 +520,14 @@
         }
       }
     },
+    "DeleteVideoContentFilesResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/TVShowDeleteState"
+        }
+      }
+    },
     "DeliveryStatus": {
       "type": "string",
       "enum": [
@@ -539,16 +591,6 @@
           "type": "string"
         }
       }
-    },
-    "ErrorType": {
-      "type": "string",
-      "enum": [
-        "TVShowDeliveryError_Unknown",
-        "TorrentSiteForbidden",
-        "FilesAlreadyExist"
-      ],
-      "default": "TVShowDeliveryError_Unknown",
-      "title": "- TorrentSiteForbidden: Торрент трекер не доступен\n - FilesAlreadyExist: Файлы на медиасервере уже существуют"
     },
     "GetSeasonInfoResponse": {
       "type": "object",
@@ -708,6 +750,36 @@
         }
       }
     },
+    "StateStatus": {
+      "type": "string",
+      "enum": [
+        "StatusUnknown",
+        "NewStatus",
+        "InProgressStatus",
+        "CompletedStatus",
+        "FailedStatus"
+      ],
+      "default": "StatusUnknown"
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
     "TVShow": {
       "type": "object",
       "properties": {
@@ -822,6 +894,52 @@
         }
       }
     },
+    "TVShowDeleteData": {
+      "type": "object"
+    },
+    "TVShowDeleteError": {
+      "type": "object",
+      "properties": {
+        "raw_error": {
+          "type": "string"
+        },
+        "error_type": {
+          "$ref": "#/definitions/TVShowDeleteError.ErrorType"
+        }
+      }
+    },
+    "TVShowDeleteError.ErrorType": {
+      "type": "string",
+      "enum": [
+        "TVShowDeleteError_Unknown"
+      ],
+      "default": "TVShowDeleteError_Unknown"
+    },
+    "TVShowDeleteState": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/TVShowDeleteData"
+        },
+        "step": {
+          "$ref": "#/definitions/TVShowDeleteStep"
+        },
+        "status": {
+          "$ref": "#/definitions/StateStatus"
+        },
+        "error": {
+          "$ref": "#/definitions/TVShowDeleteError"
+        }
+      }
+    },
+    "TVShowDeleteStep": {
+      "type": "string",
+      "enum": [
+        "TVShowDeleteStepUnknown"
+      ],
+      "default": "TVShowDeleteStepUnknown",
+      "title": "- TVShowDeleteStepUnknown: Неизвестный статус доставки"
+    },
     "TVShowDeliveryData": {
       "type": "object",
       "properties": {
@@ -866,9 +984,19 @@
           "type": "string"
         },
         "error_type": {
-          "$ref": "#/definitions/ErrorType"
+          "$ref": "#/definitions/TVShowDeliveryError.ErrorType"
         }
       }
+    },
+    "TVShowDeliveryError.ErrorType": {
+      "type": "string",
+      "enum": [
+        "TVShowDeliveryError_Unknown",
+        "TorrentSiteForbidden",
+        "FilesAlreadyExist"
+      ],
+      "default": "TVShowDeliveryError_Unknown",
+      "title": "- TorrentSiteForbidden: Торрент трекер не доступен\n - FilesAlreadyExist: Файлы на медиасервере уже существуют"
     },
     "TVShowDeliveryState": {
       "type": "object",
@@ -880,7 +1008,7 @@
           "$ref": "#/definitions/TVShowDeliveryStep"
         },
         "status": {
-          "$ref": "#/definitions/mediadelivery.Status"
+          "$ref": "#/definitions/StateStatus"
         },
         "error": {
           "$ref": "#/definitions/TVShowDeliveryError"
@@ -1073,36 +1201,6 @@
         },
         "delivery_status": {
           "$ref": "#/definitions/DeliveryStatus"
-        }
-      }
-    },
-    "mediadelivery.Status": {
-      "type": "string",
-      "enum": [
-        "StatusUnknown",
-        "NewStatus",
-        "InProgressStatus",
-        "CompletedStatus",
-        "FailedStatus"
-      ],
-      "default": "StatusUnknown"
-    },
-    "rpc.Status": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/Any"
-          }
         }
       }
     }

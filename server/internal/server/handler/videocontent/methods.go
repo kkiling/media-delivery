@@ -83,3 +83,8 @@ func (h *Handler) ChoseFileMatchesOptions(ctx context.Context, request *desc.Cho
 		Result: mapto.TVShowDeliveryState(state),
 	}, nil
 }
+
+func (h *Handler) DeleteVideoContentFiles(context.Context, *desc.DeleteVideoContentFilesRequest) (*desc.DeleteVideoContentFilesResponse, error) {
+	// TODO: Implement DeleteVideoContentFiles
+	return &desc.DeleteVideoContentFilesResponse{}, nil
+}

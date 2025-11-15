@@ -7,3 +7,7 @@ import (
 type CreateVideoContentParams struct {
 	ContentID common.ContentID
 }
+
+type DeleteVideoContentFilesParams struct {
+	ContentID common.ContentID
+}
