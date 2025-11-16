@@ -95,6 +95,16 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("DeleteSeasonFromMediaServer: %w", err))
 					}
+					return stepContext.Next(DeleteLabel)
+				},
+			},
+			DeleteLabel: {
+				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
+					data := stepContext.State.MetaData
+					err := r.contentDeleted.DeleteLabelHasVideoContentFiles(ctx, data.ContentID)
+					if err != nil {
+						return stepContext.Error(fmt.Errorf("DeleteLabelHasVideoContentFiles: %w", err))
+					}
 					return stepContext.Complete()
 				},
 			},

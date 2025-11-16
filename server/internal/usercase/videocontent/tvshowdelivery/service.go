@@ -18,6 +18,7 @@ type Service struct {
 	embyApi       EmbyApi
 	prepareTVShow PrepareTVShow
 	mkvMerge      MkvMergePipeline
+	labels        Labels
 }
 
 func NewService(
@@ -28,6 +29,7 @@ func NewService(
 	embyApi EmbyApi,
 	prepareTVShow PrepareTVShow,
 	mkvMerge MkvMergePipeline,
+	labels Labels,
 ) *Service {
 	return &Service{
 		config:        config,
@@ -37,5 +39,6 @@ func NewService(
 		embyApi:       embyApi,
 		prepareTVShow: prepareTVShow,
 		mkvMerge:      mkvMerge,
+		labels:        labels,
 	}
 }

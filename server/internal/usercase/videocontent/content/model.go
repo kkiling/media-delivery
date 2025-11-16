@@ -14,6 +14,8 @@ type DeliveryStatus int
 const (
 	// DeliveryStatusFailed доставка была зафейлена
 	DeliveryStatusFailed DeliveryStatus = iota
+	// DeliveryStatusNew - Новая доставка
+	DeliveryStatusNew DeliveryStatus = iota
 	// DeliveryStatusInProgress - В процессе доставки файлов
 	DeliveryStatusInProgress DeliveryStatus = iota
 	// DeliveryStatusDelivered - Файлы доставлены

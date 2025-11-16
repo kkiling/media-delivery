@@ -4,85 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/samber/lo"
-
 	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
-	"github.com/kkiling/media-delivery/internal/usercase/labels"
-	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 )
 
-func (s *Service) createDelivery(ctx context.Context, params CreateVideoContentParams) (*VideoContent, error) {
-	now := s.clock.Now()
-
-	deliveryOptions := tvshowdeliverystate.CreateOptions{
-		TVShowID: *params.ContentID.TVShow,
-	}
-
-	videoContent := VideoContent{
-		ID:             s.uuidGenerator.New(),
-		CreatedAt:      now,
-		ContentID:      params.ContentID,
-		DeliveryStatus: DeliveryStatusInProgress,
-	}
-	tvShow := tvshowlibrary.AddTVShowInLibraryParams{
-		TVShowID:     params.ContentID.TVShow.ID,
-		SeasonNumber: params.ContentID.TVShow.SeasonNumber,
-	}
-	contentID := common.ContentID{
-		TVShow: &common.TVShowID{
-			ID:           params.ContentID.TVShow.ID,
-			SeasonNumber: params.ContentID.TVShow.SeasonNumber,
-		},
-	}
-	labelContentInLibrary := labels.Label{
-		ContentID: contentID,
-		TypeLabel: labels.ContentInLibrary,
-		CreatedAt: now,
-	}
-	labelHasVideoContent := labels.Label{
-		ContentID: contentID,
-		TypeLabel: labels.HasVideoContent,
-		CreatedAt: now,
-	}
-
-	// TODO: !!! !!! !!! подумать как обернуть в одну транзакцию
-	{
-		// Создали стейт доставки видео контента
-		state, err := s.tvShowDeliveryState.Create(ctx, deliveryOptions)
-		if err != nil {
-			return nil, fmt.Errorf("tvShowDeliveryState.Create: %w", err)
-		}
-
-		videoContent.States = append(videoContent.States, State{
-			StateID: state.ID,
-			Type:    runners.TVShowDelivery,
-		})
-
-		// Добавили сериал в библиотеку
-		if err = s.tvShowLibrary.AddTVShowInLibrary(ctx, tvShow); err != nil {
-			return nil, fmt.Errorf("tvShowLibrary.AddTVShowInLibrary: %w", err)
-		}
-		// Добавили лейбл что сериал в библиотеке
-		if err = s.labels.AddLabel(ctx, labelContentInLibrary); err != nil {
-			return nil, fmt.Errorf("labels.AddLabel: %w", err)
-		}
-		// Создали сущность видео контента
-		if err = s.storage.SaveVideoContent(ctx, &videoContent); err != nil {
-			return nil, fmt.Errorf("storage.SaveVideoContent: %w", err)
-		}
-		// Добавили лейбл что у сериал создан видео контент
-		if err = s.labels.AddLabel(ctx, labelHasVideoContent); err != nil {
-			return nil, fmt.Errorf("labels.AddLabel: %w", err)
-		}
-	}
-
-	return &videoContent, nil
-}
-
-func (s *Service) validateCreateVideoContentParams(ctx context.Context, params CreateVideoContentParams) error {
+func (s *Service) validateDeliveryVideoContentParams(ctx context.Context, params DeliveryVideoContentParams) error {
 	if err := params.ContentID.Validate(); err != nil {
 		return err
 	}
@@ -91,57 +19,60 @@ func (s *Service) validateCreateVideoContentParams(ctx context.Context, params C
 		return fmt.Errorf("movieID is not support: %w", ucerr.InvalidArgument)
 	}
 
-	// Ограничиваем одну раздачу на один фильм/сериал
-	found, err := s.GetVideoContent(ctx, params.ContentID)
-	if err != nil {
-		return fmt.Errorf("getVideoContent: %w", err)
-	}
-	if len(found) > 0 {
-		return ucerr.AlreadyExists
-	}
-
 	return nil
 }
 
-func (s *Service) checkContentExistInLibrary(ctx context.Context, contentID common.ContentID) error {
-
-	// Проверяем наличие сезона сериала изи фильма
-	// Получаем инфу о сериале
-	tvShowInfo, err := s.tvShowLibrary.GetTVShowInfo(ctx, tvshowlibrary.GetTVShowParams{
-		TVShowID: contentID.TVShow.ID,
-	})
+// CreateDeliveryState создание файловой раздачи
+func (s *Service) CreateDeliveryState(ctx context.Context, params DeliveryVideoContentParams) (*tvshowdeliverystate.State, error) {
+	if err := s.validateDeliveryVideoContentParams(ctx, params); err != nil {
+		return nil, fmt.Errorf("validateDeliveryVideoContentParams: %w", err)
+	}
+	// Достаем videoContent
+	contents, err := s.storage.GetVideoContents(ctx, params.ContentID)
 	if err != nil {
-		return fmt.Errorf("tvShowLibrary.GetTVShowInfo: %w", err)
+		return nil, fmt.Errorf("storage.GetVideoContent: %w", err)
 	}
-	if tvShowInfo == nil {
-		return fmt.Errorf("tvShow: %w", ucerr.NotFound)
+	if len(contents) != 1 {
+		return nil, ucerr.NotFound
 	}
-
-	// Проверяем что сезон тоже существует
-	if !lo.ContainsBy(tvShowInfo.Result.Seasons, func(item tvshowlibrary.Season) bool {
-		return item.SeasonNumber == contentID.TVShow.SeasonNumber
-	}) {
-		return fmt.Errorf("season: %w", ucerr.NotFound)
+	content := contents[0]
+	// Проверяем что он находится в правильном статусе
+	if content.DeliveryStatus != DeliveryStatusNew {
+		return nil, fmt.Errorf("video content is not in new status: %w", ucerr.InvalidArgument)
 	}
 
-	return nil
+	var state *tvshowdeliverystate.State
+
+	options := tvshowdeliverystate.CreateOptions{
+		TVShowID: *params.ContentID.TVShow,
+	}
+
+	// TODO: одна транзакция
+	{
+		// Создали стейт доставки видео контента
+		state, err = s.tvShowDeliveryState.Create(ctx, options)
+		if err != nil {
+			return nil, fmt.Errorf("tvShowDeliveryState.Create: %w", err)
+		}
+
+		// Обновить модель стейта videoContent
+		updateVideoContent := UpdateVideoContent{
+			DeliveryStatus: content.DeliveryStatus,
+			States: append(content.States, State{
+				StateID: state.ID,
+				Type:    runners.TVShowDelivery,
+			}),
+		}
+
+		if err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent); err != nil {
+			return nil, fmt.Errorf("storage.UpdateVideoContent: %w", err)
+		}
+	}
+
+	return state, nil
 }
 
-// CreateVideoContent создание файловой раздачи
-func (s *Service) CreateVideoContent(ctx context.Context, params CreateVideoContentParams) (*VideoContent, error) {
-	if err := s.validateCreateVideoContentParams(ctx, params); err != nil {
-		return nil, fmt.Errorf("validateCreateVideoContentParams: %w", err)
-	}
-
-	if err := s.checkContentExistInLibrary(ctx, params.ContentID); err != nil {
-		return nil, fmt.Errorf("checkContentExistInLibrary: %w", err)
-	}
-
-	// Создаем видео контент с доставкой
-	return s.createDelivery(ctx, params)
-}
-
-func (s *Service) GetTVShowDeliveryData(ctx context.Context, contentID common.ContentID) (*tvshowdeliverystate.State, error) {
+func (s *Service) GetDeliveryData(ctx context.Context, contentID common.ContentID) (*tvshowdeliverystate.State, error) {
 	if err := contentID.Validate(); err != nil {
 		return nil, err
 	}

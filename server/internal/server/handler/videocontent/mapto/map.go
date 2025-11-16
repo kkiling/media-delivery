@@ -231,6 +231,8 @@ func deliveryStatus(deliveryStatus videocontent.DeliveryStatus) desc.DeliverySta
 	switch deliveryStatus {
 	case videocontent.DeliveryStatusFailed:
 		return desc.DeliveryStatus_DeliveryStatusFailed
+	case videocontent.DeliveryStatusNew:
+		return desc.DeliveryStatus_DeliveryStatusNew
 	case videocontent.DeliveryStatusInProgress:
 		return desc.DeliveryStatus_DeliveryStatusInProgress
 	case videocontent.DeliveryStatusDelivered:
@@ -287,5 +289,22 @@ func tvShowDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStep 
 
 	default:
 		return desc.TVShowDeliveryStep_TVShowDeliveryStepUnknown
+	}
+}
+
+func TVShowDeleteState(state *videocontent.TVShowDeleteState) *desc.TVShowDeleteState {
+	return &desc.TVShowDeleteState{
+		Status: status(state.Status),
+		Error:  tvShowDeleteError(state),
+	}
+}
+
+func tvShowDeleteError(state *videocontent.TVShowDeleteState) *desc.TVShowDeleteError {
+	if state.Error == nil {
+		return nil
+	}
+	return &desc.TVShowDeleteError{
+		RawError:  *state.Error,
+		ErrorType: desc.TVShowDeleteError_TVShowDeleteError_Unknown,
 	}
 }

@@ -14,16 +14,19 @@ type Service struct {
 	config        Config
 	torrentClient TorrentClient
 	embyApi       EmbyApi
+	labels        Labels
 }
 
 func NewService(
 	config Config,
 	torrentClient TorrentClient,
 	embyApi EmbyApi,
+	labelsService Labels,
 ) *Service {
 	return &Service{
 		config:        config,
 		torrentClient: torrentClient,
 		embyApi:       embyApi,
+		labels:        labelsService,
 	}
 }

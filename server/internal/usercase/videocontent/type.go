@@ -3,6 +3,7 @@ package videocontent
 import (
 	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
@@ -26,6 +27,7 @@ type DeliveryStatus = content.DeliveryStatus
 
 const (
 	DeliveryStatusFailed     = content.DeliveryStatusFailed
+	DeliveryStatusNew        = content.DeliveryStatusNew
 	DeliveryStatusInProgress = content.DeliveryStatusInProgress
 	DeliveryStatusDelivered  = content.DeliveryStatusDelivered
 	DeliveryStatusUpdating   = content.DeliveryStatusUpdating
@@ -34,6 +36,11 @@ const (
 )
 
 type CreateVideoContentParams = content.CreateVideoContentParams
+type DeliveryVideoContentParams = content.DeliveryVideoContentParams
+type DeleteVideoContentFilesParams = content.DeleteVideoContentFilesParams
+
+type TVShowDeleteState = tvshowdeletestate.State
+
 type TVShowDeliveryState = tvshowdeliverystate.State
 type TVShowDeliveryData = tvshowdeliverystate.TVShowDeliveryData
 type TorrentSearch = tvshowdelivery.TorrentSearch

@@ -25,50 +25,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type TVShowDeleteStep int32
-
-const (
-	// Неизвестный статус доставки
-	TVShowDeleteStep_TVShowDeleteStepUnknown TVShowDeleteStep = 0
-)
-
-// Enum value maps for TVShowDeleteStep.
-var (
-	TVShowDeleteStep_name = map[int32]string{
-		0: "TVShowDeleteStepUnknown",
-	}
-	TVShowDeleteStep_value = map[string]int32{
-		"TVShowDeleteStepUnknown": 0,
-	}
-)
-
-func (x TVShowDeleteStep) Enum() *TVShowDeleteStep {
-	p := new(TVShowDeleteStep)
-	*p = x
-	return p
-}
-
-func (x TVShowDeleteStep) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TVShowDeleteStep) Descriptor() protoreflect.EnumDescriptor {
-	return file_media_delivery_tv_show_delete_state_proto_enumTypes[0].Descriptor()
-}
-
-func (TVShowDeleteStep) Type() protoreflect.EnumType {
-	return &file_media_delivery_tv_show_delete_state_proto_enumTypes[0]
-}
-
-func (x TVShowDeleteStep) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TVShowDeleteStep.Descriptor instead.
-func (TVShowDeleteStep) EnumDescriptor() ([]byte, []int) {
-	return file_media_delivery_tv_show_delete_state_proto_rawDescGZIP(), []int{0}
-}
-
 type TVShowDeleteError_ErrorType int32
 
 const (
@@ -96,11 +52,11 @@ func (x TVShowDeleteError_ErrorType) String() string {
 }
 
 func (TVShowDeleteError_ErrorType) Descriptor() protoreflect.EnumDescriptor {
-	return file_media_delivery_tv_show_delete_state_proto_enumTypes[1].Descriptor()
+	return file_media_delivery_tv_show_delete_state_proto_enumTypes[0].Descriptor()
 }
 
 func (TVShowDeleteError_ErrorType) Type() protoreflect.EnumType {
-	return &file_media_delivery_tv_show_delete_state_proto_enumTypes[1]
+	return &file_media_delivery_tv_show_delete_state_proto_enumTypes[0]
 }
 
 func (x TVShowDeleteError_ErrorType) Number() protoreflect.EnumNumber {
@@ -165,11 +121,11 @@ func (x *TVShowDeleteError) GetErrorType() TVShowDeleteError_ErrorType {
 }
 
 type TVShowDeleteState struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *TVShowDeleteData      `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
-	Step          TVShowDeleteStep       `protobuf:"varint,2,opt,name=step,proto3,enum=mediadelivery.TVShowDeleteStep" json:"step,omitempty"`
-	Status        StateStatus            `protobuf:"varint,3,opt,name=status,proto3,enum=mediadelivery.StateStatus" json:"status,omitempty"`
-	Error         *TVShowDeleteError     `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// TVShowDeleteData data = 1;
+	// TVShowDeleteStep step = 2;
+	Status        StateStatus        `protobuf:"varint,3,opt,name=status,proto3,enum=mediadelivery.StateStatus" json:"status,omitempty"`
+	Error         *TVShowDeleteError `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -204,20 +160,6 @@ func (*TVShowDeleteState) Descriptor() ([]byte, []int) {
 	return file_media_delivery_tv_show_delete_state_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *TVShowDeleteState) GetData() *TVShowDeleteData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-func (x *TVShowDeleteState) GetStep() TVShowDeleteStep {
-	if x != nil {
-		return x.Step
-	}
-	return TVShowDeleteStep_TVShowDeleteStepUnknown
-}
-
 func (x *TVShowDeleteState) GetStatus() StateStatus {
 	if x != nil {
 		return x.Status
@@ -232,42 +174,6 @@ func (x *TVShowDeleteState) GetError() *TVShowDeleteError {
 	return nil
 }
 
-type TVShowDeleteData struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TVShowDeleteData) Reset() {
-	*x = TVShowDeleteData{}
-	mi := &file_media_delivery_tv_show_delete_state_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TVShowDeleteData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TVShowDeleteData) ProtoMessage() {}
-
-func (x *TVShowDeleteData) ProtoReflect() protoreflect.Message {
-	mi := &file_media_delivery_tv_show_delete_state_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TVShowDeleteData.ProtoReflect.Descriptor instead.
-func (*TVShowDeleteData) Descriptor() ([]byte, []int) {
-	return file_media_delivery_tv_show_delete_state_proto_rawDescGZIP(), []int{2}
-}
-
 var File_media_delivery_tv_show_delete_state_proto protoreflect.FileDescriptor
 
 const file_media_delivery_tv_show_delete_state_proto_rawDesc = "" +
@@ -278,16 +184,11 @@ const file_media_delivery_tv_show_delete_state_proto_rawDesc = "" +
 	"\n" +
 	"error_type\x18\x02 \x01(\x0e2*.mediadelivery.TVShowDeleteError.ErrorTypeR\terrorType\"*\n" +
 	"\tErrorType\x12\x1d\n" +
-	"\x19TVShowDeleteError_Unknown\x10\x00\"\xf8\x01\n" +
-	"\x11TVShowDeleteState\x123\n" +
-	"\x04data\x18\x01 \x01(\v2\x1f.mediadelivery.TVShowDeleteDataR\x04data\x123\n" +
-	"\x04step\x18\x02 \x01(\x0e2\x1f.mediadelivery.TVShowDeleteStepR\x04step\x122\n" +
+	"\x19TVShowDeleteError_Unknown\x10\x00\"\x8e\x01\n" +
+	"\x11TVShowDeleteState\x122\n" +
 	"\x06status\x18\x03 \x01(\x0e2\x1a.mediadelivery.StateStatusR\x06status\x12;\n" +
 	"\x05error\x18\x04 \x01(\v2 .mediadelivery.TVShowDeleteErrorH\x00R\x05error\x88\x01\x01B\b\n" +
-	"\x06_error\"\x12\n" +
-	"\x10TVShowDeleteData*/\n" +
-	"\x10TVShowDeleteStep\x12\x1b\n" +
-	"\x17TVShowDeleteStepUnknown\x10\x00B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\x06_errorB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_tv_show_delete_state_proto_rawDescOnce sync.Once
@@ -301,27 +202,23 @@ func file_media_delivery_tv_show_delete_state_proto_rawDescGZIP() []byte {
 	return file_media_delivery_tv_show_delete_state_proto_rawDescData
 }
 
-var file_media_delivery_tv_show_delete_state_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_media_delivery_tv_show_delete_state_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_media_delivery_tv_show_delete_state_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_media_delivery_tv_show_delete_state_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_media_delivery_tv_show_delete_state_proto_goTypes = []any{
-	(TVShowDeleteStep)(0),            // 0: mediadelivery.TVShowDeleteStep
-	(TVShowDeleteError_ErrorType)(0), // 1: mediadelivery.TVShowDeleteError.ErrorType
-	(*TVShowDeleteError)(nil),        // 2: mediadelivery.TVShowDeleteError
-	(*TVShowDeleteState)(nil),        // 3: mediadelivery.TVShowDeleteState
-	(*TVShowDeleteData)(nil),         // 4: mediadelivery.TVShowDeleteData
-	(StateStatus)(0),                 // 5: mediadelivery.StateStatus
+	(TVShowDeleteError_ErrorType)(0), // 0: mediadelivery.TVShowDeleteError.ErrorType
+	(*TVShowDeleteError)(nil),        // 1: mediadelivery.TVShowDeleteError
+	(*TVShowDeleteState)(nil),        // 2: mediadelivery.TVShowDeleteState
+	(StateStatus)(0),                 // 3: mediadelivery.StateStatus
 }
 var file_media_delivery_tv_show_delete_state_proto_depIdxs = []int32{
-	1, // 0: mediadelivery.TVShowDeleteError.error_type:type_name -> mediadelivery.TVShowDeleteError.ErrorType
-	4, // 1: mediadelivery.TVShowDeleteState.data:type_name -> mediadelivery.TVShowDeleteData
-	0, // 2: mediadelivery.TVShowDeleteState.step:type_name -> mediadelivery.TVShowDeleteStep
-	5, // 3: mediadelivery.TVShowDeleteState.status:type_name -> mediadelivery.StateStatus
-	2, // 4: mediadelivery.TVShowDeleteState.error:type_name -> mediadelivery.TVShowDeleteError
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0, // 0: mediadelivery.TVShowDeleteError.error_type:type_name -> mediadelivery.TVShowDeleteError.ErrorType
+	3, // 1: mediadelivery.TVShowDeleteState.status:type_name -> mediadelivery.StateStatus
+	1, // 2: mediadelivery.TVShowDeleteState.error:type_name -> mediadelivery.TVShowDeleteError
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_media_delivery_tv_show_delete_state_proto_init() }
@@ -336,8 +233,8 @@ func file_media_delivery_tv_show_delete_state_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_media_delivery_tv_show_delete_state_proto_rawDesc), len(file_media_delivery_tv_show_delete_state_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   3,
+			NumEnums:      1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

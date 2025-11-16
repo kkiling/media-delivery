@@ -67,6 +67,39 @@
           "VideoContentService"
         ]
       },
+      "post": {
+        "summary": "Создание видео контента",
+        "operationId": "VideoContentService_CreateVideoContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateVideoContentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateVideoContentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VideoContentService"
+        ]
+      }
+    },
+    "/v1/content/delivery": {
       "delete": {
         "summary": "Удаление файлов видеоконтента",
         "operationId": "VideoContentService_DeleteVideoContentFiles",
@@ -112,13 +145,13 @@
         ]
       },
       "post": {
-        "summary": "Создание видео контента",
-        "operationId": "VideoContentService_CreateVideoContent",
+        "summary": "Создание доставки видео контента",
+        "operationId": "VideoContentService_CreateDeliveryState",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CreateVideoContentResponse"
+              "$ref": "#/definitions/CreateDeliveryStateResponse"
             }
           },
           "default": {
@@ -134,7 +167,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateVideoContentRequest"
+              "$ref": "#/definitions/CreateDeliveryStateRequest"
             }
           }
         ],
@@ -143,7 +176,7 @@
         ]
       }
     },
-    "/v1/tvshow/delivery/chose-file-matches": {
+    "/v1/content/delivery/chose-file-matches": {
       "patch": {
         "summary": "Подтверждение метча файлов",
         "operationId": "VideoContentService_ChoseFileMatchesOptions",
@@ -176,7 +209,7 @@
         ]
       }
     },
-    "/v1/tvshow/delivery/chose-torrent": {
+    "/v1/content/delivery/chose-torrent": {
       "patch": {
         "summary": "Выбор раздачи с торрента",
         "operationId": "VideoContentService_ChoseTorrentOptions",
@@ -209,15 +242,15 @@
         ]
       }
     },
-    "/v1/tvshow/delivery/data": {
+    "/v1/content/delivery/data": {
       "get": {
         "summary": "Получение данных стейта доставки видеоконтента",
-        "operationId": "VideoContentService_GetTVShowDeliveryData",
+        "operationId": "VideoContentService_GetDeliveryData",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GetTVShowDeliveryDataResponse"
+              "$ref": "#/definitions/GetDeliveryDataResponse"
             }
           },
           "default": {
@@ -504,6 +537,22 @@
         }
       }
     },
+    "CreateDeliveryStateRequest": {
+      "type": "object",
+      "properties": {
+        "content_id": {
+          "$ref": "#/definitions/ContentID"
+        }
+      }
+    },
+    "CreateDeliveryStateResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/TVShowDeliveryState"
+        }
+      }
+    },
     "CreateVideoContentRequest": {
       "type": "object",
       "properties": {
@@ -533,6 +582,7 @@
       "enum": [
         "DeliveryStatusUnknown",
         "DeliveryStatusFailed",
+        "DeliveryStatusNew",
         "DeliveryStatusInProgress",
         "DeliveryStatusDelivered"
       ],
@@ -592,6 +642,14 @@
         }
       }
     },
+    "GetDeliveryDataResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/TVShowDeliveryState"
+        }
+      }
+    },
     "GetSeasonInfoResponse": {
       "type": "object",
       "properties": {
@@ -604,14 +662,6 @@
             "type": "object",
             "$ref": "#/definitions/Episode"
           }
-        }
-      }
-    },
-    "GetTVShowDeliveryDataResponse": {
-      "type": "object",
-      "properties": {
-        "result": {
-          "$ref": "#/definitions/TVShowDeliveryState"
         }
       }
     },
@@ -894,9 +944,6 @@
         }
       }
     },
-    "TVShowDeleteData": {
-      "type": "object"
-    },
     "TVShowDeleteError": {
       "type": "object",
       "properties": {
@@ -918,27 +965,14 @@
     "TVShowDeleteState": {
       "type": "object",
       "properties": {
-        "data": {
-          "$ref": "#/definitions/TVShowDeleteData"
-        },
-        "step": {
-          "$ref": "#/definitions/TVShowDeleteStep"
-        },
         "status": {
-          "$ref": "#/definitions/StateStatus"
+          "$ref": "#/definitions/StateStatus",
+          "title": "TVShowDeleteData data = 1;\nTVShowDeleteStep step = 2;"
         },
         "error": {
           "$ref": "#/definitions/TVShowDeleteError"
         }
       }
-    },
-    "TVShowDeleteStep": {
-      "type": "string",
-      "enum": [
-        "TVShowDeleteStepUnknown"
-      ],
-      "default": "TVShowDeleteStepUnknown",
-      "title": "- TVShowDeleteStepUnknown: Неизвестный статус доставки"
     },
     "TVShowDeliveryData": {
       "type": "object",

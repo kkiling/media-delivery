@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
@@ -39,8 +40,9 @@ func (s *Service) DeleteVideoContentFiles(ctx context.Context, params DeleteVide
 	content := contents[0]
 	// Проверяем что он находится в правильном статусе
 	if content.DeliveryStatus != DeliveryStatusDelivered {
-		return nil, fmt.Errorf("contentID is not delivered: %w", ucerr.InvalidArgument)
+		return nil, fmt.Errorf("video content is not delivered: %w", ucerr.InvalidArgument)
 	}
+
 	// Достаем ID стейта доставки
 	contentState, find := lo.Find(content.States, func(item State) bool {
 		return item.Type == runners.TVShowDelivery
@@ -70,7 +72,7 @@ func (s *Service) DeleteVideoContentFiles(ctx context.Context, params DeleteVide
 	// ID сезона и сериала
 	fmt.Printf(" :%v", deliveryState.MetaData.ContentID.TVShow)
 
-	deleteOptions := tvshowdeletestate.CreateOptions{
+	options := tvshowdeletestate.CreateOptions{
 		TVShowID:    *params.ContentID.TVShow,
 		MagnetHash:  "", // TODO:
 		TorrentPath: "", // TODO:
@@ -80,29 +82,45 @@ func (s *Service) DeleteVideoContentFiles(ctx context.Context, params DeleteVide
 		}, // TODO:
 	}
 
+	var state *tvshowdeletestate.State
 	//  TODO: одна транзакция
-	// Создание стейта удаления файлов видеоконтента
 	{
-		deleteState, err := s.tvShowDeleteState.Create(ctx, deleteOptions)
+		state, err = s.tvShowDeleteState.Create(ctx, options)
 		if err != nil {
 			return nil, fmt.Errorf("tvShowDeleteState.Create: %w", err)
 		}
 
 		// Обновить модель стейта videoContent
-		content.States = append(content.States, State{
-			StateID: deleteState.ID,
-			Type:    runners.TVShowDelete,
-		})
 		updateVideoContent := UpdateVideoContent{
 			DeliveryStatus: content.DeliveryStatus,
-			States:         content.States,
+			States: append(content.States, State{
+				StateID: state.ID,
+				Type:    runners.TVShowDelete,
+			}),
 		}
 
-		err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent)
-		if err != nil {
+		if err = s.storage.UpdateVideoContent(ctx, content.ID, &updateVideoContent); err != nil {
 			return nil, fmt.Errorf("storage.UpdateVideoContent: %w", err)
 		}
-
-		return deleteState, nil
 	}
+
+	return state, nil
+}
+
+func (s *Service) GetDeleteData(ctx context.Context, contentID common.ContentID) (*tvshowdeletestate.State, error) {
+	if err := contentID.Validate(); err != nil {
+		return nil, err
+	}
+
+	stateID, err := s.getStateID(ctx, contentID, runners.TVShowDelete)
+	if err != nil {
+		return nil, fmt.Errorf("getStateID: %w", err)
+	}
+
+	result, err := s.tvShowDeleteState.GetStateByID(ctx, stateID)
+	if err != nil {
+		return nil, fmt.Errorf("s.GetStateByID: %w", err)
+	}
+
+	return result, nil
 }

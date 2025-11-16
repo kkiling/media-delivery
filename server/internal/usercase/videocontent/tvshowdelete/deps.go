@@ -1,8 +1,12 @@
 package tvshowdelete
 
 import (
+	"context"
+
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
+	"github.com/kkiling/media-delivery/internal/common"
+	"github.com/kkiling/media-delivery/internal/usercase/labels"
 )
 
 type TorrentClient interface {
@@ -17,4 +21,8 @@ type EmbyApi interface {
 	ResetMetadata(embyID uint64) error
 	RemoteSearchApply(embyID, theMovieDBID uint64) error
 	GetCatalogInfo(path string) (*emby.CatalogInfo, error)
+}
+
+type Labels interface {
+	DeleteLabel(ctx context.Context, contentID common.ContentID, typeLabel labels.TypeLabel) error
 }

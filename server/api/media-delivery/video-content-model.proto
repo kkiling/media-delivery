@@ -13,8 +13,9 @@ import "google/protobuf/empty.proto";
 enum DeliveryStatus {
   DeliveryStatusUnknown = 0;
   DeliveryStatusFailed = 1;
-  DeliveryStatusInProgress = 2;
-  DeliveryStatusDelivered = 3;
+  DeliveryStatusNew = 2;
+  DeliveryStatusInProgress = 3;
+  DeliveryStatusDelivered = 4;
 }
 
 message VideoContent {

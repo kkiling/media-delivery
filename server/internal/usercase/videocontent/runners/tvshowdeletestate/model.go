@@ -21,6 +21,8 @@ const (
 	DeleteSeasonFiles StepDelete = "delete_season_files_from_media_server"
 	// DeleteSeasonFromMediaServer удаление сезона сериала с медиасервера
 	DeleteSeasonFromMediaServer StepDelete = "delete_season_from_media_server"
+	// DeleteLabel удаление лейбла
+	DeleteLabel StepDelete = "delete_label"
 )
 
 // TVShowDeleteData модель содержащая информацию о процессе удаления файлов видео контента

@@ -53,6 +53,8 @@ const (
 
 	// SetMediaMetaData установка методаных серий сезона сериала / фильма в медиасервере
 	SetMediaMetaData StepDelivery = "set_media_meta_data"
+	// AddLabel Установить лейбл для видеоконтента
+	AddLabel StepDelivery = "add_label"
 	// SendDeliveryNotification Отправка уведомления в telegramm о успешной доставки видеофайлов до медиа сервера
 	SendDeliveryNotification StepDelivery = "send_delivery_notification"
 )

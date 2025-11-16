@@ -30,8 +30,9 @@ type DeliveryStatus int32
 const (
 	DeliveryStatus_DeliveryStatusUnknown    DeliveryStatus = 0
 	DeliveryStatus_DeliveryStatusFailed     DeliveryStatus = 1
-	DeliveryStatus_DeliveryStatusInProgress DeliveryStatus = 2
-	DeliveryStatus_DeliveryStatusDelivered  DeliveryStatus = 3
+	DeliveryStatus_DeliveryStatusNew        DeliveryStatus = 2
+	DeliveryStatus_DeliveryStatusInProgress DeliveryStatus = 3
+	DeliveryStatus_DeliveryStatusDelivered  DeliveryStatus = 4
 )
 
 // Enum value maps for DeliveryStatus.
@@ -39,14 +40,16 @@ var (
 	DeliveryStatus_name = map[int32]string{
 		0: "DeliveryStatusUnknown",
 		1: "DeliveryStatusFailed",
-		2: "DeliveryStatusInProgress",
-		3: "DeliveryStatusDelivered",
+		2: "DeliveryStatusNew",
+		3: "DeliveryStatusInProgress",
+		4: "DeliveryStatusDelivered",
 	}
 	DeliveryStatus_value = map[string]int32{
 		"DeliveryStatusUnknown":    0,
 		"DeliveryStatusFailed":     1,
-		"DeliveryStatusInProgress": 2,
-		"DeliveryStatusDelivered":  3,
+		"DeliveryStatusNew":        2,
+		"DeliveryStatusInProgress": 3,
+		"DeliveryStatusDelivered":  4,
 	}
 )
 
@@ -146,12 +149,13 @@ const file_media_delivery_video_content_model_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12F\n" +
-	"\x0fdelivery_status\x18\x03 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus*\x80\x01\n" +
+	"\x0fdelivery_status\x18\x03 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus*\x97\x01\n" +
 	"\x0eDeliveryStatus\x12\x19\n" +
 	"\x15DeliveryStatusUnknown\x10\x00\x12\x18\n" +
-	"\x14DeliveryStatusFailed\x10\x01\x12\x1c\n" +
-	"\x18DeliveryStatusInProgress\x10\x02\x12\x1b\n" +
-	"\x17DeliveryStatusDelivered\x10\x03B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\x14DeliveryStatusFailed\x10\x01\x12\x15\n" +
+	"\x11DeliveryStatusNew\x10\x02\x12\x1c\n" +
+	"\x18DeliveryStatusInProgress\x10\x03\x12\x1b\n" +
+	"\x17DeliveryStatusDelivered\x10\x04B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_video_content_model_proto_rawDescOnce sync.Once

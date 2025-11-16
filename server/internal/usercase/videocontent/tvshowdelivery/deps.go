@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/kkiling/media-delivery/internal/usercase/labels"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
 	"github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
@@ -44,4 +45,8 @@ type EmbyApi interface {
 	ResetMetadata(embyID uint64) error
 	RemoteSearchApply(embyID, theMovieDBID uint64) error
 	GetCatalogInfo(path string) (*emby.CatalogInfo, error)
+}
+
+type Labels interface {
+	AddLabel(ctx context.Context, label labels.Label) error
 }

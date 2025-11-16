@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
@@ -24,4 +25,5 @@ type ContentDelivery interface {
 	NeedPrepareFileMatches(contentMatches []tvshowdelivery.ContentMatch) bool
 	CreateHardLinkCopyToMediaServer(ctx context.Context, params tvshowdelivery.CreateHardLinkCopyParams) error
 	ValidateContentMatch(oldContentMatch *tvshowdelivery.ContentMatches, newContentMatch *tvshowdelivery.ContentMatches) error
+	AddLabelHasVideoContentFiles(ctx context.Context, contentID common.ContentID) error
 }

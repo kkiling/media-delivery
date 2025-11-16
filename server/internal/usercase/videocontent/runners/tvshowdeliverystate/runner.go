@@ -385,6 +385,15 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 						return stepContext.Error(fmt.Errorf("SetMediaMetaData: %w", err))
 					}
 
+					return stepContext.Next(AddLabel)
+				},
+			},
+			AddLabel: {
+				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
+					err := r.contentDelivery.AddLabelHasVideoContentFiles(ctx, stepContext.State.MetaData.ContentID)
+					if err != nil {
+						return stepContext.Error(fmt.Errorf("AddLabelHasVideoContentFiles: %w", err))
+					}
 					return stepContext.Complete()
 				},
 			},

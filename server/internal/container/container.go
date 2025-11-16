@@ -117,6 +117,7 @@ func NewContainer(ctx context.Context, cfg *config.AppConfig) (*Container, error
 		embyApi,
 		prepareTVShowService,
 		mkvPipeline,
+		labelsService,
 	)
 	tvShowDeleteService := tvshowdelete.NewService(
 		tvshowdelete.Config{
@@ -126,6 +127,7 @@ func NewContainer(ctx context.Context, cfg *config.AppConfig) (*Container, error
 		},
 		qBittorrentApi,
 		embyApi,
+		labelsService,
 	)
 
 	tvShowDeliveryStateMachine := tvshowdeliverystate.NewState(tvShowDeliveryService, stateStorage)

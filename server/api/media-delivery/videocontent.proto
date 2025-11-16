@@ -32,9 +32,18 @@ service VideoContentService {
     };
   };
   // Информация о доставки файлов videoContent
-  rpc GetTVShowDeliveryData(GetTVShowDeliveryDataRequest) returns (GetTVShowDeliveryDataResponse) {
+  rpc CreateDeliveryState(CreateDeliveryStateRequest) returns (CreateDeliveryStateResponse) {
     option (google.api.http) = {
-      get: "/v1/tvshow/delivery/data";
+      post: "/v1/content/delivery";
+      body: "*";
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Создание доставки видео контента";
+    };
+  };
+  rpc GetDeliveryData(GetDeliveryDataRequest) returns (GetDeliveryDataResponse) {
+    option (google.api.http) = {
+      get: "/v1/content/delivery/data";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Получение данных стейта доставки видеоконтента"
@@ -42,7 +51,7 @@ service VideoContentService {
   };
   rpc ChoseTorrentOptions(ChoseTorrentOptionsRequest) returns (ChoseTorrentOptionsResponse) {
     option (google.api.http) = {
-      patch: "/v1/tvshow/delivery/chose-torrent";
+      patch: "/v1/content/delivery/chose-torrent";
       body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -51,7 +60,7 @@ service VideoContentService {
   };
   rpc ChoseFileMatchesOptions(ChoseFileMatchesOptionsRequest) returns (ChoseFileMatchesOptionsResponse) {
     option (google.api.http) = {
-      patch: "/v1/tvshow/delivery/chose-file-matches";
+      patch: "/v1/content/delivery/chose-file-matches";
       body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -61,7 +70,7 @@ service VideoContentService {
   // Удаление файлов videoContent
   rpc DeleteVideoContentFiles(DeleteVideoContentFilesRequest) returns (DeleteVideoContentFilesResponse) {
     option (google.api.http) = {
-      delete: "/v1/content";
+      delete: "/v1/content/delivery";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Удаление файлов видеоконтента"
@@ -85,11 +94,19 @@ message GetVideoContentResponse {
   repeated VideoContent items = 1;
 }
 
-message GetTVShowDeliveryDataRequest {
+message CreateDeliveryStateRequest {
   ContentID content_id = 1;
 }
 
-message GetTVShowDeliveryDataResponse {
+message CreateDeliveryStateResponse {
+  TVShowDeliveryState result = 1;
+}
+
+message GetDeliveryDataRequest {
+  ContentID content_id = 1;
+}
+
+message GetDeliveryDataResponse {
   TVShowDeliveryState result = 1;
 }
 
