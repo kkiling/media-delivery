@@ -1,10 +1,10 @@
 package mapfrom
 
 import (
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	"github.com/samber/lo"
 
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 

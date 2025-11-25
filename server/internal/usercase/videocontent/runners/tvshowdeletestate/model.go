@@ -46,5 +46,5 @@ type CreateOptions struct {
 }
 
 func (c CreateOptions) GetIdempotencyKey() string {
-	return fmt.Sprintf("delivery_tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
+	return fmt.Sprintf("delete_tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
 }

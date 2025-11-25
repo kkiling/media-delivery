@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kkiling/statemachine"
+
 	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
-	"github.com/kkiling/statemachine"
 )
 
 type Runner struct {

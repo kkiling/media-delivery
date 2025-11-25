@@ -20,7 +20,8 @@ type VideoContent interface {
 	GetDeliveryData(ctx context.Context, contentID videocontent.ContentID) (*videocontent.TVShowDeliveryState, error)
 	ChoseTorrentOptions(ctx context.Context, contentID videocontent.ContentID, opts videocontent.ChoseTorrentOptions) (*videocontent.TVShowDeliveryState, error)
 	ChoseFileMatchesOptions(ctx context.Context, contentID videocontent.ContentID, opts videocontent.ChoseFileMatchesOptions) (*videocontent.TVShowDeliveryState, error)
-	DeleteVideoContentFiles(ctx context.Context, params videocontent.DeleteVideoContentFilesParams) (*videocontent.TVShowDeleteState, error)
+	CreateDeleteState(ctx context.Context, params videocontent.CreateDeleteStateParams) (*videocontent.TVShowDeleteState, error)
+	GetDeleteData(ctx context.Context, contentID videocontent.ContentID) (*videocontent.TVShowDeleteState, error)
 }
 
 type Handler struct {

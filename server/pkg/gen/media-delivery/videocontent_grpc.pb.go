@@ -8,6 +8,7 @@ package api
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,7 +26,8 @@ const (
 	VideoContentService_GetDeliveryData_FullMethodName         = "/mediadelivery.VideoContentService/GetDeliveryData"
 	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/mediadelivery.VideoContentService/ChoseTorrentOptions"
 	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/mediadelivery.VideoContentService/ChoseFileMatchesOptions"
-	VideoContentService_DeleteVideoContentFiles_FullMethodName = "/mediadelivery.VideoContentService/DeleteVideoContentFiles"
+	VideoContentService_CreateDeleteState_FullMethodName       = "/mediadelivery.VideoContentService/CreateDeleteState"
+	VideoContentService_GetDeleteData_FullMethodName           = "/mediadelivery.VideoContentService/GetDeleteData"
 )
 
 // VideoContentServiceClient is the client API for VideoContentService service.
@@ -40,7 +42,8 @@ type VideoContentServiceClient interface {
 	ChoseTorrentOptions(ctx context.Context, in *ChoseTorrentOptionsRequest, opts ...grpc.CallOption) (*ChoseTorrentOptionsResponse, error)
 	ChoseFileMatchesOptions(ctx context.Context, in *ChoseFileMatchesOptionsRequest, opts ...grpc.CallOption) (*ChoseFileMatchesOptionsResponse, error)
 	// Удаление файлов videoContent
-	DeleteVideoContentFiles(ctx context.Context, in *DeleteVideoContentFilesRequest, opts ...grpc.CallOption) (*DeleteVideoContentFilesResponse, error)
+	CreateDeleteState(ctx context.Context, in *CreateDeleteStateRequest, opts ...grpc.CallOption) (*CreateDeleteStateResponse, error)
+	GetDeleteData(ctx context.Context, in *GetDeleteDataRequest, opts ...grpc.CallOption) (*GetDeleteDataResponse, error)
 }
 
 type videoContentServiceClient struct {
@@ -111,10 +114,20 @@ func (c *videoContentServiceClient) ChoseFileMatchesOptions(ctx context.Context,
 	return out, nil
 }
 
-func (c *videoContentServiceClient) DeleteVideoContentFiles(ctx context.Context, in *DeleteVideoContentFilesRequest, opts ...grpc.CallOption) (*DeleteVideoContentFilesResponse, error) {
+func (c *videoContentServiceClient) CreateDeleteState(ctx context.Context, in *CreateDeleteStateRequest, opts ...grpc.CallOption) (*CreateDeleteStateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteVideoContentFilesResponse)
-	err := c.cc.Invoke(ctx, VideoContentService_DeleteVideoContentFiles_FullMethodName, in, out, cOpts...)
+	out := new(CreateDeleteStateResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_CreateDeleteState_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoContentServiceClient) GetDeleteData(ctx context.Context, in *GetDeleteDataRequest, opts ...grpc.CallOption) (*GetDeleteDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDeleteDataResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_GetDeleteData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +146,8 @@ type VideoContentServiceServer interface {
 	ChoseTorrentOptions(context.Context, *ChoseTorrentOptionsRequest) (*ChoseTorrentOptionsResponse, error)
 	ChoseFileMatchesOptions(context.Context, *ChoseFileMatchesOptionsRequest) (*ChoseFileMatchesOptionsResponse, error)
 	// Удаление файлов videoContent
-	DeleteVideoContentFiles(context.Context, *DeleteVideoContentFilesRequest) (*DeleteVideoContentFilesResponse, error)
+	CreateDeleteState(context.Context, *CreateDeleteStateRequest) (*CreateDeleteStateResponse, error)
+	GetDeleteData(context.Context, *GetDeleteDataRequest) (*GetDeleteDataResponse, error)
 	mustEmbedUnimplementedVideoContentServiceServer()
 }
 
@@ -162,8 +176,11 @@ func (UnimplementedVideoContentServiceServer) ChoseTorrentOptions(context.Contex
 func (UnimplementedVideoContentServiceServer) ChoseFileMatchesOptions(context.Context, *ChoseFileMatchesOptionsRequest) (*ChoseFileMatchesOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChoseFileMatchesOptions not implemented")
 }
-func (UnimplementedVideoContentServiceServer) DeleteVideoContentFiles(context.Context, *DeleteVideoContentFilesRequest) (*DeleteVideoContentFilesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteVideoContentFiles not implemented")
+func (UnimplementedVideoContentServiceServer) CreateDeleteState(context.Context, *CreateDeleteStateRequest) (*CreateDeleteStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDeleteState not implemented")
+}
+func (UnimplementedVideoContentServiceServer) GetDeleteData(context.Context, *GetDeleteDataRequest) (*GetDeleteDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeleteData not implemented")
 }
 func (UnimplementedVideoContentServiceServer) mustEmbedUnimplementedVideoContentServiceServer() {}
 func (UnimplementedVideoContentServiceServer) testEmbeddedByValue()                             {}
@@ -294,20 +311,38 @@ func _VideoContentService_ChoseFileMatchesOptions_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VideoContentService_DeleteVideoContentFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteVideoContentFilesRequest)
+func _VideoContentService_CreateDeleteState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDeleteStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VideoContentServiceServer).DeleteVideoContentFiles(ctx, in)
+		return srv.(VideoContentServiceServer).CreateDeleteState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VideoContentService_DeleteVideoContentFiles_FullMethodName,
+		FullMethod: VideoContentService_CreateDeleteState_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VideoContentServiceServer).DeleteVideoContentFiles(ctx, req.(*DeleteVideoContentFilesRequest))
+		return srv.(VideoContentServiceServer).CreateDeleteState(ctx, req.(*CreateDeleteStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoContentService_GetDeleteData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeleteDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoContentServiceServer).GetDeleteData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VideoContentService_GetDeleteData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoContentServiceServer).GetDeleteData(ctx, req.(*GetDeleteDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -344,8 +379,12 @@ var VideoContentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VideoContentService_ChoseFileMatchesOptions_Handler,
 		},
 		{
-			MethodName: "DeleteVideoContentFiles",
-			Handler:    _VideoContentService_DeleteVideoContentFiles_Handler,
+			MethodName: "CreateDeleteState",
+			Handler:    _VideoContentService_CreateDeleteState_Handler,
+		},
+		{
+			MethodName: "GetDeleteData",
+			Handler:    _VideoContentService_GetDeleteData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

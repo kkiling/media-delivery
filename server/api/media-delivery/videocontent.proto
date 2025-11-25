@@ -68,7 +68,7 @@ service VideoContentService {
     };
   };
   // Удаление файлов videoContent
-  rpc DeleteVideoContentFiles(DeleteVideoContentFilesRequest) returns (DeleteVideoContentFilesResponse) {
+  rpc CreateDeleteState(CreateDeleteStateRequest) returns (CreateDeleteStateResponse) {
     option (google.api.http) = {
       delete: "/v1/content/delivery";
     };
@@ -76,6 +76,14 @@ service VideoContentService {
       summary: "Удаление файлов видеоконтента"
     };
   };
+  rpc GetDeleteData(GetDeleteDataRequest) returns (GetDeleteDataResponse) {
+    option (google.api.http) = {
+      get: "/v1/content/delivery/delete-data";
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Получение данных стейта удаления видеоконтента"
+    };
+  }
 }
 
 message CreateVideoContentRequest {
@@ -126,10 +134,18 @@ message ChoseFileMatchesOptionsResponse {
   TVShowDeliveryState result = 1;
 }
 
-message DeleteVideoContentFilesRequest {
+message CreateDeleteStateRequest {
   ContentID content_id = 1;
 }
 
-message DeleteVideoContentFilesResponse {
+message CreateDeleteStateResponse {
     TVShowDeleteState result = 1;
+}
+
+message GetDeleteDataRequest {
+  ContentID content_id = 1;
+}
+
+message GetDeleteDataResponse {
+  TVShowDeleteState result = 1;
 }

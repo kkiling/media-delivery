@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 
 	"github.com/kkiling/media-delivery/internal/common"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
 // StepDelivery статус доставки видео файлов до медиа сервера
@@ -92,5 +92,5 @@ type CreateOptions struct {
 }
 
 func (c CreateOptions) GetIdempotencyKey() string {
-	return fmt.Sprintf("tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
+	return fmt.Sprintf("delivery_tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
 }

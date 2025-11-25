@@ -122,12 +122,14 @@ func (s *Storage) UpdateVideoContent(ctx context.Context, id uuid.UUID, videoCon
 	return nil
 }
 
-func (s *Storage) GetVideoContentsByDeliveryStatus(ctx context.Context, deliveryStatus content.DeliveryStatus, limit int) ([]content.VideoContent, error) {
+func (s *Storage) GetVideoContentsByDeliveryStatus(ctx context.Context, statusIn []content.DeliveryStatus, limit int) ([]content.VideoContent, error) {
 	queries := s.getQueries(ctx)
 
 	res, err := queries.GetVideoContentsByDeliveryStatus(ctx, db.GetVideoContentsByDeliveryStatusParams{
-		DeliveryStatus: int(deliveryStatus),
-		Limit:          int32(limit),
+		Column1: lo.Map(statusIn, func(item content.DeliveryStatus, index int) int {
+			return int(item)
+		}),
+		Limit: int32(limit),
 	})
 	if err != nil {
 		return nil, s.base.HandleError(err)

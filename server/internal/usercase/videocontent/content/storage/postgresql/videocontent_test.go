@@ -616,7 +616,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 		}
 
 		// Получаем контенты с целевым статусом
-		initialContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, targetStatus, limit)
+		initialContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, []content.DeliveryStatus{targetStatus}, limit)
 		require.NoError(t, err)
 
 		// Ищем наши целевые контенты среди полученных
@@ -644,7 +644,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 		require.NoError(t, err)
 
 		// Снова получаем контенты с целевым статусом
-		updatedContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, targetStatus, limit)
+		updatedContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, []content.DeliveryStatus{targetStatus}, limit)
 		require.NoError(t, err)
 
 		// Проверяем что обновленный контент пропал из списка

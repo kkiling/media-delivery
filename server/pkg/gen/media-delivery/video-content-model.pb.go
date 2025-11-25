@@ -7,15 +7,16 @@
 package api
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -33,6 +34,9 @@ const (
 	DeliveryStatus_DeliveryStatusNew        DeliveryStatus = 2
 	DeliveryStatus_DeliveryStatusInProgress DeliveryStatus = 3
 	DeliveryStatus_DeliveryStatusDelivered  DeliveryStatus = 4
+	DeliveryStatus_DeliveryStatusUpdating   DeliveryStatus = 5
+	DeliveryStatus_DeliveryStatusDeleting   DeliveryStatus = 6
+	DeliveryStatus_DeliveryStatusDeleted    DeliveryStatus = 7
 )
 
 // Enum value maps for DeliveryStatus.
@@ -43,6 +47,9 @@ var (
 		2: "DeliveryStatusNew",
 		3: "DeliveryStatusInProgress",
 		4: "DeliveryStatusDelivered",
+		5: "DeliveryStatusUpdating",
+		6: "DeliveryStatusDeleting",
+		7: "DeliveryStatusDeleted",
 	}
 	DeliveryStatus_value = map[string]int32{
 		"DeliveryStatusUnknown":    0,
@@ -50,6 +57,9 @@ var (
 		"DeliveryStatusNew":        2,
 		"DeliveryStatusInProgress": 3,
 		"DeliveryStatusDelivered":  4,
+		"DeliveryStatusUpdating":   5,
+		"DeliveryStatusDeleting":   6,
+		"DeliveryStatusDeleted":    7,
 	}
 )
 
@@ -149,13 +159,16 @@ const file_media_delivery_video_content_model_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12F\n" +
-	"\x0fdelivery_status\x18\x03 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus*\x97\x01\n" +
+	"\x0fdelivery_status\x18\x03 \x01(\x0e2\x1d.mediadelivery.DeliveryStatusR\x0edeliveryStatus*\xea\x01\n" +
 	"\x0eDeliveryStatus\x12\x19\n" +
 	"\x15DeliveryStatusUnknown\x10\x00\x12\x18\n" +
 	"\x14DeliveryStatusFailed\x10\x01\x12\x15\n" +
 	"\x11DeliveryStatusNew\x10\x02\x12\x1c\n" +
 	"\x18DeliveryStatusInProgress\x10\x03\x12\x1b\n" +
-	"\x17DeliveryStatusDelivered\x10\x04B'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\x17DeliveryStatusDelivered\x10\x04\x12\x1a\n" +
+	"\x16DeliveryStatusUpdating\x10\x05\x12\x1a\n" +
+	"\x16DeliveryStatusDeleting\x10\x06\x12\x19\n" +
+	"\x15DeliveryStatusDeleted\x10\aB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_video_content_model_proto_rawDescOnce sync.Once

@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/samber/lo"
+
 	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/labels"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
-	"github.com/samber/lo"
 )
 
 func (s *Service) validateCreateVideoContentParams(ctx context.Context, params CreateVideoContentParams) error {
@@ -33,7 +34,6 @@ func (s *Service) validateCreateVideoContentParams(ctx context.Context, params C
 }
 
 func (s *Service) checkContentExistInLibrary(ctx context.Context, contentID common.ContentID) error {
-
 	// Проверяем наличие сезона сериала изи фильма
 	// Получаем инфу о сериале
 	tvShowInfo, err := s.tvShowLibrary.GetTVShowInfo(ctx, tvshowlibrary.GetTVShowParams{

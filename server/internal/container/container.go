@@ -6,9 +6,6 @@ import (
 
 	"github.com/kkiling/goplatform/log"
 	"github.com/kkiling/goplatform/storagebase/postgrebase"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelete"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	"github.com/kkiling/statemachine"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
@@ -25,7 +22,10 @@ import (
 	tvShowLibraryPostgreSql "github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary/storage/postgresql"
 	contentDelivery "github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
 	contentPostgreSql "github.com/kkiling/media-delivery/internal/usercase/videocontent/content/storage/postgresql"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelete"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
 type Container struct {

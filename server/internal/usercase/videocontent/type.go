@@ -37,7 +37,7 @@ const (
 
 type CreateVideoContentParams = content.CreateVideoContentParams
 type DeliveryVideoContentParams = content.DeliveryVideoContentParams
-type DeleteVideoContentFilesParams = content.DeleteVideoContentFilesParams
+type CreateDeleteStateParams = content.DeleteVideoContentFilesParams
 
 type TVShowDeleteState = tvshowdeletestate.State
 

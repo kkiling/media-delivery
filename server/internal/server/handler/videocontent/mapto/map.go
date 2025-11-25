@@ -240,9 +240,9 @@ func deliveryStatus(deliveryStatus videocontent.DeliveryStatus) desc.DeliverySta
 	case videocontent.DeliveryStatusUpdating:
 		return desc.DeliveryStatus_DeliveryStatusUnknown
 	case videocontent.DeliveryStatusDeleting:
-		return desc.DeliveryStatus_DeliveryStatusUnknown
+		return desc.DeliveryStatus_DeliveryStatusDeleting
 	case videocontent.DeliveryStatusDeleted:
-		return desc.DeliveryStatus_DeliveryStatusUnknown
+		return desc.DeliveryStatus_DeliveryStatusDeleted
 	default:
 		return desc.DeliveryStatus_DeliveryStatusUnknown
 	}

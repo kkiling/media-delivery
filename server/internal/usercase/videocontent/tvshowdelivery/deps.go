@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/kkiling/media-delivery/internal/usercase/labels"
 
 	"github.com/kkiling/media-delivery/internal/adapter/emby"
 	"github.com/kkiling/media-delivery/internal/adapter/matchtvshow"
 	"github.com/kkiling/media-delivery/internal/adapter/mkvmerge"
 	"github.com/kkiling/media-delivery/internal/adapter/qbittorrent"
 	"github.com/kkiling/media-delivery/internal/adapter/rutracker"
+	"github.com/kkiling/media-delivery/internal/usercase/labels"
 	"github.com/kkiling/media-delivery/internal/usercase/tvshowlibrary"
 )
 

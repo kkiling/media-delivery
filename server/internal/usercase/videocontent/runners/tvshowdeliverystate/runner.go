@@ -8,7 +8,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 	"github.com/kkiling/statemachine"
 	"github.com/samber/lo"
 
@@ -16,6 +15,7 @@ import (
 	"github.com/kkiling/media-delivery/internal/common"
 	ucerr "github.com/kkiling/media-delivery/internal/usercase/err"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
 type Runner struct {
@@ -280,10 +280,11 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 					// Определение необходимости конвертации файлов
 					data := stepContext.State.Data
 					// Для файлов эпизодов назначаем расширения файлов
-					for _, match := range data.ContentMatches.Matches {
+					for index, match := range data.ContentMatches.Matches {
 						ext := strings.ToLower(filepath.Ext(match.Video.File.FullPath))
 						match.Episode.FullPath += ext
 						match.Episode.RelativePath += ext
+						data.ContentMatches.Matches[index] = match
 					}
 
 					if r.contentDelivery.NeedPrepareFileMatches(data.ContentMatches.Matches) {

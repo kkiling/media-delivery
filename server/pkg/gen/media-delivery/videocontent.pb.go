@@ -7,15 +7,16 @@
 package api
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -527,27 +528,27 @@ func (x *ChoseFileMatchesOptionsResponse) GetResult() *TVShowDeliveryState {
 	return nil
 }
 
-type DeleteVideoContentFilesRequest struct {
+type CreateDeleteStateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ContentId     *ContentID             `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteVideoContentFilesRequest) Reset() {
-	*x = DeleteVideoContentFilesRequest{}
+func (x *CreateDeleteStateRequest) Reset() {
+	*x = CreateDeleteStateRequest{}
 	mi := &file_media_delivery_videocontent_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteVideoContentFilesRequest) String() string {
+func (x *CreateDeleteStateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteVideoContentFilesRequest) ProtoMessage() {}
+func (*CreateDeleteStateRequest) ProtoMessage() {}
 
-func (x *DeleteVideoContentFilesRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateDeleteStateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_videocontent_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -559,39 +560,39 @@ func (x *DeleteVideoContentFilesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteVideoContentFilesRequest.ProtoReflect.Descriptor instead.
-func (*DeleteVideoContentFilesRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateDeleteStateRequest.ProtoReflect.Descriptor instead.
+func (*CreateDeleteStateRequest) Descriptor() ([]byte, []int) {
 	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *DeleteVideoContentFilesRequest) GetContentId() *ContentID {
+func (x *CreateDeleteStateRequest) GetContentId() *ContentID {
 	if x != nil {
 		return x.ContentId
 	}
 	return nil
 }
 
-type DeleteVideoContentFilesResponse struct {
+type CreateDeleteStateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Result        *TVShowDeleteState     `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteVideoContentFilesResponse) Reset() {
-	*x = DeleteVideoContentFilesResponse{}
+func (x *CreateDeleteStateResponse) Reset() {
+	*x = CreateDeleteStateResponse{}
 	mi := &file_media_delivery_videocontent_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteVideoContentFilesResponse) String() string {
+func (x *CreateDeleteStateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteVideoContentFilesResponse) ProtoMessage() {}
+func (*CreateDeleteStateResponse) ProtoMessage() {}
 
-func (x *DeleteVideoContentFilesResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateDeleteStateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_media_delivery_videocontent_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -603,12 +604,100 @@ func (x *DeleteVideoContentFilesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteVideoContentFilesResponse.ProtoReflect.Descriptor instead.
-func (*DeleteVideoContentFilesResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateDeleteStateResponse.ProtoReflect.Descriptor instead.
+func (*CreateDeleteStateResponse) Descriptor() ([]byte, []int) {
 	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *DeleteVideoContentFilesResponse) GetResult() *TVShowDeleteState {
+func (x *CreateDeleteStateResponse) GetResult() *TVShowDeleteState {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+type GetDeleteDataRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ContentId     *ContentID             `protobuf:"bytes,1,opt,name=content_id,json=contentId,proto3" json:"content_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDeleteDataRequest) Reset() {
+	*x = GetDeleteDataRequest{}
+	mi := &file_media_delivery_videocontent_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDeleteDataRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDeleteDataRequest) ProtoMessage() {}
+
+func (x *GetDeleteDataRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_media_delivery_videocontent_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDeleteDataRequest.ProtoReflect.Descriptor instead.
+func (*GetDeleteDataRequest) Descriptor() ([]byte, []int) {
+	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetDeleteDataRequest) GetContentId() *ContentID {
+	if x != nil {
+		return x.ContentId
+	}
+	return nil
+}
+
+type GetDeleteDataResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Result        *TVShowDeleteState     `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDeleteDataResponse) Reset() {
+	*x = GetDeleteDataResponse{}
+	mi := &file_media_delivery_videocontent_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDeleteDataResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDeleteDataResponse) ProtoMessage() {}
+
+func (x *GetDeleteDataResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_media_delivery_videocontent_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDeleteDataResponse.ProtoReflect.Descriptor instead.
+func (*GetDeleteDataResponse) Descriptor() ([]byte, []int) {
+	return file_media_delivery_videocontent_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetDeleteDataResponse) GetResult() *TVShowDeleteState {
 	if x != nil {
 		return x.Result
 	}
@@ -650,20 +739,26 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\x1bChoseTorrentOptionsResponse\x12:\n" +
 	"\x06result\x18\x01 \x01(\v2\".mediadelivery.TVShowDeliveryStateR\x06result\"]\n" +
 	"\x1fChoseFileMatchesOptionsResponse\x12:\n" +
-	"\x06result\x18\x01 \x01(\v2\".mediadelivery.TVShowDeliveryStateR\x06result\"Y\n" +
-	"\x1eDeleteVideoContentFilesRequest\x127\n" +
+	"\x06result\x18\x01 \x01(\v2\".mediadelivery.TVShowDeliveryStateR\x06result\"S\n" +
+	"\x18CreateDeleteStateRequest\x127\n" +
 	"\n" +
-	"content_id\x18\x01 \x01(\v2\x18.mediadelivery.ContentIDR\tcontentId\"[\n" +
-	"\x1fDeleteVideoContentFilesResponse\x128\n" +
-	"\x06result\x18\x01 \x01(\v2 .mediadelivery.TVShowDeleteStateR\x06result2\xda\v\n" +
+	"content_id\x18\x01 \x01(\v2\x18.mediadelivery.ContentIDR\tcontentId\"U\n" +
+	"\x19CreateDeleteStateResponse\x128\n" +
+	"\x06result\x18\x01 \x01(\v2 .mediadelivery.TVShowDeleteStateR\x06result\"O\n" +
+	"\x14GetDeleteDataRequest\x127\n" +
+	"\n" +
+	"content_id\x18\x01 \x01(\v2\x18.mediadelivery.ContentIDR\tcontentId\"Q\n" +
+	"\x15GetDeleteDataResponse\x128\n" +
+	"\x06result\x18\x01 \x01(\v2 .mediadelivery.TVShowDeleteStateR\x06result2\xad\r\n" +
 	"\x13VideoContentService\x12\xb2\x01\n" +
 	"\x12CreateVideoContent\x12(.mediadelivery.CreateVideoContentRequest\x1a).mediadelivery.CreateVideoContentResponse\"G\x92A.\x12,Создание видео контента\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/content\x12\xcc\x01\n" +
 	"\x0fGetVideoContent\x12%.mediadelivery.GetVideoContentRequest\x1a&.mediadelivery.GetVideoContentResponse\"j\x92AT\x12RПолучение видео контента для кино/тв сериала\x82\xd3\xe4\x93\x02\r\x12\v/v1/content\x12\xcf\x01\n" +
 	"\x13CreateDeliveryState\x12).mediadelivery.CreateDeliveryStateRequest\x1a*.mediadelivery.CreateDeliveryStateResponse\"a\x92A?\x12=Создание доставки видео контента\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/content/delivery\x12\xe0\x01\n" +
 	"\x0fGetDeliveryData\x12%.mediadelivery.GetDeliveryDataRequest\x1a&.mediadelivery.GetDeliveryDataResponse\"~\x92AZ\x12XПолучение данных стейта доставки видеоконтента\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/content/delivery/data\x12\xcd\x01\n" +
 	"\x13ChoseTorrentOptions\x12).mediadelivery.ChoseTorrentOptionsRequest\x1a*.mediadelivery.ChoseTorrentOptionsResponse\"_\x92A/\x12-Выбор раздачи с торрента\x82\xd3\xe4\x93\x02':\x01*2\"/v1/content/delivery/chose-torrent\x12\xe3\x01\n" +
-	"\x17ChoseFileMatchesOptions\x12-.mediadelivery.ChoseFileMatchesOptionsRequest\x1a..mediadelivery.ChoseFileMatchesOptionsResponse\"i\x92A4\x122Подтверждение метча файлов\x82\xd3\xe4\x93\x02,:\x01*2'/v1/content/delivery/chose-file-matches\x12\xd3\x01\n" +
-	"\x17DeleteVideoContentFiles\x12-.mediadelivery.DeleteVideoContentFilesRequest\x1a..mediadelivery.DeleteVideoContentFilesResponse\"Y\x92A:\x128Удаление файлов видеоконтента\x82\xd3\xe4\x93\x02\x16*\x14/v1/content/deliveryB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\x17ChoseFileMatchesOptions\x12-.mediadelivery.ChoseFileMatchesOptionsRequest\x1a..mediadelivery.ChoseFileMatchesOptionsResponse\"i\x92A4\x122Подтверждение метча файлов\x82\xd3\xe4\x93\x02,:\x01*2'/v1/content/delivery/chose-file-matches\x12\xc1\x01\n" +
+	"\x11CreateDeleteState\x12'.mediadelivery.CreateDeleteStateRequest\x1a(.mediadelivery.CreateDeleteStateResponse\"Y\x92A:\x128Удаление файлов видеоконтента\x82\xd3\xe4\x93\x02\x16*\x14/v1/content/delivery\x12\xe2\x01\n" +
+	"\rGetDeleteData\x12#.mediadelivery.GetDeleteDataRequest\x1a$.mediadelivery.GetDeleteDataResponse\"\x85\x01\x92AZ\x12XПолучение данных стейта удаления видеоконтента\x82\xd3\xe4\x93\x02\"\x12 /v1/content/delivery/delete-dataB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_videocontent_proto_rawDescOnce sync.Once
@@ -677,7 +772,7 @@ func file_media_delivery_videocontent_proto_rawDescGZIP() []byte {
 	return file_media_delivery_videocontent_proto_rawDescData
 }
 
-var file_media_delivery_videocontent_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_media_delivery_videocontent_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_media_delivery_videocontent_proto_goTypes = []any{
 	(*CreateVideoContentRequest)(nil),       // 0: mediadelivery.CreateVideoContentRequest
 	(*CreateVideoContentResponse)(nil),      // 1: mediadelivery.CreateVideoContentResponse
@@ -690,47 +785,53 @@ var file_media_delivery_videocontent_proto_goTypes = []any{
 	(*ChoseTorrentOptionsRequest)(nil),      // 8: mediadelivery.ChoseTorrentOptionsRequest
 	(*ChoseTorrentOptionsResponse)(nil),     // 9: mediadelivery.ChoseTorrentOptionsResponse
 	(*ChoseFileMatchesOptionsResponse)(nil), // 10: mediadelivery.ChoseFileMatchesOptionsResponse
-	(*DeleteVideoContentFilesRequest)(nil),  // 11: mediadelivery.DeleteVideoContentFilesRequest
-	(*DeleteVideoContentFilesResponse)(nil), // 12: mediadelivery.DeleteVideoContentFilesResponse
-	(*ContentID)(nil),                       // 13: mediadelivery.ContentID
-	(*VideoContent)(nil),                    // 14: mediadelivery.VideoContent
-	(*TVShowDeliveryState)(nil),             // 15: mediadelivery.TVShowDeliveryState
-	(*TVShowDeleteState)(nil),               // 16: mediadelivery.TVShowDeleteState
-	(*ChoseFileMatchesOptionsRequest)(nil),  // 17: mediadelivery.ChoseFileMatchesOptionsRequest
+	(*CreateDeleteStateRequest)(nil),        // 11: mediadelivery.CreateDeleteStateRequest
+	(*CreateDeleteStateResponse)(nil),       // 12: mediadelivery.CreateDeleteStateResponse
+	(*GetDeleteDataRequest)(nil),            // 13: mediadelivery.GetDeleteDataRequest
+	(*GetDeleteDataResponse)(nil),           // 14: mediadelivery.GetDeleteDataResponse
+	(*ContentID)(nil),                       // 15: mediadelivery.ContentID
+	(*VideoContent)(nil),                    // 16: mediadelivery.VideoContent
+	(*TVShowDeliveryState)(nil),             // 17: mediadelivery.TVShowDeliveryState
+	(*TVShowDeleteState)(nil),               // 18: mediadelivery.TVShowDeleteState
+	(*ChoseFileMatchesOptionsRequest)(nil),  // 19: mediadelivery.ChoseFileMatchesOptionsRequest
 }
 var file_media_delivery_videocontent_proto_depIdxs = []int32{
-	13, // 0: mediadelivery.CreateVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
-	14, // 1: mediadelivery.CreateVideoContentResponse.result:type_name -> mediadelivery.VideoContent
-	13, // 2: mediadelivery.GetVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
-	14, // 3: mediadelivery.GetVideoContentResponse.items:type_name -> mediadelivery.VideoContent
-	13, // 4: mediadelivery.CreateDeliveryStateRequest.content_id:type_name -> mediadelivery.ContentID
-	15, // 5: mediadelivery.CreateDeliveryStateResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	13, // 6: mediadelivery.GetDeliveryDataRequest.content_id:type_name -> mediadelivery.ContentID
-	15, // 7: mediadelivery.GetDeliveryDataResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	13, // 8: mediadelivery.ChoseTorrentOptionsRequest.content_id:type_name -> mediadelivery.ContentID
-	15, // 9: mediadelivery.ChoseTorrentOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	15, // 10: mediadelivery.ChoseFileMatchesOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
-	13, // 11: mediadelivery.DeleteVideoContentFilesRequest.content_id:type_name -> mediadelivery.ContentID
-	16, // 12: mediadelivery.DeleteVideoContentFilesResponse.result:type_name -> mediadelivery.TVShowDeleteState
-	0,  // 13: mediadelivery.VideoContentService.CreateVideoContent:input_type -> mediadelivery.CreateVideoContentRequest
-	2,  // 14: mediadelivery.VideoContentService.GetVideoContent:input_type -> mediadelivery.GetVideoContentRequest
-	4,  // 15: mediadelivery.VideoContentService.CreateDeliveryState:input_type -> mediadelivery.CreateDeliveryStateRequest
-	6,  // 16: mediadelivery.VideoContentService.GetDeliveryData:input_type -> mediadelivery.GetDeliveryDataRequest
-	8,  // 17: mediadelivery.VideoContentService.ChoseTorrentOptions:input_type -> mediadelivery.ChoseTorrentOptionsRequest
-	17, // 18: mediadelivery.VideoContentService.ChoseFileMatchesOptions:input_type -> mediadelivery.ChoseFileMatchesOptionsRequest
-	11, // 19: mediadelivery.VideoContentService.DeleteVideoContentFiles:input_type -> mediadelivery.DeleteVideoContentFilesRequest
-	1,  // 20: mediadelivery.VideoContentService.CreateVideoContent:output_type -> mediadelivery.CreateVideoContentResponse
-	3,  // 21: mediadelivery.VideoContentService.GetVideoContent:output_type -> mediadelivery.GetVideoContentResponse
-	5,  // 22: mediadelivery.VideoContentService.CreateDeliveryState:output_type -> mediadelivery.CreateDeliveryStateResponse
-	7,  // 23: mediadelivery.VideoContentService.GetDeliveryData:output_type -> mediadelivery.GetDeliveryDataResponse
-	9,  // 24: mediadelivery.VideoContentService.ChoseTorrentOptions:output_type -> mediadelivery.ChoseTorrentOptionsResponse
-	10, // 25: mediadelivery.VideoContentService.ChoseFileMatchesOptions:output_type -> mediadelivery.ChoseFileMatchesOptionsResponse
-	12, // 26: mediadelivery.VideoContentService.DeleteVideoContentFiles:output_type -> mediadelivery.DeleteVideoContentFilesResponse
-	20, // [20:27] is the sub-list for method output_type
-	13, // [13:20] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	15, // 0: mediadelivery.CreateVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
+	16, // 1: mediadelivery.CreateVideoContentResponse.result:type_name -> mediadelivery.VideoContent
+	15, // 2: mediadelivery.GetVideoContentRequest.content_id:type_name -> mediadelivery.ContentID
+	16, // 3: mediadelivery.GetVideoContentResponse.items:type_name -> mediadelivery.VideoContent
+	15, // 4: mediadelivery.CreateDeliveryStateRequest.content_id:type_name -> mediadelivery.ContentID
+	17, // 5: mediadelivery.CreateDeliveryStateResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	15, // 6: mediadelivery.GetDeliveryDataRequest.content_id:type_name -> mediadelivery.ContentID
+	17, // 7: mediadelivery.GetDeliveryDataResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	15, // 8: mediadelivery.ChoseTorrentOptionsRequest.content_id:type_name -> mediadelivery.ContentID
+	17, // 9: mediadelivery.ChoseTorrentOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	17, // 10: mediadelivery.ChoseFileMatchesOptionsResponse.result:type_name -> mediadelivery.TVShowDeliveryState
+	15, // 11: mediadelivery.CreateDeleteStateRequest.content_id:type_name -> mediadelivery.ContentID
+	18, // 12: mediadelivery.CreateDeleteStateResponse.result:type_name -> mediadelivery.TVShowDeleteState
+	15, // 13: mediadelivery.GetDeleteDataRequest.content_id:type_name -> mediadelivery.ContentID
+	18, // 14: mediadelivery.GetDeleteDataResponse.result:type_name -> mediadelivery.TVShowDeleteState
+	0,  // 15: mediadelivery.VideoContentService.CreateVideoContent:input_type -> mediadelivery.CreateVideoContentRequest
+	2,  // 16: mediadelivery.VideoContentService.GetVideoContent:input_type -> mediadelivery.GetVideoContentRequest
+	4,  // 17: mediadelivery.VideoContentService.CreateDeliveryState:input_type -> mediadelivery.CreateDeliveryStateRequest
+	6,  // 18: mediadelivery.VideoContentService.GetDeliveryData:input_type -> mediadelivery.GetDeliveryDataRequest
+	8,  // 19: mediadelivery.VideoContentService.ChoseTorrentOptions:input_type -> mediadelivery.ChoseTorrentOptionsRequest
+	19, // 20: mediadelivery.VideoContentService.ChoseFileMatchesOptions:input_type -> mediadelivery.ChoseFileMatchesOptionsRequest
+	11, // 21: mediadelivery.VideoContentService.CreateDeleteState:input_type -> mediadelivery.CreateDeleteStateRequest
+	13, // 22: mediadelivery.VideoContentService.GetDeleteData:input_type -> mediadelivery.GetDeleteDataRequest
+	1,  // 23: mediadelivery.VideoContentService.CreateVideoContent:output_type -> mediadelivery.CreateVideoContentResponse
+	3,  // 24: mediadelivery.VideoContentService.GetVideoContent:output_type -> mediadelivery.GetVideoContentResponse
+	5,  // 25: mediadelivery.VideoContentService.CreateDeliveryState:output_type -> mediadelivery.CreateDeliveryStateResponse
+	7,  // 26: mediadelivery.VideoContentService.GetDeliveryData:output_type -> mediadelivery.GetDeliveryDataResponse
+	9,  // 27: mediadelivery.VideoContentService.ChoseTorrentOptions:output_type -> mediadelivery.ChoseTorrentOptionsResponse
+	10, // 28: mediadelivery.VideoContentService.ChoseFileMatchesOptions:output_type -> mediadelivery.ChoseFileMatchesOptionsResponse
+	12, // 29: mediadelivery.VideoContentService.CreateDeleteState:output_type -> mediadelivery.CreateDeleteStateResponse
+	14, // 30: mediadelivery.VideoContentService.GetDeleteData:output_type -> mediadelivery.GetDeleteDataResponse
+	23, // [23:31] is the sub-list for method output_type
+	15, // [15:23] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_media_delivery_videocontent_proto_init() }
@@ -749,7 +850,7 @@ func file_media_delivery_videocontent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_media_delivery_videocontent_proto_rawDesc), len(file_media_delivery_videocontent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

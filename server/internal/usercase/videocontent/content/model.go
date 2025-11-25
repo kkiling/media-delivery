@@ -53,8 +53,9 @@ type VideoContent struct {
 
 // State Таблица выпусков связанных с TVShowContent
 type State struct {
-	StateID uuid.UUID
-	Type    runners.Type
+	StateID   uuid.UUID
+	CreatedAt time.Time
+	Type      runners.Type
 }
 
 type UpdateVideoContent struct {

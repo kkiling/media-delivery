@@ -18,17 +18,8 @@ message TVShowDeleteError {
   ErrorType error_type = 2;
 }
 
-//enum TVShowDeleteStep {
-//  // Неизвестный статус доставки
-//  TVShowDeleteStepUnknown = 0;
-//}
 
 message TVShowDeleteState {
-  // TVShowDeleteData data = 1;
-  // TVShowDeleteStep step = 2;
   StateStatus status = 3;
   optional TVShowDeleteError error = 4;
 }
-
-//message TVShowDeleteData {
-//}

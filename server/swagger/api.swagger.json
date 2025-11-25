@@ -102,12 +102,12 @@
     "/v1/content/delivery": {
       "delete": {
         "summary": "Удаление файлов видеоконтента",
-        "operationId": "VideoContentService_DeleteVideoContentFiles",
+        "operationId": "VideoContentService_CreateDeleteState",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/DeleteVideoContentFilesResponse"
+              "$ref": "#/definitions/CreateDeleteStateResponse"
             }
           },
           "default": {
@@ -251,6 +251,52 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/GetDeliveryDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id.movie_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.season_number",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "VideoContentService"
+        ]
+      }
+    },
+    "/v1/content/delivery/delete-data": {
+      "get": {
+        "summary": "Получение данных стейта удаления видеоконтента",
+        "operationId": "VideoContentService_GetDeleteData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDeleteDataResponse"
             }
           },
           "default": {
@@ -537,6 +583,14 @@
         }
       }
     },
+    "CreateDeleteStateResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/TVShowDeleteState"
+        }
+      }
+    },
     "CreateDeliveryStateRequest": {
       "type": "object",
       "properties": {
@@ -569,14 +623,6 @@
         }
       }
     },
-    "DeleteVideoContentFilesResponse": {
-      "type": "object",
-      "properties": {
-        "result": {
-          "$ref": "#/definitions/TVShowDeleteState"
-        }
-      }
-    },
     "DeliveryStatus": {
       "type": "string",
       "enum": [
@@ -584,7 +630,10 @@
         "DeliveryStatusFailed",
         "DeliveryStatusNew",
         "DeliveryStatusInProgress",
-        "DeliveryStatusDelivered"
+        "DeliveryStatusDelivered",
+        "DeliveryStatusUpdating",
+        "DeliveryStatusDeleting",
+        "DeliveryStatusDeleted"
       ],
       "default": "DeliveryStatusUnknown"
     },
@@ -639,6 +688,14 @@
         },
         "relative_path": {
           "type": "string"
+        }
+      }
+    },
+    "GetDeleteDataResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/TVShowDeleteState"
         }
       }
     },
@@ -966,8 +1023,7 @@
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/definitions/StateStatus",
-          "title": "TVShowDeleteData data = 1;\nTVShowDeleteStep step = 2;"
+          "$ref": "#/definitions/StateStatus"
         },
         "error": {
           "$ref": "#/definitions/TVShowDeleteError"

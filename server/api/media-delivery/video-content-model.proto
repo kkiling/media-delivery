@@ -16,6 +16,9 @@ enum DeliveryStatus {
   DeliveryStatusNew = 2;
   DeliveryStatusInProgress = 3;
   DeliveryStatusDelivered = 4;
+  DeliveryStatusUpdating = 5;
+  DeliveryStatusDeleting = 6;
+  DeliveryStatusDeleted = 7;
 }
 
 message VideoContent {

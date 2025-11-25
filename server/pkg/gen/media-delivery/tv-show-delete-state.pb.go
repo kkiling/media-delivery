@@ -7,15 +7,16 @@
 package api
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -121,11 +122,9 @@ func (x *TVShowDeleteError) GetErrorType() TVShowDeleteError_ErrorType {
 }
 
 type TVShowDeleteState struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// TVShowDeleteData data = 1;
-	// TVShowDeleteStep step = 2;
-	Status        StateStatus        `protobuf:"varint,3,opt,name=status,proto3,enum=mediadelivery.StateStatus" json:"status,omitempty"`
-	Error         *TVShowDeleteError `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        StateStatus            `protobuf:"varint,3,opt,name=status,proto3,enum=mediadelivery.StateStatus" json:"status,omitempty"`
+	Error         *TVShowDeleteError     `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
