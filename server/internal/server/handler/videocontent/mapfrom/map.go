@@ -61,6 +61,20 @@ func ContentMatches(match *desc.ContentMatches) *videocontent.ContentMatches {
 		})
 	}
 
+	options := tvshowdelivery.ContentMatchesOptions{}
+	if match.Options != nil {
+		options = tvshowdelivery.ContentMatchesOptions{
+			KeepOriginalAudio:     match.Options.KeepOriginalAudio,
+			KeepOriginalSubtitles: match.Options.KeepOriginalSubtitles,
+			DefaultAudioTrackName: match.Options.DefaultAudioTrackName,
+			DefaultSubtitleTrack:  match.Options.DefaultSubtitleTrack,
+		}
+	}
+
+	if match.Matches == nil {
+		return nil
+	}
+
 	return &videocontent.ContentMatches{
 		Matches: lo.Map(match.Matches, func(item *desc.ContentMatch, index int) videocontent.ContentMatch {
 			return videocontent.ContentMatch{
@@ -81,11 +95,6 @@ func ContentMatches(match *desc.ContentMatches) *videocontent.ContentMatches {
 			}
 		}),
 		Unallocated: toTracks(match.Unallocated),
-		Options: tvshowdelivery.ContentMatchesOptions{
-			KeepOriginalAudio:     match.Options.KeepOriginalAudio,
-			KeepOriginalSubtitles: match.Options.KeepOriginalSubtitles,
-			DefaultAudioTrackName: match.Options.DefaultAudioTrackName,
-			DefaultSubtitleTrack:  match.Options.DefaultSubtitleTrack,
-		},
+		Options:     options,
 	}
 }

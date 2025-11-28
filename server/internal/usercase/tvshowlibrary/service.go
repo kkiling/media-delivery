@@ -130,3 +130,8 @@ func (s *Service) AddTVShowInLibrary(ctx context.Context, params AddTVShowInLibr
 
 	return nil
 }
+
+func (s *Service) DeleteTVShowFromLibrary(ctx context.Context, params DeleteTVShowFromLibraryParams) error {
+	// TODO: Реализовать удаление
+	return nil
+}

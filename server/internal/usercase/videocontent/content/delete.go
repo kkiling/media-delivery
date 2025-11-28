@@ -33,7 +33,9 @@ func (s *Service) CreateDeleteState(ctx context.Context, params DeleteVideoConte
 		return nil, fmt.Errorf("getVideoContent: %w", err)
 	}
 
-	if content.DeliveryStatus != DeliveryStatusDelivered {
+	switch content.DeliveryStatus {
+	case DeliveryStatusDelivered:
+	default:
 		return nil, fmt.Errorf("video content is in invalid status: %w", ucerr.InvalidArgument)
 	}
 
@@ -58,10 +60,10 @@ func (s *Service) CreateDeleteState(ctx context.Context, params DeleteVideoConte
 		},
 	}
 
-	var state *tvshowdeletestate.State
+	var result *tvshowdeletestate.State
 	//  TODO: одна транзакция
 	{
-		state, err = s.tvShowDeleteState.Create(ctx, options)
+		result, err = s.tvShowDeleteState.Create(ctx, options)
 		if err != nil {
 			return nil, fmt.Errorf("tvShowDeleteState.Create: %w", err)
 		}
@@ -70,8 +72,8 @@ func (s *Service) CreateDeleteState(ctx context.Context, params DeleteVideoConte
 		updateVideoContent := UpdateVideoContent{
 			DeliveryStatus: DeliveryStatusDeleting,
 			States: append(content.States, State{
-				StateID:   state.ID,
-				CreatedAt: state.CreatedAt,
+				StateID:   result.ID,
+				CreatedAt: result.CreatedAt,
 				Type:      runners.TVShowDelete,
 			}),
 		}
@@ -81,7 +83,7 @@ func (s *Service) CreateDeleteState(ctx context.Context, params DeleteVideoConte
 		}
 	}
 
-	return state, nil
+	return result, nil
 }
 
 func (s *Service) GetDeleteData(ctx context.Context, contentID common.ContentID) (*tvshowdeletestate.State, error) {

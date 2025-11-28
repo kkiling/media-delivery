@@ -749,16 +749,16 @@ const file_media_delivery_videocontent_proto_rawDesc = "" +
 	"\n" +
 	"content_id\x18\x01 \x01(\v2\x18.mediadelivery.ContentIDR\tcontentId\"Q\n" +
 	"\x15GetDeleteDataResponse\x128\n" +
-	"\x06result\x18\x01 \x01(\v2 .mediadelivery.TVShowDeleteStateR\x06result2\xad\r\n" +
+	"\x06result\x18\x01 \x01(\v2 .mediadelivery.TVShowDeleteStateR\x06result2\xbb\r\n" +
 	"\x13VideoContentService\x12\xb2\x01\n" +
 	"\x12CreateVideoContent\x12(.mediadelivery.CreateVideoContentRequest\x1a).mediadelivery.CreateVideoContentResponse\"G\x92A.\x12,Создание видео контента\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/content\x12\xcc\x01\n" +
-	"\x0fGetVideoContent\x12%.mediadelivery.GetVideoContentRequest\x1a&.mediadelivery.GetVideoContentResponse\"j\x92AT\x12RПолучение видео контента для кино/тв сериала\x82\xd3\xe4\x93\x02\r\x12\v/v1/content\x12\xcf\x01\n" +
-	"\x13CreateDeliveryState\x12).mediadelivery.CreateDeliveryStateRequest\x1a*.mediadelivery.CreateDeliveryStateResponse\"a\x92A?\x12=Создание доставки видео контента\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/content/delivery\x12\xe0\x01\n" +
-	"\x0fGetDeliveryData\x12%.mediadelivery.GetDeliveryDataRequest\x1a&.mediadelivery.GetDeliveryDataResponse\"~\x92AZ\x12XПолучение данных стейта доставки видеоконтента\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/content/delivery/data\x12\xcd\x01\n" +
-	"\x13ChoseTorrentOptions\x12).mediadelivery.ChoseTorrentOptionsRequest\x1a*.mediadelivery.ChoseTorrentOptionsResponse\"_\x92A/\x12-Выбор раздачи с торрента\x82\xd3\xe4\x93\x02':\x01*2\"/v1/content/delivery/chose-torrent\x12\xe3\x01\n" +
-	"\x17ChoseFileMatchesOptions\x12-.mediadelivery.ChoseFileMatchesOptionsRequest\x1a..mediadelivery.ChoseFileMatchesOptionsResponse\"i\x92A4\x122Подтверждение метча файлов\x82\xd3\xe4\x93\x02,:\x01*2'/v1/content/delivery/chose-file-matches\x12\xc1\x01\n" +
-	"\x11CreateDeleteState\x12'.mediadelivery.CreateDeleteStateRequest\x1a(.mediadelivery.CreateDeleteStateResponse\"Y\x92A:\x128Удаление файлов видеоконтента\x82\xd3\xe4\x93\x02\x16*\x14/v1/content/delivery\x12\xe2\x01\n" +
-	"\rGetDeleteData\x12#.mediadelivery.GetDeleteDataRequest\x1a$.mediadelivery.GetDeleteDataResponse\"\x85\x01\x92AZ\x12XПолучение данных стейта удаления видеоконтента\x82\xd3\xe4\x93\x02\"\x12 /v1/content/delivery/delete-dataB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
+	"\x0fGetVideoContent\x12%.mediadelivery.GetVideoContentRequest\x1a&.mediadelivery.GetVideoContentResponse\"j\x92AT\x12RПолучение видео контента для кино/тв сериала\x82\xd3\xe4\x93\x02\r\x12\v/v1/content\x12\xd5\x01\n" +
+	"\x13CreateDeliveryState\x12).mediadelivery.CreateDeliveryStateRequest\x1a*.mediadelivery.CreateDeliveryStateResponse\"g\x92A?\x12=Создание доставки видео контента\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/v1/content/state/delivery\x12\xe1\x01\n" +
+	"\x0fGetDeliveryData\x12%.mediadelivery.GetDeliveryDataRequest\x1a&.mediadelivery.GetDeliveryDataResponse\"\x7f\x92AZ\x12XПолучение данных стейта доставки видеоконтента\x82\xd3\xe4\x93\x02\x1c\x12\x1a/v1/content/state/delivery\x12\xd3\x01\n" +
+	"\x13ChoseTorrentOptions\x12).mediadelivery.ChoseTorrentOptionsRequest\x1a*.mediadelivery.ChoseTorrentOptionsResponse\"e\x92A/\x12-Выбор раздачи с торрента\x82\xd3\xe4\x93\x02-:\x01*2(/v1/content/state/delivery/chose-torrent\x12\xe9\x01\n" +
+	"\x17ChoseFileMatchesOptions\x12-.mediadelivery.ChoseFileMatchesOptionsRequest\x1a..mediadelivery.ChoseFileMatchesOptionsResponse\"o\x92A4\x122Подтверждение метча файлов\x82\xd3\xe4\x93\x022:\x01*2-/v1/content/state/delivery/chose-file-matches\x12\xc5\x01\n" +
+	"\x11CreateDeleteState\x12'.mediadelivery.CreateDeleteStateRequest\x1a(.mediadelivery.CreateDeleteStateResponse\"]\x92A:\x128Удаление файлов видеоконтента\x82\xd3\xe4\x93\x02\x1a*\x18/v1/content/state/delete\x12\xd9\x01\n" +
+	"\rGetDeleteData\x12#.mediadelivery.GetDeleteDataRequest\x1a$.mediadelivery.GetDeleteDataResponse\"}\x92AZ\x12XПолучение данных стейта удаления видеоконтента\x82\xd3\xe4\x93\x02\x1a\x12\x18/v1/content/state/deleteB'Z%github.com/kkiling/media-delivery/apib\x06proto3"
 
 var (
 	file_media_delivery_videocontent_proto_rawDescOnce sync.Once

@@ -40,3 +40,8 @@ type AddTVShowInLibraryParams struct {
 	TVShowID     uint64
 	SeasonNumber uint8
 }
+
+type DeleteTVShowFromLibraryParams struct {
+	TVShowID     uint64
+	SeasonNumber uint8
+}

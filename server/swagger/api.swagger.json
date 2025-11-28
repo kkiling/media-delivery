@@ -99,7 +99,51 @@
         ]
       }
     },
-    "/v1/content/delivery": {
+    "/v1/content/state/delete": {
+      "get": {
+        "summary": "Получение данных стейта удаления видеоконтента",
+        "operationId": "VideoContentService_GetDeleteData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDeleteDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id.movie_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.season_number",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "VideoContentService"
+        ]
+      },
       "delete": {
         "summary": "Удаление файлов видеоконтента",
         "operationId": "VideoContentService_CreateDeleteState",
@@ -108,6 +152,52 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/CreateDeleteStateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id.movie_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "uint64"
+          },
+          {
+            "name": "content_id.tv_show.season_number",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "VideoContentService"
+        ]
+      }
+    },
+    "/v1/content/state/delivery": {
+      "get": {
+        "summary": "Получение данных стейта доставки видеоконтента",
+        "operationId": "VideoContentService_GetDeliveryData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryDataResponse"
             }
           },
           "default": {
@@ -176,7 +266,7 @@
         ]
       }
     },
-    "/v1/content/delivery/chose-file-matches": {
+    "/v1/content/state/delivery/chose-file-matches": {
       "patch": {
         "summary": "Подтверждение метча файлов",
         "operationId": "VideoContentService_ChoseFileMatchesOptions",
@@ -209,7 +299,7 @@
         ]
       }
     },
-    "/v1/content/delivery/chose-torrent": {
+    "/v1/content/state/delivery/chose-torrent": {
       "patch": {
         "summary": "Выбор раздачи с торрента",
         "operationId": "VideoContentService_ChoseTorrentOptions",
@@ -235,98 +325,6 @@
             "schema": {
               "$ref": "#/definitions/ChoseTorrentOptionsRequest"
             }
-          }
-        ],
-        "tags": [
-          "VideoContentService"
-        ]
-      }
-    },
-    "/v1/content/delivery/data": {
-      "get": {
-        "summary": "Получение данных стейта доставки видеоконтента",
-        "operationId": "VideoContentService_GetDeliveryData",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetDeliveryDataResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "content_id.movie_id",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "uint64"
-          },
-          {
-            "name": "content_id.tv_show.id",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "uint64"
-          },
-          {
-            "name": "content_id.tv_show.season_number",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "VideoContentService"
-        ]
-      }
-    },
-    "/v1/content/delivery/delete-data": {
-      "get": {
-        "summary": "Получение данных стейта удаления видеоконтента",
-        "operationId": "VideoContentService_GetDeleteData",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetDeleteDataResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "content_id.movie_id",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "uint64"
-          },
-          {
-            "name": "content_id.tv_show.id",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "uint64"
-          },
-          {
-            "name": "content_id.tv_show.season_number",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
           }
         ],
         "tags": [

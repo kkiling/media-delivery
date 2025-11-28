@@ -88,11 +88,13 @@ func (r *Runner) StepRegistration(_ statemachine.StepRegistrationParams) StepReg
 			DeleteSeasonFromMediaServer: {
 				OnStep: func(ctx context.Context, stepContext StepContext) *StepResult {
 					// удаление сезона сериала с медиасервера
-					data := stepContext.State.MetaData
-					if data.ContentID.TVShow == nil {
+					metaData := stepContext.State.MetaData
+					if metaData.ContentID.TVShow == nil {
 						return stepContext.Error(fmt.Errorf("TVShow id is null"))
 					}
-					err := r.contentDeleted.DeleteSeasonFromMediaServer(ctx, *data.ContentID.TVShow)
+					data := stepContext.State.Data
+
+					err := r.contentDeleted.DeleteSeasonFromMediaServer(ctx, data.TVShowCatalogPath, *metaData.ContentID.TVShow)
 					if err != nil {
 						return stepContext.Error(fmt.Errorf("DeleteSeasonFromMediaServer: %w", err))
 					}

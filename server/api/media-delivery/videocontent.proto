@@ -34,7 +34,7 @@ service VideoContentService {
   // Информация о доставки файлов videoContent
   rpc CreateDeliveryState(CreateDeliveryStateRequest) returns (CreateDeliveryStateResponse) {
     option (google.api.http) = {
-      post: "/v1/content/delivery";
+      post: "/v1/content/state/delivery";
       body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -43,7 +43,7 @@ service VideoContentService {
   };
   rpc GetDeliveryData(GetDeliveryDataRequest) returns (GetDeliveryDataResponse) {
     option (google.api.http) = {
-      get: "/v1/content/delivery/data";
+      get: "/v1/content/state/delivery";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Получение данных стейта доставки видеоконтента"
@@ -51,7 +51,7 @@ service VideoContentService {
   };
   rpc ChoseTorrentOptions(ChoseTorrentOptionsRequest) returns (ChoseTorrentOptionsResponse) {
     option (google.api.http) = {
-      patch: "/v1/content/delivery/chose-torrent";
+      patch: "/v1/content/state/delivery/chose-torrent";
       body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -60,7 +60,7 @@ service VideoContentService {
   };
   rpc ChoseFileMatchesOptions(ChoseFileMatchesOptionsRequest) returns (ChoseFileMatchesOptionsResponse) {
     option (google.api.http) = {
-      patch: "/v1/content/delivery/chose-file-matches";
+      patch: "/v1/content/state/delivery/chose-file-matches";
       body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -70,7 +70,7 @@ service VideoContentService {
   // Удаление файлов videoContent
   rpc CreateDeleteState(CreateDeleteStateRequest) returns (CreateDeleteStateResponse) {
     option (google.api.http) = {
-      delete: "/v1/content/delivery";
+      delete: "/v1/content/state/delete";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Удаление файлов видеоконтента"
@@ -78,7 +78,7 @@ service VideoContentService {
   };
   rpc GetDeleteData(GetDeleteDataRequest) returns (GetDeleteDataResponse) {
     option (google.api.http) = {
-      get: "/v1/content/delivery/delete-data";
+      get: "/v1/content/state/delete";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Получение данных стейта удаления видеоконтента"

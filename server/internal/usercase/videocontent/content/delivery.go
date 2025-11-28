@@ -28,29 +28,28 @@ func (s *Service) CreateDeliveryState(ctx context.Context, params DeliveryVideoC
 		return nil, fmt.Errorf("validateDeliveryVideoContentParams: %w", err)
 	}
 	// Достаем videoContent
-	contents, err := s.storage.GetVideoContents(ctx, params.ContentID)
+	content, err := s.getVideoContent(ctx, params.ContentID)
 	if err != nil {
-		return nil, fmt.Errorf("storage.GetVideoContent: %w", err)
+		return nil, fmt.Errorf("getVideoContent: %w", err)
 	}
-	if len(contents) != 1 {
-		return nil, ucerr.NotFound
-	}
-	content := contents[0]
 
 	// Проверяем что он находится в правильном статусе
-	if !(content.DeliveryStatus == DeliveryStatusNew || content.DeliveryStatus == DeliveryStatusDelivered) {
+	switch content.DeliveryStatus {
+	case DeliveryStatusNew:
+	case DeliveryStatusDeleted:
+	default:
 		return nil, fmt.Errorf("video content is in invalid status: %w", ucerr.InvalidArgument)
 	}
 
-	var state *tvshowdeliverystate.State
 	options := tvshowdeliverystate.CreateOptions{
 		TVShowID: *params.ContentID.TVShow,
 	}
+	var result *tvshowdeliverystate.State
 
 	// TODO: одна транзакция
 	{
 		// Создали стейт доставки видео контента
-		state, err = s.tvShowDeliveryState.Create(ctx, options)
+		result, err = s.tvShowDeliveryState.Create(ctx, options)
 		if err != nil {
 			return nil, fmt.Errorf("tvShowDeliveryState.Create: %w", err)
 		}
@@ -59,8 +58,8 @@ func (s *Service) CreateDeliveryState(ctx context.Context, params DeliveryVideoC
 		updateVideoContent := UpdateVideoContent{
 			DeliveryStatus: DeliveryStatusInProgress,
 			States: append(content.States, State{
-				StateID:   state.ID,
-				CreatedAt: state.CreatedAt,
+				StateID:   result.ID,
+				CreatedAt: result.CreatedAt,
 				Type:      runners.TVShowDelivery,
 			}),
 		}
@@ -70,7 +69,7 @@ func (s *Service) CreateDeliveryState(ctx context.Context, params DeliveryVideoC
 		}
 	}
 
-	return state, nil
+	return result, nil
 }
 
 func (s *Service) GetDeliveryData(ctx context.Context, contentID common.ContentID) (*tvshowdeliverystate.State, error) {
