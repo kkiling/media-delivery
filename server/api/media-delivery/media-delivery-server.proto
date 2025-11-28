@@ -6,7 +6,6 @@ option go_package = "github.com/kkiling/media-delivery/api";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Media delivery API";

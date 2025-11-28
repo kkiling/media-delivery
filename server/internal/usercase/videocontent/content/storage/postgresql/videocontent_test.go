@@ -44,7 +44,7 @@ func equalVideoContent(t *testing.T, vc1, vc2 *content.VideoContent) {
 
 	require.WithinDuration(t, vc1.CreatedAt, vc2.CreatedAt, time.Second)
 	require.Equal(t, vc1.DeliveryStatus, vc2.DeliveryStatus)
-	require.Equal(t, vc1.State, vc2.State)
+	require.Equal(t, vc1.States, vc2.States)
 }
 
 func equalVideoContents(t *testing.T, contents1, contents2 []content.VideoContent) {
@@ -86,7 +86,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State: []content.State{
+			States: []content.State{
 				{
 					StateID: uuid.New(),
 					Type:    runners.TVShowDelivery,
@@ -123,7 +123,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State: []content.State{
+			States: []content.State{
 				{
 					StateID: uuid.New(),
 					Type:    runners.TVShowDelivery,
@@ -153,7 +153,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		// Первое сохранение
@@ -178,7 +178,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now(),
 				DeliveryStatus: content.DeliveryStatusUpdating,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
 			},
@@ -187,7 +187,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now().Add(time.Hour),
 				DeliveryStatus: content.DeliveryStatusInProgress,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
 			},
@@ -223,7 +223,7 @@ func TestStorage_SaveVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusDelivered,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		err := testStorage.SaveVideoContent(ctx, videoContent)
@@ -256,7 +256,7 @@ func TestStorage_UpdateVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State: []content.State{
+			States: []content.State{
 				{
 					StateID: uuid.New(),
 					Type:    runners.TVShowDelivery,
@@ -285,7 +285,7 @@ func TestStorage_UpdateVideoContent(t *testing.T) {
 		require.Equal(t, videoContent.ID, savedContents[0].ID)
 		require.Equal(t, videoContent.ContentID.MovieID, savedContents[0].ContentID.MovieID)
 		require.WithinDuration(t, videoContent.CreatedAt, savedContents[0].CreatedAt, time.Second)
-		require.Equal(t, videoContent.State, savedContents[0].State)
+		require.Equal(t, videoContent.States, savedContents[0].States)
 	})
 
 	t.Run("update video content - not found", func(t *testing.T) {
@@ -313,7 +313,7 @@ func TestStorage_UpdateVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusUpdating,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		err := testStorage.SaveVideoContent(ctx, videoContent)
@@ -353,7 +353,7 @@ func TestStorage_UpdateVideoContent(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		err := testStorage.SaveVideoContent(ctx, videoContent)
@@ -435,7 +435,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now(),
 				DeliveryStatus: content.DeliveryStatusUpdating,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
 			},
@@ -444,7 +444,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now().Add(time.Hour),
 				DeliveryStatus: content.DeliveryStatusInProgress,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
@@ -489,7 +489,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now(),
 				DeliveryStatus: content.DeliveryStatusInProgress,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
 			},
@@ -498,7 +498,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 				ContentID:      contentID,
 				CreatedAt:      time.Now().Add(2 * time.Hour),
 				DeliveryStatus: content.DeliveryStatusDelivered,
-				State:          []content.State{},
+				States:         []content.State{},
 			},
 		}
 
@@ -536,7 +536,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusInProgress,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		content2 := &content.VideoContent{
@@ -546,7 +546,7 @@ func TestStorage_GetVideoContents(t *testing.T) {
 			},
 			CreatedAt:      time.Now(),
 			DeliveryStatus: content.DeliveryStatusDelivered,
-			State:          []content.State{},
+			States:         []content.State{},
 		}
 
 		err := testStorage.SaveVideoContent(ctx, content1)
@@ -592,7 +592,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 				},
 				CreatedAt:      time.Now(),
 				DeliveryStatus: targetStatus,
-				State: []content.State{
+				States: []content.State{
 					{StateID: uuid.New(), Type: runners.TVShowDelivery},
 				},
 			},
@@ -606,7 +606,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 				},
 				CreatedAt:      time.Now().Add(time.Hour),
 				DeliveryStatus: targetStatus,
-				State:          []content.State{},
+				States:         []content.State{},
 			},
 		}
 
@@ -616,7 +616,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 		}
 
 		// Получаем контенты с целевым статусом
-		initialContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, targetStatus, limit)
+		initialContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, []content.DeliveryStatus{targetStatus}, limit)
 		require.NoError(t, err)
 
 		// Ищем наши целевые контенты среди полученных
@@ -644,7 +644,7 @@ func TestStorage_GetVideoContentsByDeliveryStatus(t *testing.T) {
 		require.NoError(t, err)
 
 		// Снова получаем контенты с целевым статусом
-		updatedContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, targetStatus, limit)
+		updatedContents, err := testStorage.GetVideoContentsByDeliveryStatus(ctx, []content.DeliveryStatus{targetStatus}, limit)
 		require.NoError(t, err)
 
 		// Проверяем что обновленный контент пропал из списка

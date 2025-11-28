@@ -22,9 +22,12 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	VideoContentService_CreateVideoContent_FullMethodName      = "/mediadelivery.VideoContentService/CreateVideoContent"
 	VideoContentService_GetVideoContent_FullMethodName         = "/mediadelivery.VideoContentService/GetVideoContent"
-	VideoContentService_GetTVShowDeliveryData_FullMethodName   = "/mediadelivery.VideoContentService/GetTVShowDeliveryData"
+	VideoContentService_CreateDeliveryState_FullMethodName     = "/mediadelivery.VideoContentService/CreateDeliveryState"
+	VideoContentService_GetDeliveryData_FullMethodName         = "/mediadelivery.VideoContentService/GetDeliveryData"
 	VideoContentService_ChoseTorrentOptions_FullMethodName     = "/mediadelivery.VideoContentService/ChoseTorrentOptions"
 	VideoContentService_ChoseFileMatchesOptions_FullMethodName = "/mediadelivery.VideoContentService/ChoseFileMatchesOptions"
+	VideoContentService_CreateDeleteState_FullMethodName       = "/mediadelivery.VideoContentService/CreateDeleteState"
+	VideoContentService_GetDeleteData_FullMethodName           = "/mediadelivery.VideoContentService/GetDeleteData"
 )
 
 // VideoContentServiceClient is the client API for VideoContentService service.
@@ -33,9 +36,14 @@ const (
 type VideoContentServiceClient interface {
 	CreateVideoContent(ctx context.Context, in *CreateVideoContentRequest, opts ...grpc.CallOption) (*CreateVideoContentResponse, error)
 	GetVideoContent(ctx context.Context, in *GetVideoContentRequest, opts ...grpc.CallOption) (*GetVideoContentResponse, error)
-	GetTVShowDeliveryData(ctx context.Context, in *GetTVShowDeliveryDataRequest, opts ...grpc.CallOption) (*GetTVShowDeliveryDataResponse, error)
+	// Информация о доставки файлов videoContent
+	CreateDeliveryState(ctx context.Context, in *CreateDeliveryStateRequest, opts ...grpc.CallOption) (*CreateDeliveryStateResponse, error)
+	GetDeliveryData(ctx context.Context, in *GetDeliveryDataRequest, opts ...grpc.CallOption) (*GetDeliveryDataResponse, error)
 	ChoseTorrentOptions(ctx context.Context, in *ChoseTorrentOptionsRequest, opts ...grpc.CallOption) (*ChoseTorrentOptionsResponse, error)
 	ChoseFileMatchesOptions(ctx context.Context, in *ChoseFileMatchesOptionsRequest, opts ...grpc.CallOption) (*ChoseFileMatchesOptionsResponse, error)
+	// Удаление файлов videoContent
+	CreateDeleteState(ctx context.Context, in *CreateDeleteStateRequest, opts ...grpc.CallOption) (*CreateDeleteStateResponse, error)
+	GetDeleteData(ctx context.Context, in *GetDeleteDataRequest, opts ...grpc.CallOption) (*GetDeleteDataResponse, error)
 }
 
 type videoContentServiceClient struct {
@@ -66,10 +74,20 @@ func (c *videoContentServiceClient) GetVideoContent(ctx context.Context, in *Get
 	return out, nil
 }
 
-func (c *videoContentServiceClient) GetTVShowDeliveryData(ctx context.Context, in *GetTVShowDeliveryDataRequest, opts ...grpc.CallOption) (*GetTVShowDeliveryDataResponse, error) {
+func (c *videoContentServiceClient) CreateDeliveryState(ctx context.Context, in *CreateDeliveryStateRequest, opts ...grpc.CallOption) (*CreateDeliveryStateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetTVShowDeliveryDataResponse)
-	err := c.cc.Invoke(ctx, VideoContentService_GetTVShowDeliveryData_FullMethodName, in, out, cOpts...)
+	out := new(CreateDeliveryStateResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_CreateDeliveryState_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoContentServiceClient) GetDeliveryData(ctx context.Context, in *GetDeliveryDataRequest, opts ...grpc.CallOption) (*GetDeliveryDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDeliveryDataResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_GetDeliveryData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,15 +114,40 @@ func (c *videoContentServiceClient) ChoseFileMatchesOptions(ctx context.Context,
 	return out, nil
 }
 
+func (c *videoContentServiceClient) CreateDeleteState(ctx context.Context, in *CreateDeleteStateRequest, opts ...grpc.CallOption) (*CreateDeleteStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateDeleteStateResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_CreateDeleteState_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoContentServiceClient) GetDeleteData(ctx context.Context, in *GetDeleteDataRequest, opts ...grpc.CallOption) (*GetDeleteDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDeleteDataResponse)
+	err := c.cc.Invoke(ctx, VideoContentService_GetDeleteData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoContentServiceServer is the server API for VideoContentService service.
 // All implementations must embed UnimplementedVideoContentServiceServer
 // for forward compatibility.
 type VideoContentServiceServer interface {
 	CreateVideoContent(context.Context, *CreateVideoContentRequest) (*CreateVideoContentResponse, error)
 	GetVideoContent(context.Context, *GetVideoContentRequest) (*GetVideoContentResponse, error)
-	GetTVShowDeliveryData(context.Context, *GetTVShowDeliveryDataRequest) (*GetTVShowDeliveryDataResponse, error)
+	// Информация о доставки файлов videoContent
+	CreateDeliveryState(context.Context, *CreateDeliveryStateRequest) (*CreateDeliveryStateResponse, error)
+	GetDeliveryData(context.Context, *GetDeliveryDataRequest) (*GetDeliveryDataResponse, error)
 	ChoseTorrentOptions(context.Context, *ChoseTorrentOptionsRequest) (*ChoseTorrentOptionsResponse, error)
 	ChoseFileMatchesOptions(context.Context, *ChoseFileMatchesOptionsRequest) (*ChoseFileMatchesOptionsResponse, error)
+	// Удаление файлов videoContent
+	CreateDeleteState(context.Context, *CreateDeleteStateRequest) (*CreateDeleteStateResponse, error)
+	GetDeleteData(context.Context, *GetDeleteDataRequest) (*GetDeleteDataResponse, error)
 	mustEmbedUnimplementedVideoContentServiceServer()
 }
 
@@ -121,14 +164,23 @@ func (UnimplementedVideoContentServiceServer) CreateVideoContent(context.Context
 func (UnimplementedVideoContentServiceServer) GetVideoContent(context.Context, *GetVideoContentRequest) (*GetVideoContentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVideoContent not implemented")
 }
-func (UnimplementedVideoContentServiceServer) GetTVShowDeliveryData(context.Context, *GetTVShowDeliveryDataRequest) (*GetTVShowDeliveryDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTVShowDeliveryData not implemented")
+func (UnimplementedVideoContentServiceServer) CreateDeliveryState(context.Context, *CreateDeliveryStateRequest) (*CreateDeliveryStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDeliveryState not implemented")
+}
+func (UnimplementedVideoContentServiceServer) GetDeliveryData(context.Context, *GetDeliveryDataRequest) (*GetDeliveryDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeliveryData not implemented")
 }
 func (UnimplementedVideoContentServiceServer) ChoseTorrentOptions(context.Context, *ChoseTorrentOptionsRequest) (*ChoseTorrentOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChoseTorrentOptions not implemented")
 }
 func (UnimplementedVideoContentServiceServer) ChoseFileMatchesOptions(context.Context, *ChoseFileMatchesOptionsRequest) (*ChoseFileMatchesOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChoseFileMatchesOptions not implemented")
+}
+func (UnimplementedVideoContentServiceServer) CreateDeleteState(context.Context, *CreateDeleteStateRequest) (*CreateDeleteStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDeleteState not implemented")
+}
+func (UnimplementedVideoContentServiceServer) GetDeleteData(context.Context, *GetDeleteDataRequest) (*GetDeleteDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeleteData not implemented")
 }
 func (UnimplementedVideoContentServiceServer) mustEmbedUnimplementedVideoContentServiceServer() {}
 func (UnimplementedVideoContentServiceServer) testEmbeddedByValue()                             {}
@@ -187,20 +239,38 @@ func _VideoContentService_GetVideoContent_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VideoContentService_GetTVShowDeliveryData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTVShowDeliveryDataRequest)
+func _VideoContentService_CreateDeliveryState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDeliveryStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VideoContentServiceServer).GetTVShowDeliveryData(ctx, in)
+		return srv.(VideoContentServiceServer).CreateDeliveryState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VideoContentService_GetTVShowDeliveryData_FullMethodName,
+		FullMethod: VideoContentService_CreateDeliveryState_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VideoContentServiceServer).GetTVShowDeliveryData(ctx, req.(*GetTVShowDeliveryDataRequest))
+		return srv.(VideoContentServiceServer).CreateDeliveryState(ctx, req.(*CreateDeliveryStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoContentService_GetDeliveryData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeliveryDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoContentServiceServer).GetDeliveryData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VideoContentService_GetDeliveryData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoContentServiceServer).GetDeliveryData(ctx, req.(*GetDeliveryDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -241,6 +311,42 @@ func _VideoContentService_ChoseFileMatchesOptions_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VideoContentService_CreateDeleteState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDeleteStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoContentServiceServer).CreateDeleteState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VideoContentService_CreateDeleteState_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoContentServiceServer).CreateDeleteState(ctx, req.(*CreateDeleteStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoContentService_GetDeleteData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeleteDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoContentServiceServer).GetDeleteData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VideoContentService_GetDeleteData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoContentServiceServer).GetDeleteData(ctx, req.(*GetDeleteDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VideoContentService_ServiceDesc is the grpc.ServiceDesc for VideoContentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -257,8 +363,12 @@ var VideoContentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VideoContentService_GetVideoContent_Handler,
 		},
 		{
-			MethodName: "GetTVShowDeliveryData",
-			Handler:    _VideoContentService_GetTVShowDeliveryData_Handler,
+			MethodName: "CreateDeliveryState",
+			Handler:    _VideoContentService_CreateDeliveryState_Handler,
+		},
+		{
+			MethodName: "GetDeliveryData",
+			Handler:    _VideoContentService_GetDeliveryData_Handler,
 		},
 		{
 			MethodName: "ChoseTorrentOptions",
@@ -267,6 +377,14 @@ var VideoContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChoseFileMatchesOptions",
 			Handler:    _VideoContentService_ChoseFileMatchesOptions_Handler,
+		},
+		{
+			MethodName: "CreateDeleteState",
+			Handler:    _VideoContentService_CreateDeleteState_Handler,
+		},
+		{
+			MethodName: "GetDeleteData",
+			Handler:    _VideoContentService_GetDeleteData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

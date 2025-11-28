@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+package mediadelivery;
+
+option go_package = "github.com/kkiling/media-delivery/api";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "media-delivery/common-model.proto";
+
+message TVShowDeliveryError {
+  enum ErrorType {
+    TVShowDeliveryError_Unknown = 0;
+    // Торрент трекер не доступен
+    TorrentSiteForbidden = 1;
+    // Файлы на медиасервере уже существуют
+    FilesAlreadyExist = 2;
+  }
+  string raw_error = 1;
+  ErrorType error_type = 2;
+}
+
+
+enum TVShowDeliveryStep {
+  // Неизвестный статус доставки
+  TVShowDeliveryStepUnknown = 0;
+  // Генерация запроса к трекеру
+  GenerateSearchQuery = 1;
+  // Поиск раздач сезона сериала/фильма
+  SearchTorrents = 2;
+  // Ожидание выбора раздачи пользователем
+  WaitingUserChoseTorrent = 3;
+  // Получение магнет ссылки
+  GetMagnetLink = 4;
+  // Добавление раздачи для скачивания торрент клиентом
+  AddTorrentToTorrentClient = 5;
+  // Получение информации о файлах раздачи
+  PrepareFileMatches = 6;
+  // Ожидание подтверждения пользователем соответствий выбора файлов
+  WaitingChoseFileMatches = 7;
+  // Ожидание завершения окончания скачивания раздачи
+  WaitingTorrentDownloadComplete = 8;
+  // Формирование каталогов и иерархии файлов
+  CreateVideoContentCatalogs = 9;
+  // Определение необходимости конвертации файлов
+  DeterminingNeedConvertFiles = 10;
+  // Запуск конвертирования файлов
+  StartMergeVideoFiles = 11;
+  // Ожидание завершения конвертации файлов
+  WaitingMergeVideoFiles = 12;
+  // Копирование файлов из раздачи в каталог медиасервера (точнее создание симлинков)
+  CreateHardLinkCopy = 13;
+  // GetCatalogsSize получение размеров каталогов сериала
+  GetCatalogsSize = 15;
+  // Установка методаных серий сезона сериала/фильма в медиасервере
+  SetMediaMetaData = 16;
+  // Отправка уведомления в telegramm о успешной доставки
+  SendDeliveryNotification = 17;
+  // Ожидание когда появится информация о файлах в раздаче
+  WaitingTorrentFiles = 18;
+  // получение информации о эпизодах и каталоге сезона
+  GetEpisodesData = 19;
+}
+
+message TVShowDeliveryState {
+  TVShowDeliveryData data = 1;
+  TVShowDeliveryStep step = 2;
+  StateStatus status = 3;
+  optional TVShowDeliveryError error = 4;
+}
+
+message Track {
+  enum TrackType {
+    TRACK_TYPE_UNKNOWN = 0;
+    TRACK_TYPE_VIDEO = 1;
+    TRACK_TYPE_AUDIO = 2;
+    TRACK_TYPE_SUBTITLE = 3;
+  }
+  string relative_path = 1;
+  string full_path = 2;
+  optional string name = 3;
+  optional string language = 4;
+  TrackType type = 5;
+}
+
+message SearchQuery {
+  string Query = 1;
+}
+
+message TorrentSearch {
+  string title = 1;
+  string href = 2;
+  string category = 8;
+  string size = 3;
+  int64 seeds = 4;
+  int64 leeches   = 5;
+  int64 downloads = 6;
+  string added_date = 7;
+}
+
+message EpisodeInfo {
+  uint32 season_number = 1;
+  uint32 episode_number = 2;
+  string full_path = 3;
+  string relative_path = 4;
+}
+
+message ContentMatch {
+  // Инфа о сезоне
+  EpisodeInfo episode = 1;
+  // Видеодорожка
+  Track video = 2;
+  // Аудиодорожки
+  repeated Track audio_tracks = 3;
+  // Субтитры
+  repeated Track subtitles = 4;
+}
+
+message ContentMatches {
+  message Options {
+    // Оставлять оригинальные аудиодорожки (если они есть)
+    bool keep_original_audio = 1;
+    // Оставлять оригинальные субтитры (если они есть)
+    bool keep_original_subtitles = 2;
+    // Дефолтная аудиодорожка
+    optional string default_audio_track_name = 3;
+    // Дефолтные субтитры
+    optional string default_subtitle_track = 4;
+  }
+  repeated ContentMatch matches = 1;
+  // Нераспредленные треки
+  repeated Track unallocated  = 2;
+  // Опции
+  Options options = 3;
+}
+
+message ChoseFileMatchesOptionsRequest {
+  ContentID content_id = 1;
+  // Пользователь подтверждает сметченные файлы
+  bool approve = 2;
+  // Метч контента, если захотели изменить
+  optional ContentMatches content_matches = 3;
+}
+
+message TorrentDownloadStatus {
+  enum TorrentState {
+    TORRENT_STATE_UNKNOWN = 0;
+    TORRENT_STATE_ERROR = 1;
+    TORRENT_STATE_UPLOADING = 2;
+    TORRENT_STATE_DOWNLOADING = 3;
+    TORRENT_STATE_STOPPED = 4;
+    TORRENT_STATE_QUEUED = 5;
+  }
+  TorrentState state = 1;
+  float progress = 2;
+  bool is_complete = 3;
+}
+
+message MergeVideoStatus {
+  float progress = 1;
+  bool is_complete = 2;
+}
+
+message TVShowCatalogPath {
+  // Путь до каталога сериала
+  string tv_show_path = 1;
+  // Путь до каталога сезона (относительно каталога сериала)
+  string season_path = 2;
+}
+
+message TVShowCatalog {
+  // Путь до раздачи сезона сериала
+  string torrent_path = 1;
+  // Размер файлов раздачи сезона сериала
+  string torrent_size_pretty = 2;
+  // Путь до сезона сериала на медиасервере
+  TVShowCatalogPath media_server_path = 3;
+  // Размер файлов раздачи сезона сериала (байты)
+  string media_server_size_pretty = 4;
+  // Файлы скопированы с раздачи или созданы ссылочная связь
+  // True - файлы скопированы
+  // False - файлы созданы через линки
+  bool is_copy_files_in_media_server = 5;
+}
+
+message Torrent {
+  // Ссылка на раздачу
+  string href = 1;
+}
+
+message TVShowDeliveryData {
+  // Поисковый запрос поиска торрент файла
+  optional SearchQuery search_query = 1;
+  // Результат поиска торрент раздач
+  repeated TorrentSearch torrent_search = 2;
+  // Результат метча файлов
+  optional ContentMatches content_matches = 3;
+  // статус скачивания раздачи
+  optional TorrentDownloadStatus torrent_download_status = 4;
+  // статус сшивания файлов
+  optional MergeVideoStatus merge_video_status = 5;
+  // TVShowCatalogInfo информация о каталогах сериала
+  optional TVShowCatalog tv_show_catalog_info = 6;
+  // Информация о раздаче
+  optional Torrent torrent = 7;
+}

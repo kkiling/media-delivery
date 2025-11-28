@@ -39,15 +39,31 @@ func (h *Handler) GetVideoContent(ctx context.Context, request *desc.GetVideoCon
 	}, nil
 }
 
-func (h *Handler) GetTVShowDeliveryData(ctx context.Context, request *desc.GetTVShowDeliveryDataRequest) (*desc.GetTVShowDeliveryDataResponse, error) {
+func (h *Handler) CreateDeliveryState(ctx context.Context, request *desc.CreateDeliveryStateRequest) (*desc.CreateDeliveryStateResponse, error) {
 	contentID := mapfrom.ContentID(request.ContentId)
 
-	state, err := h.videoContent.GetTVShowDeliveryData(ctx, contentID)
+	state, err := h.videoContent.CreateDeliveryState(ctx, videocontent.DeliveryVideoContentParams{
+		ContentID: contentID,
+	})
+
 	if err != nil {
-		return nil, handler.HandleError(err, "videoContent.GetTVShowDeliveryData")
+		return nil, handler.HandleError(err, "videoContent.CreateDeliveryState")
 	}
 
-	return &desc.GetTVShowDeliveryDataResponse{
+	return &desc.CreateDeliveryStateResponse{
+		Result: mapto.TVShowDeliveryState(state),
+	}, nil
+}
+
+func (h *Handler) GetDeliveryData(ctx context.Context, request *desc.GetDeliveryDataRequest) (*desc.GetDeliveryDataResponse, error) {
+	contentID := mapfrom.ContentID(request.ContentId)
+
+	state, err := h.videoContent.GetDeliveryData(ctx, contentID)
+	if err != nil {
+		return nil, handler.HandleError(err, "videoContent.GetDeliveryData")
+	}
+
+	return &desc.GetDeliveryDataResponse{
 		Result: mapto.TVShowDeliveryState(state),
 	}, nil
 }
@@ -76,10 +92,39 @@ func (h *Handler) ChoseFileMatchesOptions(ctx context.Context, request *desc.Cho
 		ContentMatches: mapfrom.ContentMatches(request.ContentMatches),
 	})
 	if err != nil {
-		return nil, handler.HandleError(err, "videoContent.ChoseTorrentOptions")
+		return nil, handler.HandleError(err, "videoContent.ChoseFileMatchesOptions")
 	}
 
 	return &desc.ChoseFileMatchesOptionsResponse{
 		Result: mapto.TVShowDeliveryState(state),
+	}, nil
+}
+
+func (h *Handler) CreateDeleteState(ctx context.Context, request *desc.CreateDeleteStateRequest) (*desc.CreateDeleteStateResponse, error) {
+	contentID := mapfrom.ContentID(request.ContentId)
+
+	state, err := h.videoContent.CreateDeleteState(ctx, videocontent.CreateDeleteStateParams{
+		ContentID: contentID,
+	})
+
+	if err != nil {
+		return nil, handler.HandleError(err, "videoContent.CreateDeleteState")
+	}
+
+	return &desc.CreateDeleteStateResponse{
+		Result: mapto.TVShowDeleteState(state),
+	}, nil
+}
+
+func (h *Handler) GetDeleteData(ctx context.Context, request *desc.GetDeleteDataRequest) (*desc.GetDeleteDataResponse, error) {
+	contentID := mapfrom.ContentID(request.ContentId)
+
+	state, err := h.videoContent.GetDeleteData(ctx, contentID)
+	if err != nil {
+		return nil, handler.HandleError(err, "videoContent.GetDeleteData")
+	}
+
+	return &desc.GetDeleteDataResponse{
+		Result: mapto.TVShowDeleteState(state),
 	}, nil
 }

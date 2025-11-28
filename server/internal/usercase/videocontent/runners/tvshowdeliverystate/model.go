@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kkiling/media-delivery/internal/common"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
 // StepDelivery статус доставки видео файлов до медиа сервера
@@ -20,11 +20,11 @@ const (
 	// WaitingUserChoseTorrent - ожидание когда пользователь выберет раздачу
 	WaitingUserChoseTorrent StepDelivery = "waiting_user_chose_torrent"
 	// GetMagnetLink получение магнет ссылки
-	GetMagnetLink StepDelivery = "get_magnet_link_status"
+	GetMagnetLink StepDelivery = "get_magnet_link"
 	// AddTorrentToTorrentClient Добавление раздачи для скачивания торрент клиентом
-	AddTorrentToTorrentClient StepDelivery = "add_torrent_client_status"
+	AddTorrentToTorrentClient StepDelivery = "add_torrent_to_torrent_client"
 	// WaitingTorrentFiles Ожидание когда появится информация о файлах в раздаче
-	WaitingTorrentFiles StepDelivery = "waiting_torrent_files_status"
+	WaitingTorrentFiles StepDelivery = "waiting_torrent_files"
 	// GetEpisodesData получение информации о эпизодах и каталоге сезона
 	GetEpisodesData StepDelivery = "get_episodes_data"
 	// PrepareFileMatches получение информации о файлах раздачи
@@ -53,6 +53,8 @@ const (
 
 	// SetMediaMetaData установка методаных серий сезона сериала / фильма в медиасервере
 	SetMediaMetaData StepDelivery = "set_media_meta_data"
+	// AddLabel Установить лейбл для видеоконтента
+	AddLabel StepDelivery = "add_label"
 	// SendDeliveryNotification Отправка уведомления в telegramm о успешной доставки видеофайлов до медиа сервера
 	SendDeliveryNotification StepDelivery = "send_delivery_notification"
 )
@@ -64,31 +66,32 @@ const (
 */
 type TVShowDeliveryData struct {
 	// SearchQuery сформированный запрос на основе названия сериала
-	SearchQuery *delivery.SearchQuery
+	SearchQuery *tvshowdelivery.SearchQuery
 	// TorrentSearch Результат поиска торрентов
-	TorrentSearch []delivery.TorrentSearch
+	TorrentSearch []tvshowdelivery.TorrentSearch
 	// Torrent данные найденной раздачи
-	Torrent *delivery.Torrent
+	Torrent *tvshowdelivery.Torrent
 	// TorrentFilesData файлы раздачи
-	TorrentFilesData *delivery.TorrentFilesData
+	TorrentFilesData *tvshowdelivery.TorrentFilesData
 	// EpisodesData информация о эпизодах и путях сохранения
-	EpisodesData *delivery.EpisodesData
+	EpisodesData *tvshowdelivery.EpisodesData
 	// ContentMatches Информация о метче файлов (метч видофайлов с аудиодоржками и субтитрами)
-	ContentMatches *delivery.ContentMatches
+	ContentMatches *tvshowdelivery.ContentMatches
 	// TorrentDownloadStatus статус скачивания раздачи
-	TorrentDownloadStatus *delivery.TorrentDownloadStatus
-	// TVShowCatalogInfo информация о каталогах сериала
-	TVShowCatalogInfo *delivery.TVShowCatalog
+	TorrentDownloadStatus *tvshowdelivery.TorrentDownloadStatus
 	// MergeIDs информация
 	MergeIDs []uuid.UUID
 	// MergeVideoStatus статус сшивания файлов (если нужен)
-	MergeVideoStatus *delivery.MergeVideoStatus
+	MergeVideoStatus *tvshowdelivery.MergeVideoStatus
+	// TVShowCatalogInfo информация о каталогах сериала
+	TVShowCatalogInfo *tvshowdelivery.TVShowCatalog
 }
 
 type CreateOptions struct {
+	Index    int
 	TVShowID common.TVShowID
 }
 
 func (c CreateOptions) GetIdempotencyKey() string {
-	return fmt.Sprintf("tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
+	return fmt.Sprintf("delivery_tv_%d_season_%d_n_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber, c.Index)
 }

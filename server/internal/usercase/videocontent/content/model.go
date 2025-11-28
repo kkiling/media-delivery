@@ -14,6 +14,8 @@ type DeliveryStatus int
 const (
 	// DeliveryStatusFailed доставка была зафейлена
 	DeliveryStatusFailed DeliveryStatus = iota
+	// DeliveryStatusNew - Новая доставка
+	DeliveryStatusNew DeliveryStatus = iota
 	// DeliveryStatusInProgress - В процессе доставки файлов
 	DeliveryStatusInProgress DeliveryStatus = iota
 	// DeliveryStatusDelivered - Файлы доставлены
@@ -46,16 +48,19 @@ type VideoContent struct {
 	// Статус
 	DeliveryStatus DeliveryStatus
 	// Стейты привязанные к текущему контенту
-	State []State
+	States []State
 }
 
 // State Таблица выпусков связанных с TVShowContent
 type State struct {
-	StateID uuid.UUID
-	Type    runners.Type
+	StateID   uuid.UUID
+	CreatedAt time.Time
+	Type      runners.Type
 }
 
 type UpdateVideoContent struct {
 	// Статус
 	DeliveryStatus DeliveryStatus
+	// Стейты привязанные к текущему контенту
+	States []State
 }

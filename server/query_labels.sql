@@ -12,10 +12,10 @@ WHERE tvshow_id=$1 AND season_number=$2;
 
 -- name: DeleteLabelMovieID :one
 DELETE FROM content_label
-WHERE movie_id=$1
+WHERE movie_id=$1 AND type_label=$2
 RETURNING movie_id;
 
 -- name: DeleteLabelTVShow :one
 DELETE FROM content_label
-WHERE tvshow_id=$1 AND season_number=$2
+WHERE tvshow_id=$1 AND season_number=$2 AND type_label=$3
 RETURNING tvshow_id, season_number;

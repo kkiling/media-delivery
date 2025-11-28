@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package mediadelivery;
+
+option go_package = "github.com/kkiling/media-delivery/api";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "media-delivery/common-model.proto";
+
+message TVShowDeleteError {
+  enum ErrorType {
+    TVShowDeleteError_Unknown = 0;
+  }
+  string raw_error = 1;
+  ErrorType error_type = 2;
+}
+
+
+message TVShowDeleteState {
+  StateStatus status = 3;
+  optional TVShowDeleteError error = 4;
+}

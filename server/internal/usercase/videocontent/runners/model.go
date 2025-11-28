@@ -8,6 +8,7 @@ type Type string
 
 const (
 	TVShowDelivery Type = "tv_show_delivery"
+	TVShowDelete   Type = "tv_show_delete"
 )
 
 type Metadata struct {

@@ -3,29 +3,31 @@ package videocontent
 import (
 	"github.com/kkiling/media-delivery/internal/common"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/delivery"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeletestate"
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent/runners/tvshowdeliverystate"
+	"github.com/kkiling/media-delivery/internal/usercase/videocontent/tvshowdelivery"
 )
 
 type TVShowID = common.TVShowID
 type ContentID = common.ContentID
 type VideoContent = content.VideoContent
 
-type TorrentState = delivery.TorrentState
+type TorrentState = tvshowdelivery.TorrentState
 
 const (
-	TorrentStateError       = delivery.TorrentStateError
-	TorrentStateUploading   = delivery.TorrentStateUploading
-	TorrentStateDownloading = delivery.TorrentStateDownloading
-	TorrentStateStopped     = delivery.TorrentStateStopped
-	TorrentStateQueued      = delivery.TorrentStateQueued
-	TorrentStateUnknown     = delivery.TorrentStateUnknown
+	TorrentStateError       = tvshowdelivery.TorrentStateError
+	TorrentStateUploading   = tvshowdelivery.TorrentStateUploading
+	TorrentStateDownloading = tvshowdelivery.TorrentStateDownloading
+	TorrentStateStopped     = tvshowdelivery.TorrentStateStopped
+	TorrentStateQueued      = tvshowdelivery.TorrentStateQueued
+	TorrentStateUnknown     = tvshowdelivery.TorrentStateUnknown
 )
 
 type DeliveryStatus = content.DeliveryStatus
 
 const (
 	DeliveryStatusFailed     = content.DeliveryStatusFailed
+	DeliveryStatusNew        = content.DeliveryStatusNew
 	DeliveryStatusInProgress = content.DeliveryStatusInProgress
 	DeliveryStatusDelivered  = content.DeliveryStatusDelivered
 	DeliveryStatusUpdating   = content.DeliveryStatusUpdating
@@ -34,23 +36,28 @@ const (
 )
 
 type CreateVideoContentParams = content.CreateVideoContentParams
+type DeliveryVideoContentParams = content.DeliveryVideoContentParams
+type CreateDeleteStateParams = content.DeleteVideoContentFilesParams
+
+type TVShowDeleteState = tvshowdeletestate.State
+
 type TVShowDeliveryState = tvshowdeliverystate.State
 type TVShowDeliveryData = tvshowdeliverystate.TVShowDeliveryData
-type TorrentSearch = delivery.TorrentSearch
-type ContentMatches = delivery.ContentMatches
-type ContentMatch = delivery.ContentMatch
-type ContentMatchesOptions = delivery.ContentMatchesOptions
-type Track = delivery.Track
+type TorrentSearch = tvshowdelivery.TorrentSearch
+type ContentMatches = tvshowdelivery.ContentMatches
+type ContentMatch = tvshowdelivery.ContentMatch
+type ContentMatchesOptions = tvshowdelivery.ContentMatchesOptions
+type Track = tvshowdelivery.Track
 
-type TrackType = delivery.TrackType
+type TrackType = tvshowdelivery.TrackType
 
 const (
-	TrackTypeVideo    = delivery.TrackTypeVideo
-	TrackTypeAudio    = delivery.TrackTypeAudio
-	TrackTypeSubtitle = delivery.TrackTypeSubtitle
+	TrackTypeVideo    = tvshowdelivery.TrackTypeVideo
+	TrackTypeAudio    = tvshowdelivery.TrackTypeAudio
+	TrackTypeSubtitle = tvshowdelivery.TrackTypeSubtitle
 )
 
-type FileInfo = delivery.FileInfo
+type FileInfo = tvshowdelivery.FileInfo
 type ChoseTorrentOptions = tvshowdeliverystate.ChoseTorrentOptions
 type ChoseFileMatchesOptions = tvshowdeliverystate.ChoseFileMatchesOptions
 

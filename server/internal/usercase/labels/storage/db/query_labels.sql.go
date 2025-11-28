@@ -12,12 +12,17 @@ import (
 
 const deleteLabelMovieID = `-- name: DeleteLabelMovieID :one
 DELETE FROM content_label
-WHERE movie_id=$1
+WHERE movie_id=$1 AND type_label=$2
 RETURNING movie_id
 `
 
-func (q *Queries) DeleteLabelMovieID(ctx context.Context, movieID *int64) (*int64, error) {
-	row := q.db.QueryRow(ctx, deleteLabelMovieID, movieID)
+type DeleteLabelMovieIDParams struct {
+	MovieID   *int64
+	TypeLabel int
+}
+
+func (q *Queries) DeleteLabelMovieID(ctx context.Context, arg DeleteLabelMovieIDParams) (*int64, error) {
+	row := q.db.QueryRow(ctx, deleteLabelMovieID, arg.MovieID, arg.TypeLabel)
 	var movie_id *int64
 	err := row.Scan(&movie_id)
 	return movie_id, err
@@ -25,13 +30,14 @@ func (q *Queries) DeleteLabelMovieID(ctx context.Context, movieID *int64) (*int6
 
 const deleteLabelTVShow = `-- name: DeleteLabelTVShow :one
 DELETE FROM content_label
-WHERE tvshow_id=$1 AND season_number=$2
+WHERE tvshow_id=$1 AND season_number=$2 AND type_label=$3
 RETURNING tvshow_id, season_number
 `
 
 type DeleteLabelTVShowParams struct {
 	TvshowID     *int64
 	SeasonNumber *int32
+	TypeLabel    int
 }
 
 type DeleteLabelTVShowRow struct {
@@ -40,7 +46,7 @@ type DeleteLabelTVShowRow struct {
 }
 
 func (q *Queries) DeleteLabelTVShow(ctx context.Context, arg DeleteLabelTVShowParams) (DeleteLabelTVShowRow, error) {
-	row := q.db.QueryRow(ctx, deleteLabelTVShow, arg.TvshowID, arg.SeasonNumber)
+	row := q.db.QueryRow(ctx, deleteLabelTVShow, arg.TvshowID, arg.SeasonNumber, arg.TypeLabel)
 	var i DeleteLabelTVShowRow
 	err := row.Scan(&i.TvshowID, &i.SeasonNumber)
 	return i, err

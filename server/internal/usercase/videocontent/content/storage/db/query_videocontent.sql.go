@@ -56,16 +56,16 @@ func (q *Queries) GetVideoContentTVShow(ctx context.Context, arg GetVideoContent
 
 const getVideoContentsByDeliveryStatus = `-- name: GetVideoContentsByDeliveryStatus :many
 SELECT id, created_at, movie_id, tvshow_id, season_number, delivery_status, states FROM video_content
-WHERE delivery_status=$1 ORDER BY created_at DESC limit $2
+WHERE delivery_status=ANY($1::int[]) ORDER BY created_at DESC limit $2
 `
 
 type GetVideoContentsByDeliveryStatusParams struct {
-	DeliveryStatus int
-	Limit          int32
+	Column1 []int
+	Limit   int32
 }
 
 func (q *Queries) GetVideoContentsByDeliveryStatus(ctx context.Context, arg GetVideoContentsByDeliveryStatusParams) ([]VideoContent, error) {
-	rows, err := q.db.Query(ctx, getVideoContentsByDeliveryStatus, arg.DeliveryStatus, arg.Limit)
+	rows, err := q.db.Query(ctx, getVideoContentsByDeliveryStatus, arg.Column1, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func (q *Queries) SaveVideoContent(ctx context.Context, arg SaveVideoContentPara
 
 const updateVideoContent = `-- name: UpdateVideoContent :one
 UPDATE video_content
-SET delivery_status=$1
+SET delivery_status=$1, states=$3
 WHERE id=$2
 RETURNING id
 `
@@ -167,10 +167,11 @@ RETURNING id
 type UpdateVideoContentParams struct {
 	DeliveryStatus int
 	ID             uuid.UUID
+	States         []byte
 }
 
 func (q *Queries) UpdateVideoContent(ctx context.Context, arg UpdateVideoContentParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, updateVideoContent, arg.DeliveryStatus, arg.ID)
+	row := q.db.QueryRow(ctx, updateVideoContent, arg.DeliveryStatus, arg.ID, arg.States)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

@@ -212,18 +212,18 @@ func torrentState(state videocontent.TorrentState) desc.TorrentDownloadStatus_To
 	}
 }
 
-func status(status statemachine.Status) desc.Status {
+func status(status statemachine.Status) desc.StateStatus {
 	switch status {
 	case statemachine.NewStatus:
-		return desc.Status_NewStatus
+		return desc.StateStatus_NewStatus
 	case statemachine.InProgressStatus:
-		return desc.Status_InProgressStatus
+		return desc.StateStatus_InProgressStatus
 	case statemachine.CompletedStatus:
-		return desc.Status_CompletedStatus
+		return desc.StateStatus_CompletedStatus
 	case statemachine.FailedStatus:
-		return desc.Status_FailedStatus
+		return desc.StateStatus_FailedStatus
 	default:
-		return desc.Status_StatusUnknown
+		return desc.StateStatus_StatusUnknown
 	}
 }
 
@@ -231,6 +231,8 @@ func deliveryStatus(deliveryStatus videocontent.DeliveryStatus) desc.DeliverySta
 	switch deliveryStatus {
 	case videocontent.DeliveryStatusFailed:
 		return desc.DeliveryStatus_DeliveryStatusFailed
+	case videocontent.DeliveryStatusNew:
+		return desc.DeliveryStatus_DeliveryStatusNew
 	case videocontent.DeliveryStatusInProgress:
 		return desc.DeliveryStatus_DeliveryStatusInProgress
 	case videocontent.DeliveryStatusDelivered:
@@ -238,9 +240,9 @@ func deliveryStatus(deliveryStatus videocontent.DeliveryStatus) desc.DeliverySta
 	case videocontent.DeliveryStatusUpdating:
 		return desc.DeliveryStatus_DeliveryStatusUnknown
 	case videocontent.DeliveryStatusDeleting:
-		return desc.DeliveryStatus_DeliveryStatusUnknown
+		return desc.DeliveryStatus_DeliveryStatusDeleting
 	case videocontent.DeliveryStatusDeleted:
-		return desc.DeliveryStatus_DeliveryStatusUnknown
+		return desc.DeliveryStatus_DeliveryStatusDeleted
 	default:
 		return desc.DeliveryStatus_DeliveryStatusUnknown
 	}
@@ -287,5 +289,22 @@ func tvShowDeliveryStep(step videocontent.StepDelivery) desc.TVShowDeliveryStep 
 
 	default:
 		return desc.TVShowDeliveryStep_TVShowDeliveryStepUnknown
+	}
+}
+
+func TVShowDeleteState(state *videocontent.TVShowDeleteState) *desc.TVShowDeleteState {
+	return &desc.TVShowDeleteState{
+		Status: status(state.Status),
+		Error:  tvShowDeleteError(state),
+	}
+}
+
+func tvShowDeleteError(state *videocontent.TVShowDeleteState) *desc.TVShowDeleteError {
+	if state.Error == nil {
+		return nil
+	}
+	return &desc.TVShowDeleteError{
+		RawError:  *state.Error,
+		ErrorType: desc.TVShowDeleteError_TVShowDeleteError_Unknown,
 	}
 }

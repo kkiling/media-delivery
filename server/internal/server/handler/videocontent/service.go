@@ -9,17 +9,19 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/kkiling/media-delivery/internal/usercase/videocontent"
-	"github.com/kkiling/media-delivery/internal/usercase/videocontent/content"
 	desc "github.com/kkiling/media-delivery/pkg/gen/media-delivery"
 )
 
 // VideoContent юзеркейс работы с доставкой видео файлов
 type VideoContent interface {
-	CreateVideoContent(ctx context.Context, params content.CreateVideoContentParams) (*videocontent.VideoContent, error)
+	CreateVideoContent(ctx context.Context, params videocontent.CreateVideoContentParams) (*videocontent.VideoContent, error)
 	GetVideoContent(ctx context.Context, contentID videocontent.ContentID) ([]videocontent.VideoContent, error)
-	GetTVShowDeliveryData(ctx context.Context, contentID videocontent.ContentID) (*videocontent.TVShowDeliveryState, error)
+	CreateDeliveryState(ctx context.Context, params videocontent.DeliveryVideoContentParams) (*videocontent.TVShowDeliveryState, error)
+	GetDeliveryData(ctx context.Context, contentID videocontent.ContentID) (*videocontent.TVShowDeliveryState, error)
 	ChoseTorrentOptions(ctx context.Context, contentID videocontent.ContentID, opts videocontent.ChoseTorrentOptions) (*videocontent.TVShowDeliveryState, error)
 	ChoseFileMatchesOptions(ctx context.Context, contentID videocontent.ContentID, opts videocontent.ChoseFileMatchesOptions) (*videocontent.TVShowDeliveryState, error)
+	CreateDeleteState(ctx context.Context, params videocontent.CreateDeleteStateParams) (*videocontent.TVShowDeleteState, error)
+	GetDeleteData(ctx context.Context, contentID videocontent.ContentID) (*videocontent.TVShowDeleteState, error)
 }
 
 type Handler struct {

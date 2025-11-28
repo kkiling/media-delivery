@@ -78,7 +78,10 @@ func (s *Storage) DeleteLabel(ctx context.Context, contentID common.ContentID, t
 
 	if contentID.MovieID != nil {
 		id := int64(*contentID.MovieID)
-		_, err := queries.DeleteLabelMovieID(ctx, &id)
+		_, err := queries.DeleteLabelMovieID(ctx, db.DeleteLabelMovieIDParams{
+			MovieID:   &id,
+			TypeLabel: int(typeLabel),
+		})
 		if err != nil {
 			return s.base.HandleError(err)
 		}
@@ -87,6 +90,7 @@ func (s *Storage) DeleteLabel(ctx context.Context, contentID common.ContentID, t
 		_, err := queries.DeleteLabelTVShow(ctx, db.DeleteLabelTVShowParams{
 			TvshowID:     lo.ToPtr(int64(contentID.TVShow.ID)),
 			SeasonNumber: lo.ToPtr(int32(contentID.TVShow.SeasonNumber)),
+			TypeLabel:    int(typeLabel),
 		})
 		if err != nil {
 			return s.base.HandleError(err)
