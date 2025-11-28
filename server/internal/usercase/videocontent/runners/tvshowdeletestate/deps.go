@@ -8,7 +8,7 @@ import (
 )
 
 type ContentDeleted interface {
-	DeleteSeasonFromMediaServer(ctx context.Context, tvShowPath tvshowdelete.TVShowCatalogPath, tvShowID common.TVShowID) error
+	DeleteSeasonFromMediaServer(ctx context.Context, tvShowPath tvshowdelete.TVShowCatalogPath) error
 	DeleteSeasonFiles(ctx context.Context, tvShowPath tvshowdelete.TVShowCatalogPath) error
 	DeleteTorrentFiles(ctx context.Context, torrentPath string) error
 	DeleteTorrentFromTorrentClient(ctx context.Context, magnetHash string) error

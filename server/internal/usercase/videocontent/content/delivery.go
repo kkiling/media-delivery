@@ -43,6 +43,7 @@ func (s *Service) CreateDeliveryState(ctx context.Context, params DeliveryVideoC
 
 	options := tvshowdeliverystate.CreateOptions{
 		TVShowID: *params.ContentID.TVShow,
+		Index:    len(content.States),
 	}
 	var result *tvshowdeliverystate.State
 

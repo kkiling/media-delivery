@@ -16,6 +16,8 @@ func (api *Api) DeleteTorrent(hash string, deleteFiles bool) error {
 	form.Set("hashes", hash)
 	if deleteFiles {
 		form.Set("deleteFiles", "true")
+	} else {
+		form.Set("deleteFiles", "false")
 	}
 
 	postUrl := api.baseAPIUrl.String() + "/api/v2/torrents/delete"

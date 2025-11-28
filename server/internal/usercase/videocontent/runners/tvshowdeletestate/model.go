@@ -36,6 +36,9 @@ type TVShowDeleteData struct {
 }
 
 type CreateOptions struct {
+	//
+	Index int
+
 	TVShowID common.TVShowID
 	// Хеш торрент раздачи (что бы удалить раздачу в торрент клиенте)
 	MagnetHash string
@@ -46,5 +49,5 @@ type CreateOptions struct {
 }
 
 func (c CreateOptions) GetIdempotencyKey() string {
-	return fmt.Sprintf("delete_tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
+	return fmt.Sprintf("delete_tv_%d_season_%d_n_%", c.TVShowID.ID, c.TVShowID.SeasonNumber, c.Index)
 }

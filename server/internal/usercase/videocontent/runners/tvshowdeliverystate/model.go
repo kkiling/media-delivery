@@ -88,9 +88,10 @@ type TVShowDeliveryData struct {
 }
 
 type CreateOptions struct {
+	Index    int
 	TVShowID common.TVShowID
 }
 
 func (c CreateOptions) GetIdempotencyKey() string {
-	return fmt.Sprintf("delivery_tv_%d_season_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber)
+	return fmt.Sprintf("delivery_tv_%d_season_%d_n_%d", c.TVShowID.ID, c.TVShowID.SeasonNumber, c.Index)
 }

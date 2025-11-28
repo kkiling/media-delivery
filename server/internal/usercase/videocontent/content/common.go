@@ -15,16 +15,16 @@ import (
 
 func getLastState(content VideoContent, runersType runners.Type) *uuid.UUID {
 	sort.Slice(content.States, func(i, j int) bool {
-		return content.States[i].CreatedAt.Before(content.States[j].CreatedAt)
+		return content.States[i].CreatedAt.After(content.States[j].CreatedAt)
 	})
-	state, find := lo.Find(content.States, func(item State) bool {
+	res, find := lo.Find(content.States, func(item State) bool {
 		return item.Type == runersType
 	})
 	if !find {
 		return nil
 	}
 
-	return &state.StateID
+	return &res.StateID
 }
 
 func (s *Service) getVideoContent(ctx context.Context, contentID common.ContentID) (VideoContent, error) {

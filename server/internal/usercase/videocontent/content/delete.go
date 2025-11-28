@@ -51,6 +51,7 @@ func (s *Service) CreateDeleteState(ctx context.Context, params DeleteVideoConte
 	}
 
 	options := tvshowdeletestate.CreateOptions{
+		Index:       len(content.States),
 		TVShowID:    *params.ContentID.TVShow,
 		MagnetHash:  deliveryState.Data.Torrent.MagnetLink.Hash,
 		TorrentPath: deliveryState.Data.TorrentFilesData.ContentFullPath,

@@ -2,16 +2,38 @@ package tvshowdelete
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
-	"github.com/kkiling/media-delivery/internal/common"
+	"github.com/kkiling/media-delivery/internal/adapter/apierr"
 )
 
-func (s *Service) DeleteSeasonFromMediaServer(ctx context.Context, tvShowPath TVShowCatalogPath, tvShowID common.TVShowID) error {
-	return nil
+func (s *Service) DeleteSeasonFromMediaServer(ctx context.Context, tvShowPath TVShowCatalogPath) error {
+	path, err := filepath.Rel(s.config.BasePath, tvShowPath.TVShowPath)
+	if err != nil {
+		return fmt.Errorf("failed to get relative path: %w", err)
+	}
+
+	if err = s.embyApi.Refresh(); err != nil {
+		return fmt.Errorf("failed to refresh emby api: %w", err)
+	}
+
+	info, err := s.embyApi.GetCatalogInfo("/" + path)
+	if err != nil {
+		if errors.Is(err, apierr.ContentNotFound) {
+			return nil
+		}
+		return fmt.Errorf("embyApi.GetCatalogInfo: %w", err)
+	}
+
+	if info == nil {
+		return nil
+	}
+
+	return fmt.Errorf("tvshow is not deleted")
 }
 
 // isDirEmpty проверяет, пуста ли директория
